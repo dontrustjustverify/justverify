@@ -16,6 +16,24 @@
 - 한국어·영어·일본어와 Teal·Amber·Green·Ice 글자색 테마.
 - 변경 내용 확인 후 설정 적용, 암호화 설정 백업 및 복원 도구.
 
+## 화면과 사용 영상
+
+메뉴 클릭과 스크롤을 담은 **30초 영상**입니다. 10개 화면을 각각 3초씩 보여줍니다.
+
+https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+
+[30초 영상 다운로드 (MP4)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+
+**데스크톱 현황**
+
+![JustVerify 데스크톱 현황](../media/justverify-desktop.png)
+
+**모바일 현황과 Electrs**
+
+<p><img src="../media/justverify-mobile.png" alt="JustVerify 모바일 현황" width="280"> <img src="../media/justverify-mobile-electrs.png" alt="JustVerify 모바일 Electrs 연결과 QR" width="280"></p>
+
+실제 beta1 앱과 Bitcoin Core·electrs·mempool을 격리 ARM VM의 **regtest**에서 실행해 촬영했습니다. 모바일 화면은 브라우저 폭 390 px에서 확인한 반응형 레이아웃이며, 실제 휴대폰이나 공개 네트워크 검증 결과를 뜻하지 않습니다. 표시된 주소·QR은 폐기 가능한 시험 환경용입니다. 연결할 때는 본인 노드에 표시되는 정보를 사용하세요.
+
 ## 준비할 장비
 
 현재 이미지는 **Raspberry Pi 5, 64비트, 유선 LAN, NVMe**용입니다. 실기 검증 기준은 **RAM 8 GB와 NVMe 2 TB**, 호환되는 NVMe HAT·부트로더입니다. 적절한 전원 공급 장치와 냉각 장치를 사용하세요. Pi 4와 x86 PC용 이미지가 아닙니다.
@@ -26,7 +44,7 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 1. 이 저장소의 [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1)에 게시된 [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
 2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
-3. **balenaEtcher**에서 이미지를 선택하고 지정한 NVMe에 기록하세요. 사용 중인 Etcher가 `.xz`를 받지 않으면 먼저 압축을 해제합니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
+3. **balenaEtcher**에서 이미지를 선택하고 지정한 NVMe에 기록하세요. Etcher가 `.img.xz`를 직접 읽고 기록 중에 압축을 풀므로 미리 해제하지 않아도 됩니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
 4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
 5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.
 6. 앞으로 사용할 웹 관리자 암호와 확인 암호를 입력합니다. 기기별 신원과 데이터 영역이 준비되고 기본 Core 프로필이 자동 시작됩니다.
@@ -57,4 +75,4 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [빌드 방법](../BUILD.md), [검증 결과와 남은 항목](../TESTING.md), [릴리스 안내](../RELEASE_NOTES.md)를 함께 제공합니다.
 
-JustVerify와 각 구성요소에는 각각의 라이선스가 적용됩니다. [제3자 고지](../../THIRD_PARTY_NOTICES.md)를 확인하세요. mempool은 upstream AGPL 조건으로 별도 포함하며, 탐색기의 **소스 · AGPL**에서 원본 소스·빌드 수정·잠금 파일을 받을 수 있습니다. Umbrel은 설치 안내와 앱 구성 비교에 참고했으며 코드를 복사하지 않았습니다. 각 upstream 프로젝트의 공식 제품이나 승인을 의미하지 않습니다.
+JustVerify와 각 구성요소에는 각각의 라이선스가 적용됩니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)를 확인하세요. mempool은 upstream AGPL 조건으로 별도 포함하며, 탐색기의 **소스 · AGPL**에서 원본 소스·빌드 수정·잠금 파일을 받을 수 있습니다. Umbrel은 설치 안내와 앱 구성 비교에 참고했으며 코드를 복사하지 않았습니다. 각 upstream 프로젝트의 공식 제품이나 승인을 의미하지 않습니다.

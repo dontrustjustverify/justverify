@@ -55,7 +55,7 @@ rm -rf "$mountdir/opt/justverify/versions/31.1/bitcoin-31.1/libexec"
 ln -s versions/31.1/bitcoin-31.1 "$mountdir/opt/justverify/core"
 cp -a catalog "$mountdir/opt/justverify/catalog"
 cp -a licenses "$mountdir/opt/justverify/licenses"
-install -m 0644 THIRD_PARTY_NOTICES.md "$mountdir/opt/justverify/THIRD_PARTY_NOTICES.md"
+install -m 0644 licenses/THIRD_PARTY_NOTICES.md "$mountdir/opt/justverify/THIRD_PARTY_NOTICES.md"
 cp -a web "$mountdir/opt/justverify/web"
 cp -a "$mempool" "$mountdir/opt/justverify/mempool"
 find "$mountdir/opt/justverify/web" -type d -name __pycache__ -prune -exec rm -rf {} +

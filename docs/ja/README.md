@@ -16,6 +16,24 @@
 - 韓国語、英語、日本語とTeal、Amber、Green、Iceの文字色テーマ。
 - 変更内容を確認して設定を適用し、暗号化した設定のバックアップと復元ができます。
 
+## 画面と操作動画
+
+実際のメニュー操作とスクロールを収録した **30秒の動画**です。10画面をそれぞれ3秒ずつ表示します。
+
+https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+
+[30秒の動画をダウンロード（MP4）](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+
+**デスクトップの概要画面**
+
+![JustVerify デスクトップ画面](../media/justverify-desktop.png)
+
+**モバイルの概要画面とElectrs**
+
+<p><img src="../media/justverify-mobile.png" alt="JustVerify モバイル画面" width="280"> <img src="../media/justverify-mobile-electrs.png" alt="JustVerify モバイルのElectrs接続とQR" width="280"></p>
+
+実際のbeta1アプリとBitcoin Core・electrs・mempoolを、隔離したARM VMの **regtest** で実行して撮影しました。モバイル画像は幅390 pxのブラウザーで確認したレスポンシブ表示です。実機スマートフォンや公開ネットワークの検証完了を示すものではありません。表示された接続先とQRは使い捨てのテスト環境用です。接続時はご自身のノードに表示される情報を使用してください。
+
 ## 必要な機器
 
 現在のイメージは **Raspberry Pi 5、64ビット、有線LAN、NVMe** 向けです。実機検証対象は **RAM 8 GB、NVMe 2 TB** と、対応するNVMe HAT・ブートローダーです。適切な電源と冷却装置を使用してください。Pi 4やx86 PCには対応するイメージではありません。
@@ -26,7 +44,7 @@
 
 1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1) に公開された [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz)、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
 2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
-3. **balenaEtcher**でイメージと対象NVMeを選択して書き込みます。利用中のEtcherが`.xz`を受け付けない場合は先に展開してください。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
+3. **balenaEtcher**でイメージと対象NVMeを選択して書き込みます。Etcherは`.img.xz`を直接読み込み、書き込み中に展開するため、事前の解凍は不要です。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
 6. Web管理者パスワードと確認用パスワードを入力します。機器固有の識別情報とデータ領域を準備し、既定のCoreプロファイルを自動で起動します。
@@ -57,4 +75,4 @@ Web管理者パスワードとSSHパスワードは別です。指定された�
 
 イメージの組み立てには隔離した **ARM64 Linux** 環境を使用します。[ビルド手順](../BUILD.md)、[検証結果と未完了項目](../TESTING.md)、[リリース情報](../RELEASE_NOTES.md)を公開しています。
 
-JustVerifyと同梱コンポーネントにはそれぞれのライセンスが適用されます。[第三者の権利表示](../../THIRD_PARTY_NOTICES.md)をご覧ください。mempoolはupstreamのAGPL条件で別途同梱し、エクスプローラーの **ソース · AGPL** から原典、ビルド変更、ロックファイルを取得できます。Umbrelはガイド構成とアプリ統合の参考として調査し、コードやUI素材はコピーしていません。各upstreamプロジェクトによる公式製品や推奨を意味しません。
+JustVerifyと同梱コンポーネントにはそれぞれのライセンスが適用されます。[第三者の権利表示](../../licenses/THIRD_PARTY_NOTICES.md)をご覧ください。mempoolはupstreamのAGPL条件で別途同梱し、エクスプローラーの **ソース · AGPL** から原典、ビルド変更、ロックファイルを取得できます。Umbrelはガイド構成とアプリ統合の参考として調査し、コードやUI素材はコピーしていません。各upstreamプロジェクトによる公式製品や推奨を意味しません。

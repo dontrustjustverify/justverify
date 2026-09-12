@@ -16,6 +16,24 @@ Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electr
 - Korean, English and Japanese; Teal, Amber, Green and Ice themes.
 - Reviewed settings changes, encrypted configuration backups and recovery tools.
 
+## See JustVerify
+
+A **30-second tour**: ten views, three seconds each, with real menu clicks and scrolling.
+
+https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+
+[Download the video (MP4, 30 seconds)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+
+**Desktop dashboard**
+
+![JustVerify desktop dashboard](docs/media/justverify-desktop.png)
+
+**Mobile dashboard and Electrs**
+
+<p><img src="docs/media/justverify-mobile.png" alt="JustVerify mobile dashboard" width="280"> <img src="docs/media/justverify-mobile-electrs.png" alt="JustVerify mobile Electrs connection and QR" width="280"></p>
+
+Captured from the actual beta1 application in an isolated ARM VM running Bitcoin Core, electrs and mempool on **regtest**. The mobile previews use a 390 px browser viewport. They demonstrate the responsive layout, not physical-phone or public-network acceptance. Displayed addresses and QR codes belong to the disposable test setup; use your own node's connection details.
+
 ## Hardware
 
 The current image targets **Raspberry Pi 5, 64-bit, wired Ethernet and NVMe**. The hardware validation target is an **8 GB Pi 5 with a 2 TB NVMe SSD** and a compatible NVMe HAT/bootloader. Use a suitable power supply and cooling. Pi 4 and x86 machines are not covered by this image.
@@ -26,7 +44,7 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 1. Get [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1). Use only an artifact listed in that release's manifest.
 2. Check the download against [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
-3. In **balenaEtcher**, select the `.img.xz`, select your intended NVMe, and flash. If your Etcher version does not accept the compressed file, extract it first. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
+3. In **balenaEtcher**, select the `.img.xz`, select your intended NVMe, and flash. Etcher supports `.img.xz` directly and decompresses it while flashing; no manual extraction is required. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
 6. Create your web administrator password and confirm it. The node prepares its own identity and data volume, then starts the default Core profile automatically.
@@ -59,4 +77,4 @@ Source, pinned component manifests and executable tests are included. Image asse
 
 ## Licenses and credits
 
-JustVerify's original code and separately packaged components retain their respective licenses. See [third-party notices](THIRD_PARTY_NOTICES.md). Bitcoin Core, Tor and electrs are upstream projects. The bundled mempool app is licensed under its upstream **AGPL** terms; its corresponding source and JustVerify build modifications are accessible from **Source · AGPL** in the explorer and included in the release materials. No affiliation or endorsement is implied. Umbrel's installation-guide structure and app integration were reviewed; Umbrel source/UI assets are not copied.
+JustVerify's original code and separately packaged components retain their respective licenses. See [third-party notices](licenses/THIRD_PARTY_NOTICES.md). Bitcoin Core, Tor and electrs are upstream projects. The bundled mempool app is licensed under its upstream **AGPL** terms; its corresponding source and JustVerify build modifications are accessible from **Source · AGPL** in the explorer and included in the release materials. No affiliation or endorsement is implied. Umbrel's installation-guide structure and app integration were reviewed; Umbrel source/UI assets are not copied.
