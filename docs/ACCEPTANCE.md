@@ -13,6 +13,7 @@
 | 설치 이미지 새 서비스·txindex 기본·실제 부팅 | image/verify-pi.sh, tests/image_boot_probe.py, image_data_probe.py | 파일·초기 등록·내장 멤풀 tip PASS; cold Tor onion timeout FAIL 유지, evidence/image-beta1-r3-boot.json |
 | 동일 이미지 복구와 실제 재부팅 | tests/image_recovery_probe.py, scripts/run_image_recovery.py | PASS2회: 같은 신원/UUID/tip/설정/멤풀 SQL와 실제 Tor RPC200·401/404. evidence/image-beta1-recovery.json; 새 Pi 실기 NOT RUN |
 | 영어/한국어/일본어 설치 README 및 GitHub 소스 | README.md, docs/ko/README.md, docs/ja/README.md; 비밀정보·상대 링크 검사 | PASS. dontrustjustverify/justverify 공개 main 게시, GitHub UI/API 확인. 이미지 공개 배포와 구분 |
+| 전달 파일·소스·체크섬·서명 | dist/justverify-0.1.0-beta1-*; 독립 공개키 GPG 검사·14파일 hash·GitHub 3언어 bytes | PASS, evidence/beta1-bundle.json. 실험용 키/로컬 설치 후보이며 전체 acceptance 완료는 아님 |
 
 기존 dev16 실기 결과는 보존하지만 새 내장 mempool 이미지 검증을 대신하지 않는다.
 
