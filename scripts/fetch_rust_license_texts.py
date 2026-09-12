@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fetch missing license texts using registry VCS commits; retain missing provenance as a gap."""
 import concurrent.futures,hashlib,json,pathlib,urllib.request
-root=pathlib.Path(__file__).resolve().parents[1];meta=json.loads((root/'.state/cargo-license-metadata.json').read_text());report_path=root/'docs/evidence/rust-license-inventory.json';report=json.loads(report_path.read_text());packages={(p['name'],p['version']):p for p in meta['packages']}
+root=pathlib.Path(__file__).resolve().parents[1];meta=json.loads((root/'.state/cargo-license-metadata.json').read_text());report_path=root/'licenses/rust-license-inventory.json';report=json.loads(report_path.read_text());packages={(p['name'],p['version']):p for p in meta['packages']}
 def fetch(record):
  if record['notices']:return record
  p=packages[(record['name'],record['version'])];vcs=pathlib.Path(p['manifest_path']).parent/'.cargo_vcs_info.json'
@@ -15,7 +15,7 @@ def fetch(record):
   except Exception:continue
   if len(data)>100000 or not data:continue
   text=data.decode('utf-8');assert any(w in text.lower() for w in ('license','copyright','permission'))
-  file=root/'docs/licenses/rust'/(record['name']+'-'+record['version'])/('upstream-'+name.replace('/','-'));file.write_bytes(data)
+  file=root/'licenses/rust'/(record['name']+'-'+record['version'])/('upstream-'+name.replace('/','-'));file.write_bytes(data)
   record['notices'].append({'file':str(file.relative_to(root)),'sha256':hashlib.sha256(data).hexdigest(),'url':url,'commit':commit})
  if record['notices']:record['status']='COLLECTED from registry VCS-pinned upstream; legal/source-obligation review pending'
  return record

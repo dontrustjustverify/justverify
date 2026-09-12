@@ -6,7 +6,7 @@ This image targets Raspberry Pi 5 with wired Ethernet and NVMe. The validation t
 
 ## Artifact and verification
 
-Use the **pristine** `justverify-0.1.0-beta1.img.xz`, not a booted test disk. The compressed image is **654,231,760 bytes (624 MiB)**; its raw disk size is **6,444,548,096 bytes**. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
+Download the **pristine** [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), not a booted test disk. The compressed image is **654,231,760 bytes (624 MiB)**; its raw disk size is **6,444,548,096 bytes**. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
 
 Image SHA256:
 
@@ -14,10 +14,15 @@ Image SHA256:
 31ed2db7a8f16de4a0947eb5468cb61054a3eeff4ea6001c5ebb86498bed462d
 ```
 
-The candidate bundle includes `justverify-0.1.0-beta1-SHA256SUMS`, its `.asc` signature, manifest, source archive, package inventory and test report. From the bundle directory:
+The release includes [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), its [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS.asc), the [public signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-experimental-signing-key.asc), manifest, source archives, package inventory and test report. OS source and notices are optional downloads; they are not needed to flash the image. To check only the image without downloading every optional source archive:
 
 ```sh
-shasum -a 256 -c justverify-0.1.0-beta1-SHA256SUMS
+awk '$2 == "justverify-0.1.0-beta1.img.xz"' justverify-0.1.0-beta1-SHA256SUMS | shasum -a 256 -c -
+```
+
+For signature verification:
+
+```sh
 gpg --import justverify-experimental-signing-key.asc
 gpg --fingerprint 705D2C55D7BAFACB3683EE18329759FF93A854DF
 gpg --verify justverify-0.1.0-beta1-SHA256SUMS.asc justverify-0.1.0-beta1-SHA256SUMS
@@ -46,6 +51,6 @@ Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF
 
 The pristine file passed filesystem, identity-absence, packaged-source, ARM executable and compression/hash checks. A disposable generic ARM VM passed initial registration, Core/electrs, HTTP/TUI/QR and mempool tip checks. Its first Tor onion RPC attempt timed out; that cold-boot failure is retained. Separate recovery and a subsequent actual reboot passed with the same data, identity, explorer database and authenticated onion RPC. This does not establish reliable cold Tor startup or physical Pi5 acceptance for beta1.
 
-New beta1 Pi5 installation, physical mobile-wallet/camera tests and the remaining [acceptance gates](ACCEPTANCE.md) are pending. Earlier dev16 Pi results are not beta1 results. Public source is available separately; a public binary release requires the remaining distribution review.
+New beta1 Pi5 installation, physical mobile-wallet/camera tests and the remaining [acceptance gates](TESTING.md) are pending. Earlier dev16 Pi results are not beta1 results. The release page provides the image, checksums, signature, notices and component source.
 
-For development, use [BUILD.md](BUILD.md). Superseded installation instructions are preserved in [development history](INSTALL_HISTORY_KO.md); do not use their old filenames or HTTPS onboarding steps for beta1.
+For development, use [BUILD.md](BUILD.md). Use the release-linked filenames and HTTP onboarding instructions above.

@@ -1,1 +1,0 @@
-PASS real TLS owner CSRF/profile-gated grant, idempotent provisioning, assigned wallet routing, public import, balances isolation, forbidden methods, profile binding, revocation and secret non-persistence

@@ -1,9 +1,0 @@
-e2fsck 1.47.2 (1-Jan-2025)
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-rootfs: 75110/469440 files (0.2% non-contiguous), 598998/1964032 blocks
-justverify 0.1.0
-Error: filesystem error: cannot create directories: Read-only file system [/root/.bitcoin/wallets]

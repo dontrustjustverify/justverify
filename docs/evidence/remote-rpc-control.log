@@ -1,7 +1,0 @@
-PASS owner/CSRF/reauthentication, preview causes no listener, actual Core RPC after committed enable
-PASS new server lifecycle restores committed enable/client identity; reviewed disable closes listener and persists
-PASS persisted applying state fails closed, stale review refused, explicit review recovers; no password in setting
-PASS actual occupied-port failure remains closed with recovery state; HTTPS owner recovery remains available
-PASS 31.1 TLS coin locks require transaction grant, exclude funding inputs, isolate wallets, reject malformed arguments and unlock
-PASS 31.1 TLS PSBT explicit permission/fund/no-node-signing/separate test signer/finalize/mempool/broadcast/confirmation/revocation
-PASS real TLS owner CSRF/profile-gated grant, idempotent provisioning, assigned wallet routing, public import, balances isolation, forbidden methods, profile binding, revocation and secret non-persistence

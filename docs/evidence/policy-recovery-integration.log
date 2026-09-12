@@ -1,8 +1,0 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
-     Running tests/policy_integration.rs (target/debug/deps/policy_integration-205f26228177ea11)
-
-running 1 test
-test real_policy_apply_and_rollback ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.73s
-

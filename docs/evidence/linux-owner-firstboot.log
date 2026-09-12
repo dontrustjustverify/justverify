@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/home/builder/justverify/tests/linux_owner_firstboot.py", line 40, in <module>
-    read_until(b'V versions')
-    ~~~~~~~~~~^^^^^^^^^^^^^^^
-  File "/home/builder/justverify/tests/linux_owner_firstboot.py", line 25, in read_until
-    raise AssertionError('expected console state was not displayed')
-AssertionError: expected console state was not displayed

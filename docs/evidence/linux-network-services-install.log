@@ -1,5 +1,0 @@
-Synchronizing state of tor.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
-Executing: /usr/lib/systemd/systemd-sysv-install disable tor
-Removed '/etc/systemd/system/multi-user.target.wants/tor.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-electrs.service' → '/etc/systemd/system/justverify-electrs.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-tor.service' → '/etc/systemd/system/justverify-tor.service'.

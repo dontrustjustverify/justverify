@@ -1,4 +1,0 @@
-PASS 22.0 TLS coin locks require transaction grant, exclude funding inputs, isolate wallets, reject malformed arguments and unlock
-PASS 22.0 TLS PSBT explicit permission/fund/no-node-signing/separate test signer/finalize/mempool/broadcast/confirmation/revocation
-PASS every published node/wallet/transaction RPC has an actual successful TLS call
-PASS real TLS owner CSRF/profile-gated grant, idempotent provisioning, assigned wallet routing, public import, balances isolation, forbidden methods, profile binding, revocation and secret non-persistence

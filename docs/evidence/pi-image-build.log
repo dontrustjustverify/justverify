@@ -1,152 +1,0 @@
-Pass 1: Checking inodes, blocks, and sizes
-e2fsck 1.47.2 (1-Jan-2025)
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-rootfs: 73256/148656 files (0.2% non-contiguous), 513060/593920 blocks
-resize2fs 1.47.2 (1-Jan-2025)
-Resizing the filesystem on /dev/loop0p2 to 1964032 (4k) blocks.
-The filesystem on /dev/loop0p2 is now 1964032 (4k) blocks long.
-
-Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
-Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
-Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
-Get:4 http://deb.debian.org/debian trixie/main armhf Packages [9240 kB]
-Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages.diff/Index [4995 B]
-Err:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages.diff/Index
-  Need 4751 compressed bytes, but limit is 4424 and original is 4424
-Get:6 http://deb.debian.org/debian trixie-updates/main armhf Packages.diff/Index [4995 B]
-Err:6 http://deb.debian.org/debian trixie-updates/main armhf Packages.diff/Index
-  Need 4750 compressed bytes, but limit is 4408 and original is 4408
-Get:7 http://deb.debian.org/debian trixie-updates/main Translation-en.diff/Index [4995 B]
-Ign:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages.diff/Index
-Get:7 http://deb.debian.org/debian trixie-updates/main Translation-en.diff/Index [4995 B]
-Ign:6 http://deb.debian.org/debian trixie-updates/main armhf Packages.diff/Index
-Get:7 http://deb.debian.org/debian trixie-updates/main Translation-en.diff/Index [4995 B]
-Get:8 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
-Get:9 http://deb.debian.org/debian trixie/main Translation-en [6484 kB]
-Get:10 http://deb.debian.org/debian-security trixie-security/main armhf Packages [237 kB]
-Get:11 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [258 kB]
-Get:12 http://deb.debian.org/debian-security trixie-security/main Translation-en [156 kB]
-Get:13 http://deb.debian.org/debian-security trixie-security/contrib armhf Packages [3144 B]
-Get:14 http://deb.debian.org/debian-security trixie-security/contrib arm64 Packages [3144 B]
-Get:15 http://deb.debian.org/debian-security trixie-security/contrib Translation-en [2564 B]
-Get:16 http://deb.debian.org/debian trixie-updates/main arm64 Packages [4424 B]
-Get:17 http://deb.debian.org/debian trixie-updates/main armhf Packages [4408 B]
-Get:18 http://deb.debian.org/debian trixie-updates/main Translation-en T-2026-07-18-0800.33-F-2026-07-14-1401.03.pdiff [2466 B]
-Get:18 http://deb.debian.org/debian trixie-updates/main Translation-en T-2026-07-18-0800.33-F-2026-07-14-1401.03.pdiff [2466 B]
-Get:19 http://archive.raspberrypi.com/debian trixie InRelease [54.9 kB]
-Get:20 http://archive.raspberrypi.com/debian trixie/main arm64 Packages [469 kB]
-Get:21 http://archive.raspberrypi.com/debian trixie/main armhf Packages [463 kB]
-Fetched 27.2 MB in 2s (11.7 MB/s)
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-python3-venv is already the newest version (3.13.5-1).
-avahi-daemon is already the newest version (0.8-16).
-The following additional packages will be installed:
-  libevent-2.1-7t64 libssl3t64 libtorsocks openssl-provider-legacy tor-geoipdb
-  torsocks
-Suggested packages:
-  mixmaster torbrowser-launcher socat apparmor-utils nyx obfs4proxy
-The following NEW packages will be installed:
-  libevent-2.1-7t64 libtorsocks tor tor-geoipdb torsocks
-The following packages will be upgraded:
-  libssl3t64 openssl openssl-provider-legacy
-3 upgraded, 5 newly installed, 0 to remove and 106 not upgraded.
-Need to get 10.4 MB of archives.
-After this operation, 33.2 MB of additional disk space will be used.
-Get:1 http://deb.debian.org/debian-security trixie-security/main arm64 libevent-2.1-7t64 arm64 2.1.13-stable-1~deb13u1 [171 kB]
-Get:2 http://deb.debian.org/debian trixie/main arm64 libtorsocks arm64 2.5.0-1+deb13u1 [67.3 kB]
-Get:3 http://deb.debian.org/debian trixie/main arm64 tor arm64 0.4.9.11-0+deb13u1 [2006 kB]
-Get:4 http://deb.debian.org/debian trixie/main arm64 tor-geoipdb all 0.4.9.11-0+deb13u1 [2752 kB]
-Get:5 http://deb.debian.org/debian trixie/main arm64 torsocks all 2.5.0-1+deb13u1 [27.8 kB]
-Get:6 http://archive.raspberrypi.com/debian trixie/main arm64 openssl-provider-legacy arm64 3.5.7-1~deb13u2+rpt1 [325 kB]
-Get:7 http://archive.raspberrypi.com/debian trixie/main arm64 libssl3t64 arm64 3.5.7-1~deb13u2+rpt1 [3441 kB]
-Get:8 http://archive.raspberrypi.com/debian trixie/main arm64 openssl arm64 3.5.7-1~deb13u2+rpt1 [1571 kB]
-apt-listchanges: Reading changelogs...
-Fetched 10.4 MB in 2s (4480 kB/s)
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 66501 files and directories currently installed.)
-Preparing to unpack .../openssl-provider-legacy_3.5.7-1~deb13u2+rpt1_arm64.deb ...
-Unpacking openssl-provider-legacy (3.5.7-1~deb13u2+rpt1) over (3.5.6-1~deb13u2+rpt1) ...
-Setting up openssl-provider-legacy (3.5.7-1~deb13u2+rpt1) ...
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 66501 files and directories currently installed.)
-Preparing to unpack .../libssl3t64_3.5.7-1~deb13u2+rpt1_arm64.deb ...
-Unpacking libssl3t64:arm64 (3.5.7-1~deb13u2+rpt1) over (3.5.6-1~deb13u2+rpt1) ...
-Setting up libssl3t64:arm64 (3.5.7-1~deb13u2+rpt1) ...
-Selecting previously unselected package libevent-2.1-7t64:arm64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 66501 files and directories currently installed.)
-Preparing to unpack .../0-libevent-2.1-7t64_2.1.13-stable-1~deb13u1_arm64.deb ...
-Unpacking libevent-2.1-7t64:arm64 (2.1.13-stable-1~deb13u1) ...
-Selecting previously unselected package libtorsocks:arm64.
-Preparing to unpack .../1-libtorsocks_2.5.0-1+deb13u1_arm64.deb ...
-Unpacking libtorsocks:arm64 (2.5.0-1+deb13u1) ...
-Preparing to unpack .../2-openssl_3.5.7-1~deb13u2+rpt1_arm64.deb ...
-Unpacking openssl (3.5.7-1~deb13u2+rpt1) over (3.5.6-1~deb13u2+rpt1) ...
-Selecting previously unselected package tor.
-Preparing to unpack .../3-tor_0.4.9.11-0+deb13u1_arm64.deb ...
-Unpacking tor (0.4.9.11-0+deb13u1) ...
-Selecting previously unselected package tor-geoipdb.
-Preparing to unpack .../4-tor-geoipdb_0.4.9.11-0+deb13u1_all.deb ...
-Unpacking tor-geoipdb (0.4.9.11-0+deb13u1) ...
-Selecting previously unselected package torsocks.
-Preparing to unpack .../5-torsocks_2.5.0-1+deb13u1_all.deb ...
-Unpacking torsocks (2.5.0-1+deb13u1) ...
-Setting up libevent-2.1-7t64:arm64 (2.1.13-stable-1~deb13u1) ...
-Setting up tor (0.4.9.11-0+deb13u1) ...
-Something or somebody made /var/lib/tor disappear.
-Creating one for you again.
-Something or somebody made /var/log/tor disappear.
-Creating one for you again.
-Created symlink '/etc/systemd/system/multi-user.target.wants/tor.service' → '/usr/lib/systemd/system/tor.service'.
-runit: tor: start action denied by policy-rc.d
-Running in chroot, ignoring request.
-invoke-rc.d: policy-rc.d denied execution of start.
-Setting up openssl (3.5.7-1~deb13u2+rpt1) ...
-Setting up libtorsocks:arm64 (2.5.0-1+deb13u1) ...
-Setting up tor-geoipdb (0.4.9.11-0+deb13u1) ...
-Setting up torsocks (2.5.0-1+deb13u1) ...
-Processing triggers for man-db (2.13.1-1) ...
-Processing triggers for libc-bin (2.41-12+rpt1+deb13u3) ...
-Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
-Collecting aiohappyeyeballs==2.7.1 (from -r /opt/justverify/web/requirements.lock (line 1))
-  Downloading https://www.piwheels.org/simple/aiohappyeyeballs/aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
-Collecting aiohttp==3.13.3 (from -r /opt/justverify/web/requirements.lock (line 2))
-  Downloading aiohttp-3.13.3-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (8.1 kB)
-Collecting aiosignal==1.4.0 (from -r /opt/justverify/web/requirements.lock (line 3))
-  Downloading https://www.piwheels.org/simple/aiosignal/aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
-Collecting attrs==26.1.0 (from -r /opt/justverify/web/requirements.lock (line 4))
-  Downloading https://www.piwheels.org/simple/attrs/attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
-Collecting frozenlist==1.8.0 (from -r /opt/justverify/web/requirements.lock (line 5))
-  Downloading frozenlist-1.8.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (20 kB)
-Collecting idna==3.19 (from -r /opt/justverify/web/requirements.lock (line 6))
-  Downloading https://www.piwheels.org/simple/idna/idna-3.19-py3-none-any.whl.metadata (9.2 kB)
-Collecting multidict==6.8.0 (from -r /opt/justverify/web/requirements.lock (line 7))
-  Downloading multidict-6.8.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (5.3 kB)
-Collecting propcache==0.5.2 (from -r /opt/justverify/web/requirements.lock (line 8))
-  Downloading propcache-0.5.2-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (16 kB)
-Collecting pycdlib==1.14.0 (from -r /opt/justverify/web/requirements.lock (line 9))
-  Downloading https://archive1.piwheels.org/simple/pycdlib/pycdlib-1.14.0-py2.py3-none-any.whl.metadata (972 bytes)
-Collecting yarl==1.24.5 (from -r /opt/justverify/web/requirements.lock (line 10))
-  Downloading yarl-1.24.5-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (103 kB)
-Downloading https://www.piwheels.org/simple/aiohappyeyeballs/aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
-Downloading aiohttp-3.13.3-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (1.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 37.3 MB/s eta 0:00:00
-Downloading multidict-6.8.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (283 kB)
-Downloading yarl-1.24.5-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (107 kB)
-Downloading https://www.piwheels.org/simple/aiosignal/aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
-Downloading https://www.piwheels.org/simple/attrs/attrs-26.1.0-py3-none-any.whl (67 kB)
-Downloading frozenlist-1.8.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (233 kB)
-Downloading https://www.piwheels.org/simple/idna/idna-3.19-py3-none-any.whl (68 kB)
-Downloading propcache-0.5.2-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (59 kB)
-Downloading https://archive1.piwheels.org/simple/pycdlib/pycdlib-1.14.0-py2.py3-none-any.whl (213 kB)
-Installing collected packages: pycdlib, propcache, multidict, idna, frozenlist, attrs, aiohappyeyeballs, yarl, aiosignal, aiohttp
-
-Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.13.3 aiosignal-1.4.0 attrs-26.1.0 frozenlist-1.8.0 idna-3.19 multidict-6.8.0 propcache-0.5.2 pycdlib-1.14.0 yarl-1.24.5
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-firstboot.service' → '/etc/systemd/system/justverify-firstboot.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-core.service' → '/etc/systemd/system/justverify-core.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-manager.service' → '/etc/systemd/system/justverify-manager.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-web.service' → '/etc/systemd/system/justverify-web.service'.
-Development image built; Pi boot, onboarding, data setup and release gates NOT RUN.

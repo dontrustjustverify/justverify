@@ -5,7 +5,7 @@
 
 Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
 
-**0.1.0-beta1 is a testing release.** Check [tested and pending requirements](docs/ACCEPTANCE.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+**0.1.0-beta1 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
 ## What is included
 
@@ -24,8 +24,8 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get `justverify-0.1.0-beta1.img.xz`, `justverify-0.1.0-beta1-SHA256SUMS`, its signature, the manifest and release notes from this repository's **Releases** page when published. Use only an artifact listed in that release's manifest.
-2. Check the download against `justverify-0.1.0-beta1-SHA256SUMS`. On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Get [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1). Use only an artifact listed in that release's manifest.
+2. Check the download against [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. In **balenaEtcher**, select the `.img.xz`, select your intended NVMe, and flash. If your Etcher version does not accept the compressed file, extract it first. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
@@ -55,7 +55,7 @@ Save an encrypted configuration backup and its password **off the Pi** before re
 
 ## Build and verification
 
-Source, pinned component manifests and executable tests are included. Image assembly runs in an isolated **ARM64 Linux** builder; see [build instructions](docs/BUILD.md). macOS is used for development and flashing, not for running Linux systemd services directly. [Acceptance](docs/ACCEPTANCE.md), [test results](docs/TEST_RESULTS.md) and [work status](docs/STATUS.md) distinguish actual hardware tests, VM tests and untested requirements.
+Source, pinned component manifests and executable tests are included. Image assembly runs in an isolated **ARM64 Linux** builder; see [build instructions](docs/BUILD.md). macOS is used for development and flashing, not for running Linux systemd services directly. [Test results and remaining checks](docs/TESTING.md) and [release notes](docs/RELEASE_NOTES.md) distinguish actual hardware tests, VM tests and untested requirements.
 
 ## Licenses and credits
 

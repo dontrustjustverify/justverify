@@ -1,6 +1,0 @@
-Original development profile restored; unregistered version API kept stopped.
-Traceback (most recent call last):
-  File "/home/builder/justverify/tests/linux_version_api.py", line 30, in <module>
-    result=api({'method':'apply','token':preview['token']});assert result['phase']=='committed',result
-                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: {'error': 'target services failed readiness; recovering untouched prior data profile', 'phase': 'rolled_back', 'previous': None, 'target': {'binary': '/opt/justverify/versions/31.1/bitcoin-31.1/bin/bitcoind', 'binary_sha256': '1b279e038691c10e30d9c99a071ff967439020c4352e8ea3b156fb6b03751f83', 'instance': {'core_data': '/srv/justverify/data/instances/regtest/31.1/core', 'core_version': '31.1', 'electrs_data': '/srv/justverify/data/instances/regtest/31.1/electrs-0.11.1', 'electrs_version': '0.11.1', 'network': 'regtest'}, 'policy_file': '/srv/justverify/data/instances/regtest/31.1/managed.conf'}}

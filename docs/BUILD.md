@@ -27,4 +27,6 @@ Use an isolated ARM64 Debian 13 Linux machine with systemd, loop devices, root a
 
 6. Run image boot/reboot tests on a disposable copy with enough expansion space, then validate the image on the target Pi 5 and physical wallet devices. Do not distribute a booted test clone containing test identities. Package the pristine image with its manifest, checksums, signature, corresponding component source and exact test report.
 
-The short image filename is Pi5-only in this release. A successful build does not close the pending gates in `ACCEPTANCE.md`. Byte-for-byte reproducibility of the whole OS image is not currently claimed; apt package inventories and component/source hashes are recorded with the release.
+The short image filename is Pi5-only in this release. A successful build does not close the pending gates in [TESTING.md](TESTING.md). Byte-for-byte reproducibility of the whole OS image is not currently claimed; apt package inventories and component/source hashes are recorded with the release.
+
+Generated integration results belong in `docs/evidence/` and are ignored by Git. The published [test report](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-test-report.json) records the release validation; local development diaries are not part of the source distribution. Keep the tests when building or changing the node.

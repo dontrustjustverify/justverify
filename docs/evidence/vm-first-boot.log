@@ -1,5 +1,0 @@
-Warning: Permanently added '[127.0.0.1]:22222' (ED25519) to the list of known hosts.
-Linux justverify-dev 6.12.107+deb13-cloud-arm64 #1 SMP Debian 6.12.107-1 (2026-08-29) aarch64 GNU/Linux
-running
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/vda1        32G  670M   30G   3% /

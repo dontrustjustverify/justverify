@@ -1,4 +1,0 @@
-PASS authenticated Core JSON-RPC 1.0 root endpoint uses the same restricted gateway
-PASS root RPC denies anonymous/wallet/admin requests and preserves browser GET
-PASS persisted client authenticates after actual TLS server process restart
-PASS actual non-root PTY issuance/one-time hide/revoke cancel/revoke; real TLS Core query then denial; no plaintext credential persisted or logged

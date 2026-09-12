@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/jv-policy-api-test.py", line 17, in <module>
-    assert not api({'method':'state','command':'/bin/sh'})['ok']
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError

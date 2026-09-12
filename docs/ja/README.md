@@ -5,7 +5,7 @@
 
 自分で検証するBitcoin Coreノードです。NVMeにイメージを書き込み、Raspberry Pi 5を起動して **http://justverify.local** を開きます。端末風ダッシュボード、Tor、electrs、ローカルmempoolエクスプローラーを同梱しています。
 
-**0.1.0-beta1はテスト版です。** インストール前に[検証済み・未検証の項目](../ACCEPTANCE.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
+**0.1.0-beta1はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
 
 ## 主な機能
 
@@ -24,8 +24,8 @@
 
 ## ダウンロードとインストール
 
-1. このリポジトリの **Releases** に公開された `justverify-0.1.0-beta1.img.xz`、`justverify-0.1.0-beta1-SHA256SUMS`、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、`justverify-0.1.0-beta1-SHA256SUMS`と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
+1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1) に公開された [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz)、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
+2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
 3. **balenaEtcher**でイメージと対象NVMeを選択して書き込みます。利用中のEtcherが`.xz`を受け付けない場合は先に展開してください。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
@@ -55,6 +55,6 @@ Web管理者パスワードとSSHパスワードは別です。指定された�
 
 ## ビルド・検証・ライセンス
 
-イメージの組み立てには隔離した **ARM64 Linux** 環境を使用します。[ビルド手順](../BUILD.md)、[受け入れ基準](../ACCEPTANCE.md)、[テスト結果](../TEST_RESULTS.md)、[作業状況](../STATUS.md)を公開しています。
+イメージの組み立てには隔離した **ARM64 Linux** 環境を使用します。[ビルド手順](../BUILD.md)、[検証結果と未完了項目](../TESTING.md)、[リリース情報](../RELEASE_NOTES.md)を公開しています。
 
 JustVerifyと同梱コンポーネントにはそれぞれのライセンスが適用されます。[第三者の権利表示](../../THIRD_PARTY_NOTICES.md)をご覧ください。mempoolはupstreamのAGPL条件で別途同梱し、エクスプローラーの **ソース · AGPL** から原典、ビルド変更、ロックファイルを取得できます。Umbrelはガイド構成とアプリ統合の参考として調査し、コードやUI素材はコピーしていません。各upstreamプロジェクトによる公式製品や推奨を意味しません。

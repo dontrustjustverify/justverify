@@ -1,9 +1,0 @@
-{
-  "status": "PASS",
-  "checks": [
-    "actual GPG rejects modified signed checksum list",
-    "failed verification leaves installed binary intact",
-    "fixed privileged installer rejects altered executable",
-    "restored official files verify and install successfully"
-  ]
-}

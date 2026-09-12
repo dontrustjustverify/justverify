@@ -5,7 +5,7 @@
 
 내가 직접 검증하는 Bitcoin Core 노드입니다. NVMe에 이미지를 기록하고 Raspberry Pi 5를 켠 뒤 **http://justverify.local**을 여세요. 터미널 스타일의 대시보드, Tor, electrs와 로컬 mempool 탐색기가 함께 설치됩니다.
 
-**0.1.0-beta1은 시험 배포 버전입니다.** 설치 전에 [통과·미검증 항목](../ACCEPTANCE.md)을 확인하세요. 빌드나 regtest 성공이 mainnet 전체 인덱싱, 실제 휴대폰 지갑 연결, 장시간 안정성 검증을 뜻하지 않습니다.
+**0.1.0-beta1은 시험 배포 버전입니다.** 설치 전에 [통과·미검증 항목](../TESTING.md)을 확인하세요. 빌드나 regtest 성공이 mainnet 전체 인덱싱, 실제 휴대폰 지갑 연결, 장시간 안정성 검증을 뜻하지 않습니다.
 
 ## 포함 기능
 
@@ -24,8 +24,8 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 ## 다운로드와 설치
 
-1. 이 저장소의 **Releases**에 게시된 `justverify-0.1.0-beta1.img.xz`, `justverify-0.1.0-beta1-SHA256SUMS`, 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
-2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 `justverify-0.1.0-beta1-SHA256SUMS`와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
+1. 이 저장소의 [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1)에 게시된 [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
+2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
 3. **balenaEtcher**에서 이미지를 선택하고 지정한 NVMe에 기록하세요. 사용 중인 Etcher가 `.xz`를 받지 않으면 먼저 압축을 해제합니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
 4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
 5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.
@@ -55,6 +55,6 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 ## 빌드·검증·라이선스
 
-이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [빌드 방법](../BUILD.md), [인수 기준](../ACCEPTANCE.md), [시험 결과](../TEST_RESULTS.md), [현재 상태](../STATUS.md)를 함께 제공합니다.
+이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [빌드 방법](../BUILD.md), [검증 결과와 남은 항목](../TESTING.md), [릴리스 안내](../RELEASE_NOTES.md)를 함께 제공합니다.
 
 JustVerify와 각 구성요소에는 각각의 라이선스가 적용됩니다. [제3자 고지](../../THIRD_PARTY_NOTICES.md)를 확인하세요. mempool은 upstream AGPL 조건으로 별도 포함하며, 탐색기의 **소스 · AGPL**에서 원본 소스·빌드 수정·잠금 파일을 받을 수 있습니다. Umbrel은 설치 안내와 앱 구성 비교에 참고했으며 코드를 복사하지 않았습니다. 각 upstream 프로젝트의 공식 제품이나 승인을 의미하지 않습니다.
