@@ -89,3 +89,16 @@ main440886/966685, IBD=true였다. 이전 공개 testnet/RPC 기록은 유지하
 전체 OS byte 재현성과 공개 바이너리 배포의 전체 소스/고지 검토 등
 기존 S4 미완료 기준은 [ACCEPTANCE](ACCEPTANCE.md)를 따른다.
 따라서 전체 ‘정상작동 확인 완료’ 또는 최종 안정판이라고 주장하지 않는다.
+
+## 소스와 기존 검증 기록
+
+공개 소스: https://github.com/dontrustjustverify/justverify .
+영어 README와 한국어·일본어 README, 고정 카탈로그·실행 시험·라이선스 고지를
+함께 게시했다. 로컬 설치 이미지는 같은 beta1 manifest/체크섬/서명과 전달한다.
+전체 OS 바이너리의 공개 GitHub 배포는 아직 하지 않았다.
+
+이전 Core RPC 목록·실행 결과·미검증 사유는 [RPC_AUDIT](RPC_AUDIT.md),
+공개 testnet4 거래/동기화 기록은 [원본 증거](evidence/public-testnet4-audit.json),
+포크 관측은 [별도 기록](evidence/testnet4-fork-observation.json)에 보존한다.
+이번 새 멤풀 조합의 거래2개는 모두 격리 regtest이며 새 공개 testnet 거래로
+표시하지 않는다. 최신 새 이미지의 실제 Pi 설치·물리 지갑 검증은 남아 있다.

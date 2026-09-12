@@ -12,7 +12,7 @@
 | 네트워크 불일치 차단·프로필별 SQL 분리 | tests/mempool_profile_live.py | PASS, evidence/beta1-mempool-profile.json; Core 실제 chain 불일치 사전 차단 및 별도 SQL 데이터 보존 |
 | 설치 이미지 새 서비스·txindex 기본·실제 부팅 | image/verify-pi.sh, tests/image_boot_probe.py, image_data_probe.py | 파일·초기 등록·내장 멤풀 tip PASS; cold Tor onion timeout FAIL 유지, evidence/image-beta1-r3-boot.json |
 | 동일 이미지 복구와 실제 재부팅 | tests/image_recovery_probe.py, scripts/run_image_recovery.py | PASS2회: 같은 신원/UUID/tip/설정/멤풀 SQL와 실제 Tor RPC200·401/404. evidence/image-beta1-recovery.json; 새 Pi 실기 NOT RUN |
-| 영어/한국어/일본어 설치 README | README.md, docs/ko/README.md, docs/ja/README.md | 작성 완료. 새 저장소 생성 및 승인된 CLI 인증 완료, 소스 게시 준비 |
+| 영어/한국어/일본어 설치 README 및 GitHub 소스 | README.md, docs/ko/README.md, docs/ja/README.md; 비밀정보·상대 링크 검사 | PASS. dontrustjustverify/justverify 공개 main 게시, GitHub UI/API 확인. 이미지 공개 배포와 구분 |
 
 기존 dev16 실기 결과는 보존하지만 새 내장 mempool 이미지 검증을 대신하지 않는다.
 

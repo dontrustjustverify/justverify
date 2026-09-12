@@ -24,8 +24,8 @@
 
 ## ダウンロードとインストール
 
-1. このリポジトリの **Releases** に公開された `justverify-0.1.0-beta1.img.xz`、`SHA256SUMS`、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、`SHA256SUMS`と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
+1. このリポジトリの **Releases** に公開された `justverify-0.1.0-beta1.img.xz`、`justverify-0.1.0-beta1-SHA256SUMS`、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
+2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、`justverify-0.1.0-beta1-SHA256SUMS`と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
 3. **balenaEtcher**でイメージと対象NVMeを選択して書き込みます。利用中のEtcherが`.xz`を受け付けない場合は先に展開してください。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。

@@ -24,8 +24,8 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 ## 다운로드와 설치
 
-1. 이 저장소의 **Releases**에 게시된 `justverify-0.1.0-beta1.img.xz`, `SHA256SUMS`, 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
-2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 `SHA256SUMS`와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
+1. 이 저장소의 **Releases**에 게시된 `justverify-0.1.0-beta1.img.xz`, `justverify-0.1.0-beta1-SHA256SUMS`, 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
+2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 `justverify-0.1.0-beta1-SHA256SUMS`와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
 3. **balenaEtcher**에서 이미지를 선택하고 지정한 NVMe에 기록하세요. 사용 중인 Etcher가 `.xz`를 받지 않으면 먼저 압축을 해제합니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
 4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
 5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.

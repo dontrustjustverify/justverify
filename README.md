@@ -24,8 +24,8 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get `justverify-0.1.0-beta1.img.xz`, `SHA256SUMS`, its signature, the manifest and release notes from this repository's **Releases** page when published. Use only an artifact listed in that release's manifest.
-2. Check the download against `SHA256SUMS`. On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Get `justverify-0.1.0-beta1.img.xz`, `justverify-0.1.0-beta1-SHA256SUMS`, its signature, the manifest and release notes from this repository's **Releases** page when published. Use only an artifact listed in that release's manifest.
+2. Check the download against `justverify-0.1.0-beta1-SHA256SUMS`. On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. In **balenaEtcher**, select the `.img.xz`, select your intended NVMe, and flash. If your Etcher version does not accept the compressed file, extract it first. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
