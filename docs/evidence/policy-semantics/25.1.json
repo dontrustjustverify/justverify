@@ -1,0 +1,435 @@
+{
+  "status": "PASS",
+  "core": "/Satoshi:25.1.0/",
+  "binary_sha256": "55873211bdced92df8b513d00014766001c967789003c2ef9663a5938ae908a0",
+  "network": "regtest",
+  "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf",
+  "cases": [
+    {
+      "case": "OP_RETURN script exactly 42 bytes",
+      "allowed": true,
+      "txid": "1b48338adece7385a05577c9b3924ed4c188705737604d9567df6a82038df325",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "1",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "6cc082753b2fbd350e12b25421314ee8e504ed0e433f5ab00947aac19887b666",
+        "height": 202,
+        "confirmations": 12
+      }
+    },
+    {
+      "case": "OP_RETURN script 43 exceeds 42",
+      "allowed": false,
+      "txid": "2eb46b413780cabe28d9e3ce44f27cd1d6bc31804c1a86fdd77c448f66bfc60c",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "1",
+        "persistmempool": "1"
+      },
+      "reject_reason": "scriptpubkey",
+      "valid_block_accepted": true,
+      "final_block_observation": {
+        "blockhash": "7939e10c6a1c6885c8c05fcde41a86d636ca5b48601bfc9cd94476e69d23fb1f",
+        "height": 203,
+        "confirmations": 11
+      }
+    },
+    {
+      "case": "datacarrier disabled",
+      "allowed": false,
+      "txid": "4cb50e1425808078033232075283aa9a05886e56ac8cfc9b16a2924cf48c8732",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "0",
+        "datacarriersize": "42",
+        "permitbaremultisig": "1",
+        "persistmempool": "1"
+      },
+      "reject_reason": "scriptpubkey",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "multiple OP_RETURN within total budget",
+      "allowed": false,
+      "txid": "2cac3fc8451e1d8f560cda37efc9ccfaef4e44946aee80ea9b13451a87bcc26b",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "1",
+        "persistmempool": "1"
+      },
+      "reject_reason": "multi-op-return",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "bare multisig enabled",
+      "allowed": true,
+      "txid": "e73267f8b273a26af40c288a9915d05a1988d2d6c39dce7549fcf79688a634b0",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "1",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "2f52399adae891246341c7063147b2cb08069ba5379ed04efa131f87244121d5",
+        "height": 204,
+        "confirmations": 10
+      }
+    },
+    {
+      "case": "bare multisig disabled",
+      "allowed": false,
+      "txid": "8dddfc11ac7d5f99ebb72d7f3bdc42ed5588ab5137845f1b4b3c8f9ccf0e5b4a",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "reject_reason": "bare-multisig",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "P2WPKH dust 293 at 3 sat/vB",
+      "allowed": false,
+      "txid": "12129e4319c1a8337e5757617ba56adfbb1547d8f851a5e2158e12b1bf879994",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "reject_reason": "dust",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "P2WPKH dust boundary 294",
+      "allowed": true,
+      "txid": "ef93513d38558c2dbb48893595a008cbb2735d1f7d2c8691836938ca76fd1e44",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00003",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "3341ccdc81629f0890b7f545f8fcf75455ed72110c28b18e1633073b6baedacf",
+        "height": 205,
+        "confirmations": 9
+      }
+    },
+    {
+      "case": "P2WPKH dust 587 at 6 sat/vB",
+      "allowed": false,
+      "txid": "effe0844cda64d21a75a1b971c9530ac9536e5196128210164fef6394c3bdd08",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00006",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "reject_reason": "dust",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "P2WPKH dust boundary 588",
+      "allowed": true,
+      "txid": "f790f9b77d7dc0c63de9debede5c33800ec54b6bc0c8f550034bedb064be278b",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0.00006",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "2df0980cc61bdf30fb5494cdc3932e635463907ca1dedf1b90067b89f8bab0eb",
+        "height": 206,
+        "confirmations": 8
+      }
+    },
+    {
+      "case": "dust fee zero permits 1 sat",
+      "allowed": true,
+      "txid": "6720e53dae1da73d5e2a5540d636a58008d2480ce9daf7301bef86b31cdac5f0",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "2077eae5f3d55ea3607db6b5bdfd48788c0999e6c07bf80f1d058212880b5e3d",
+        "height": 207,
+        "confirmations": 7
+      }
+    },
+    {
+      "case": "5 sat/vB minimum rejects low fee",
+      "allowed": false,
+      "txid": "f11b35808b5c4ef8ed30640737fc75a7850d264e1c2ab975dfb6e4ddc020c553",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00005",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "reject_reason": "min relay fee not met",
+      "final_block_observation": {
+        "confirmations": 0,
+        "blockhash": null
+      }
+    },
+    {
+      "case": "5 sat/vB minimum accepts funded fee",
+      "allowed": true,
+      "txid": "2fc470410dc801f061697887982ff20a53d3194833c72884d4d14aa232961b04",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00005",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "0ecc90405cfa6388b0c2d4eae5af7b2ce4c3efe3968cba9fcb1b895f23a81183",
+        "height": 208,
+        "confirmations": 6
+      }
+    },
+    {
+      "case": "persistmempool stores real transaction",
+      "allowed": true,
+      "txid": "17cc11daae2b09f7e818e14488f1ba5c5b5ff25f7996389c96175962a992cf79",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1"
+      },
+      "final_block_observation": {
+        "blockhash": "5bcff1f814ad8955f213fe8ffd422b034142d77182f048b6bfec96712237e4b7",
+        "height": 209,
+        "confirmations": 5
+      }
+    },
+    {
+      "case": "persistmempool=1 restart",
+      "txid": "17cc11daae2b09f7e818e14488f1ba5c5b5ff25f7996389c96175962a992cf79",
+      "present": true,
+      "final_block_observation": {
+        "blockhash": "5bcff1f814ad8955f213fe8ffd422b034142d77182f048b6bfec96712237e4b7",
+        "height": 209,
+        "confirmations": 5
+      }
+    },
+    {
+      "case": "persistmempool=0 restart",
+      "txid": "17cc11daae2b09f7e818e14488f1ba5c5b5ff25f7996389c96175962a992cf79",
+      "present": false,
+      "final_block_observation": {
+        "blockhash": "5bcff1f814ad8955f213fe8ffd422b034142d77182f048b6bfec96712237e4b7",
+        "height": 209,
+        "confirmations": 5
+      }
+    },
+    {
+      "case": "block fee policy permits mempool",
+      "allowed": true,
+      "txid": "576717b0256975838e9e0c87bc60b3561ee90d9611ad8ccc1540d179c49538aa",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1",
+        "blockmintxfee": "0.001"
+      },
+      "final_block_observation": {
+        "blockhash": "3e5e203ced3f87a7c6042c2bdfd6227b777cca2618acf75cd93093414b78d4ef",
+        "height": 211,
+        "confirmations": 3
+      }
+    },
+    {
+      "case": "high blockmintxfee omits low-fee mempool tx",
+      "txid": "576717b0256975838e9e0c87bc60b3561ee90d9611ad8ccc1540d179c49538aa",
+      "final_block_observation": {
+        "blockhash": "3e5e203ced3f87a7c6042c2bdfd6227b777cca2618acf75cd93093414b78d4ef",
+        "height": 211,
+        "confirmations": 3
+      }
+    },
+    {
+      "case": "lower blockmintxfee mines retained tx",
+      "txid": "576717b0256975838e9e0c87bc60b3561ee90d9611ad8ccc1540d179c49538aa",
+      "final_block_observation": {
+        "blockhash": "3e5e203ced3f87a7c6042c2bdfd6227b777cca2618acf75cd93093414b78d4ef",
+        "height": 211,
+        "confirmations": 3
+      }
+    },
+    {
+      "case": "regtest standardness disabled permits otherwise rejected data",
+      "allowed": true,
+      "txid": "4485ee418db6702ecd0ea0acbb47c783dc7b95bfafc7d03d4e45d08da9578243",
+      "settings": {
+        "acceptnonstdtxn": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "0",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1",
+        "blockmintxfee": "0.00001"
+      },
+      "confirmed": true,
+      "final_block_observation": {
+        "blockhash": "31ce845d85e5a56ae3a92503cd6b8984b76bd1fdbbf8a581882e39ec1ae3260f",
+        "height": 212,
+        "confirmations": 2
+      }
+    },
+    {
+      "case": "expiry transaction initially present",
+      "allowed": true,
+      "txid": "0d1d9d2b365fa0cdc819ba021634b31f99db2189327d7d7384f4baf2dd059df9",
+      "settings": {
+        "acceptnonstdtxn": "0",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "dustrelayfee": "0",
+        "datacarrier": "1",
+        "datacarriersize": "42",
+        "permitbaremultisig": "0",
+        "persistmempool": "1",
+        "blockmintxfee": "0.00001",
+        "mempoolexpiry": "1"
+      },
+      "final_block_observation": {
+        "blockhash": "24263c7d2b5511f167a7237c8dc4b20f4bd92dcf6252379ed06b08a1f44a979b",
+        "height": 213,
+        "confirmations": 1
+      }
+    },
+    {
+      "case": "one-hour expiry excludes saved tx after two-hour clock advance without wallet reacceptance",
+      "txid": "0d1d9d2b365fa0cdc819ba021634b31f99db2189327d7d7384f4baf2dd059df9",
+      "final_block_observation": {
+        "blockhash": "24263c7d2b5511f167a7237c8dc4b20f4bd92dcf6252379ed06b08a1f44a979b",
+        "height": 213,
+        "confirmations": 1
+      }
+    },
+    {
+      "case": "5 MB pressure evicts lower fee and retains highest fee real signed transactions",
+      "submitted": 80,
+      "remaining": 54,
+      "usage": 4923920,
+      "maxmempool": 5000000,
+      "mempoolminfee": "0.00010430",
+      "first_txid": "72e713a1d38cb51cc7c8874583e0a6efd0f3dae9fbdffbe54d91eb89f3cf8289",
+      "last_txid": "0fcfc4317b6376128f4479b4f1fc7443643eae5ccf1cbe428a62c7a499251e8e"
+    }
+  ],
+  "height": 213,
+  "tip": "24263c7d2b5511f167a7237c8dc4b20f4bd92dcf6252379ed06b08a1f44a979b",
+  "not_run": [
+    "electrs in this policy-only test",
+    "all remaining policy semantics",
+    "public network propagation"
+  ],
+  "private_state": "/tmp/jv-policy-semantics-8a983v7l",
+  "confirmation_audit": {
+    "status": "PASS",
+    "source_sha256": "8853d41e1e5617b988f0f3c8e547badc739d543e34dca0f938e0be7c8276e904",
+    "wallets_disabled": true,
+    "mempool_loading_disabled": true,
+    "confirmed_distinct_txids": 11,
+    "tip": "24263c7d2b5511f167a7237c8dc4b20f4bd92dcf6252379ed06b08a1f44a979b"
+  }
+}

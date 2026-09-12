@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "core": "31.1",
+  "electrs": "0.11.1",
+  "electrs_commit": "35216c6d30148be8e6763d913d437330f431fc03",
+  "platform": "macOS arm64",
+  "height": 509,
+  "history_count": 306,
+  "checks": [
+    "real P2P/RPC indexing",
+    "Electrum headers",
+    "scripthash history",
+    "index restart persistence",
+    "Electrum broadcast accepted by Core",
+    "mempool scripthash sees transaction",
+    "confirmed transaction indexed"
+  ],
+  "not_run": [
+    "Tor remote wallet",
+    "mainnet full indexing"
+  ]
+}

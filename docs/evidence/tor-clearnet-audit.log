@@ -1,0 +1,1 @@
+{"status": "PASS", "core": "31.1", "network": "testnet4", "checks": ["actual IPv4 Bitcoin P2P version handshake", "effective proxy127.0.0.1:9050", "Core-owned established TCP socket to Tor9050", "no established nonloopback Core TCP connection"], "private_state": "/tmp/jv-clearnet-tor-7x783ufc"}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": [
+    "actual Core paused during restart",
+    "actual policy service SIGKILL after durable save",
+    "systemd automatically restarts policy service",
+    "TUI displays unfinished transaction",
+    "recovery Escape preserves transaction",
+    "confirmed TUI recovery restores prior settings and healthy Core"
+  ]
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "version": "22.0",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 5.97
+  },
+  {
+    "version": "22.1",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 7.03
+  },
+  {
+    "version": "23.0",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.18
+  },
+  {
+    "version": "23.1",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.02
+  },
+  {
+    "version": "23.2",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 7.77
+  },
+  {
+    "version": "24.0",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.56
+  },
+  {
+    "version": "24.0.1",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.67
+  },
+  {
+    "version": "24.1",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 7.89
+  },
+  {
+    "version": "24.2",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 7.96
+  },
+  {
+    "version": "25.0",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.34
+  },
+  {
+    "version": "25.1",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.14
+  },
+  {
+    "version": "25.2",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.31
+  },
+  {
+    "version": "26.0",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 7.94
+  },
+  {
+    "version": "26.1",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.83
+  },
+  {
+    "version": "26.2",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 11.34
+  },
+  {
+    "version": "27.0",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.75
+  },
+  {
+    "version": "27.1",
+    "status": "FAIL",
+    "error": "Unsafe archive entry",
+    "elapsed_seconds": 8.64
+  },
+  {
+    "version": "27.2",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.22
+  },
+  {
+    "version": "28.0",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.69
+  },
+  {
+    "version": "28.1",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.88
+  },
+  {
+    "version": "28.2",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.62
+  },
+  {
+    "version": "28.3",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 8.4
+  },
+  {
+    "version": "28.4",
+    "status": "FAIL",
+    "error": "Trusted release signature missing/invalid",
+    "elapsed_seconds": 9.09
+  }
+]

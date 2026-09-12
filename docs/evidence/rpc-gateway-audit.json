@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "core": "31.1",
+  "network": "regtest",
+  "core_success": {
+    "getblockchaininfo": 1,
+    "createwallet": 1,
+    "getnewaddress": 2,
+    "getaddressinfo": 1,
+    "generatetoaddress": 3,
+    "walletprocesspsbt": 1,
+    "getrawmempool": 1,
+    "getbestblockhash": 1,
+    "unloadwallet": 1
+  },
+  "gateway_outcomes": {
+    "getwalletinfo": {
+      "403": 4,
+      "200": 4,
+      "401": 1
+    },
+    "listwallets": {
+      "200": 2
+    },
+    "importdescriptors": {
+      "200": 4,
+      "403": 1
+    },
+    "getbalances": {
+      "200": 3
+    },
+    "listdescriptors": {
+      "200": 3,
+      "403": 1
+    },
+    "decodepsbt": {
+      "403": 1,
+      "200": 1
+    },
+    "walletcreatefundedpsbt": {
+      "403": 3,
+      "200": 2
+    },
+    "listunspent": {
+      "200": 3
+    },
+    "listlockunspent": {
+      "200": 6
+    },
+    "lockunspent": {
+      "403": 5,
+      "200": 3
+    },
+    "walletprocesspsbt": {
+      "403": 1,
+      "200": 1
+    },
+    "finalizepsbt": {
+      "200": 1
+    },
+    "testmempoolaccept": {
+      "200": 1
+    },
+    "sendrawtransaction": {
+      "200": 1,
+      "401": 1
+    },
+    "gettransaction": {
+      "200": 2
+    },
+    "getblockchaininfo": {
+      "200": 1
+    },
+    "getnetworkinfo": {
+      "200": 1
+    },
+    "getmempoolinfo": {
+      "200": 1
+    },
+    "getblockcount": {
+      "200": 1
+    },
+    "getblockhash": {
+      "200": 1
+    },
+    "getblockheader": {
+      "200": 1
+    },
+    "getblock": {
+      "200": 1
+    },
+    "getrawtransaction": {
+      "200": 1
+    },
+    "gettxout": {
+      "200": 1
+    },
+    "getrawmempool": {
+      "200": 1
+    },
+    "estimatesmartfee": {
+      "200": 1
+    },
+    "uptime": {
+      "200": 1
+    },
+    "getbalance": {
+      "200": 1
+    },
+    "listtransactions": {
+      "200": 1
+    },
+    "listsinceblock": {
+      "200": 1
+    },
+    "getaddressinfo": {
+      "200": 1
+    },
+    "listwalletdir": {
+      "200": 1
+    },
+    "createpsbt": {
+      "200": 2
+    },
+    "analyzepsbt": {
+      "200": 1
+    },
+    "combinepsbt": {
+      "200": 1
+    },
+    "joinpsbts": {
+      "200": 1
+    },
+    "decoderawtransaction": {
+      "200": 1
+    },
+    "createwallet": {
+      "403": 1
+    },
+    "importprivkey": {
+      "403": 1
+    },
+    "backupwallet": {
+      "403": 1
+    }
+  }
+}

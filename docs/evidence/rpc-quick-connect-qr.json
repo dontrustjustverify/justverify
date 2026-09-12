@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "format": "Fully Noded btcrpc Quick Connect",
+  "fully_noded_source_commit": "d0d1502eef2840c0457aa321b88cf606ee8b4650",
+  "decoded_exact": true,
+  "fields": [
+    "scheme",
+    "username",
+    "password",
+    "hostname",
+    "port",
+    "label"
+  ],
+  "quiet_zone_modules": 4,
+  "matrix_size": 61,
+  "payload_sha256": "f2a972e96d8f720e45e699829738b3d6447578e347320809c83de4e3eae74673",
+  "scope": "digital decoder and actual PTY module verification; phone camera/app import NOT RUN"
+}

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "classification": "EXPERIMENTAL_LOCAL_KEY",
+  "fingerprint": "705D2C55D7BAFACB3683EE18329759FF93A854DF",
+  "public_key": "docs/keys/justverify-experimental.asc",
+  "public_key_sha256": "da650018ad86f111bd4c5154bdd9a0e0444fa8394999024ca22dd2ae3a173dc3",
+  "purpose": "Local development bundle and update verification tests. Not an established public release trust identity.",
+  "private_key_distributed": false
+}

@@ -1,0 +1,1 @@
+{"status": "PASS", "core": "31.1", "network": "regtest", "checks": ["onion SOCKS effective RPC", "clearnet remains direct", "actual Tor SOCKS onion outbound Bitcoin P2P version handshake"], "private_state": "/tmp/jv-tor-outbound-i15yjud8"}

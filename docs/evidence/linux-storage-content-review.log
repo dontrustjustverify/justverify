@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "checks": [
+    "new project loop image backing identity verified",
+    "blank signature scan changes no bytes",
+    "stale identity rejected",
+    "real ext4 signature detected after test fixture formatting",
+    "ext4 scan changes no bytes",
+    "system device cannot enter provisioning review",
+    "read-only no-journal-replay inspection preserves entire filesystem bytes",
+    "existing content distinguished without exporting filenames"
+  ],
+  "probe": {
+    "device": {
+      "name": "/dev/loop1",
+      "type": "loop",
+      "fstype": "ext4",
+      "uuid": "dabf88e8-cc13-4699-84c7-9bd1435fa743",
+      "model": "",
+      "serial": "",
+      "wwn": "",
+      "tran": "",
+      "partuuid": "",
+      "maj:min": "7:1",
+      "size_bytes": 33554432,
+      "read_only": false,
+      "mountpoints": [],
+      "reason": "UNSUPPORTED_DEVICE_TYPE",
+      "review_action": "NONE",
+      "identity_digest": "9bd2f2dfdaf8a8ffddcec97414d058f74faa3cab606afb16433a4c1a59124d8f"
+    },
+    "signatures": [
+      {
+        "device": "loop1",
+        "offset": "0x438",
+        "type": "ext4",
+        "uuid": "dabf88e8-cc13-4699-84c7-9bd1435fa743",
+        "label": ""
+      }
+    ],
+    "filesystem": {
+      "UUID": "dabf88e8-cc13-4699-84c7-9bd1435fa743",
+      "VERSION": "1.0",
+      "TYPE": "ext4",
+      "USAGE": "filesystem"
+    },
+    "ambiguous": false,
+    "mutations_performed": false,
+    "review": "EXISTING_SIGNATURES_PRESERVE",
+    "scan_digest": "1846db73ecba6b8f6b8a552172dfaa4240382b8321c02e160d8426e3623eaa6f"
+  }
+}

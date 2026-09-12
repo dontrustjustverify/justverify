@@ -1,0 +1,27 @@
+[Unit]
+Description=JustVerify encrypted configuration backup and restore
+After=justverify-firstboot.service
+Requires=justverify-firstboot.service
+Before=justverify-core.service justverify-electrs.service justverify-manager.service justverify-policy.service justverify-versions.service justverify-tor.service justverify-web.service
+
+[Service]
+Type=notify
+NotifyAccess=main
+TimeoutStartSec=180
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /opt/justverify/scripts/backup_service.py
+RuntimeDirectory=justverify-backup
+RuntimeDirectoryMode=0755
+StateDirectory=justverify-backup
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=yes
+SystemCallArchitectures=native
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

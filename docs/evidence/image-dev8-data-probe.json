@@ -1,0 +1,46 @@
+{
+  "artifact_sha256": "13296d8e019a4f779a60d5aa2bcdb5c8bbb90b0c779ebf4c8843544edd47f8aa",
+  "scope": "Pristine dev8 copy with external Debian kernel/modules and test-only observer/VT decoder. Packaged production source unchanged. NOT Pi hardware or mobile app.",
+  "assertions_in_data_helper": [
+    "Core31.1 watch-only/regtest block1 and electrs height1",
+    "trusted device TLS Electrum header on50002 on both boots",
+    "assigned wallet private_keys_enabled=false, PSBT creation and coin-control routes",
+    "same UUID, wallet, Tor public identities and chain height after reboot"
+  ],
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "owner_client_issuance": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "first",
+      "status": "PASS"
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_permissions_verified": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "client_credentials_persisted": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "second",
+      "status": "PASS"
+    }
+  ]
+}

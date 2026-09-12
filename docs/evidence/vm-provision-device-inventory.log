@@ -1,0 +1,134 @@
+{
+  "status": "PASS",
+  "checks": [
+    "actual lsblk topology read",
+    "root backing disk and mounted boot partition protected",
+    "read-only seed disk protected",
+    "current data mount distinguished",
+    "fstab and mount table unchanged"
+  ],
+  "inventory": {
+    "devices": [
+      {
+        "name": "/dev/loop0",
+        "type": "loop",
+        "fstype": "ext4",
+        "uuid": "620bc08a-a022-420c-b34d-19b7d0b80894",
+        "model": "",
+        "serial": "",
+        "wwn": "",
+        "tran": "",
+        "partuuid": "",
+        "maj:min": "7:0",
+        "size_bytes": 4294967296,
+        "read_only": false,
+        "mountpoints": [
+          "/srv/justverify/data"
+        ],
+        "reason": "CURRENT_DATA_MOUNT",
+        "review_action": "NONE",
+        "identity_digest": "a5d1c140e6979d9211196544ca1f21a033b6a7c095398afc8dceca2741d4a4bf"
+      },
+      {
+        "name": "/dev/vda",
+        "type": "disk",
+        "fstype": "",
+        "uuid": "",
+        "model": "",
+        "serial": "JUSTVERIFY_TEST_DATA",
+        "wwn": "",
+        "tran": "virtio",
+        "partuuid": "",
+        "maj:min": "254:0",
+        "size_bytes": 2147483648,
+        "read_only": false,
+        "mountpoints": [],
+        "reason": "SIGNATURE_SCAN_AND_EXPLICIT_CONFIRMATION_REQUIRED",
+        "review_action": "REVIEW_NEW",
+        "identity_digest": "74f7c80a3a7987676c19e5b28c8f59acdfc525a4024983db198404bb87835271"
+      },
+      {
+        "name": "/dev/vdb",
+        "type": "disk",
+        "fstype": "",
+        "uuid": "",
+        "model": "",
+        "serial": "",
+        "wwn": "",
+        "tran": "virtio",
+        "partuuid": "",
+        "maj:min": "254:16",
+        "size_bytes": 34359738368,
+        "read_only": false,
+        "mountpoints": [],
+        "reason": "SYSTEM_DEVICE",
+        "review_action": "NONE",
+        "identity_digest": "90a200d6e7cc7d1bf672e2d28e3ef9e404bf6650dc4eea4c07ec0634a8a7c50e"
+      },
+      {
+        "name": "/dev/vdb1",
+        "type": "part",
+        "fstype": "ext4",
+        "uuid": "b8e5c376-4a4d-42eb-8746-a31bcd9a7445",
+        "model": "",
+        "serial": "",
+        "wwn": "",
+        "tran": "virtio",
+        "partuuid": "ebbbeccd-10a6-4969-a904-38f513e6d5ca",
+        "maj:min": "254:17",
+        "size_bytes": 34225503744,
+        "read_only": false,
+        "mountpoints": [
+          "/"
+        ],
+        "reason": "SYSTEM_DEVICE",
+        "review_action": "NONE",
+        "identity_digest": "bcaf242a166c50005489904c78fe7485ed7a76eb0a3f80ee55a77f5b262d33f4"
+      },
+      {
+        "name": "/dev/vdb15",
+        "type": "part",
+        "fstype": "vfat",
+        "uuid": "BE29-CFB6",
+        "model": "",
+        "serial": "",
+        "wwn": "",
+        "tran": "virtio",
+        "partuuid": "d32de0db-7304-47ef-a57a-b42cbb0f2356",
+        "maj:min": "254:31",
+        "size_bytes": 133169152,
+        "read_only": false,
+        "mountpoints": [
+          "/boot/efi"
+        ],
+        "reason": "SYSTEM_DEVICE",
+        "review_action": "NONE",
+        "identity_digest": "1218f08707ed1d78ba48dca810a513dcf4382b8bfa958ed4e08bffff96338e76"
+      },
+      {
+        "name": "/dev/vdc",
+        "type": "disk",
+        "fstype": "iso9660",
+        "uuid": "2026-09-12-00-11-50-00",
+        "model": "",
+        "serial": "",
+        "wwn": "",
+        "tran": "virtio",
+        "partuuid": "",
+        "maj:min": "254:32",
+        "size_bytes": 67584,
+        "read_only": true,
+        "mountpoints": [],
+        "reason": "READ_ONLY",
+        "review_action": "NONE",
+        "identity_digest": "0c975fc3c311e0e7e3a2ac5e312fb05b75820c6aa82b38402d495f234bec2a77"
+      }
+    ],
+    "mutations_performed": false,
+    "notice": "No disk is formatted or mounted by inventory. Revalidate identity and contents before any operation."
+  }
+}
+active
+active
+active
+active

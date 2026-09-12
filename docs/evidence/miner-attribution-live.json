@@ -1,0 +1,681 @@
+{
+  "source": "working tree leading to abfce56; matrix binary predates final formatting and backup help label adjustment",
+  "status": "PASS",
+  "scope": "miner attribution on real isolated Core, not full release acceptance",
+  "tests": [
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v31.1.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "606fffa09b546d01f7c38fe6e88feb69c00d679c387fc708cf74b42c3f24e92e",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206474,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "5858fe2aacd9bc3ca4d305d458740b793c367637956ed0a978e13e6f3c8c9de9",
+          "miner": {
+            "checked": 1789206476,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "1a56f79cd8805f3d6b0f1501b534522ded7ab55882c005f77ec8a53f713e02e3",
+          "miner": {
+            "checked": 1789206478,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "7bed675ffd073c4ef438f162b5368764b69f7c753992ab8c8bca1ab1c9f333e5"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v31.1.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "7009d0bbf5ae880399074b3e1e150a9293fcad052dfefd0b9b84e4dcdedd7b64",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206511,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "4d05b9254e3f3b91108a66ead99fe4ddf6f3ae7092f8b3c27755bf2c7b7296bc",
+          "miner": {
+            "checked": 1789206513,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "355b0a528b82b37796dca5ad20beafb2695db32b3c3f813d39994dce0c642bea",
+          "miner": {
+            "checked": 1789206515,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "5c146e601b2eadcdaee3dc9f0f0620765630f6ffabfc0d8b95d64227771cdf4d"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v22.0.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "0b10b4ffef4cbf2f9a1a7ab370241c5c8f04aadd29cacc7fcf2efb690618f864",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206570,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "3e5ab2f5b1c88bf1dfa04ddcc2d760c5a127b720f08d0b6c1c735251dd2c1026",
+          "miner": {
+            "checked": 1789206572,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "16145cf192d2c3ede4604ea1822e0bc69a640ef48e3b771fb12f3c24d160f6ae",
+          "miner": {
+            "checked": 1789206574,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "456805874c5fe60d4538632b0e47c41fa3c5294441fc87e4f1318fd6e278cfdc"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v23.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "7abf5a24c246db166f297cc89a6d98c845eb34eb2359a7a76f75222abf3791b8",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206579,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "54c66fd79241e9d55c406e108341c60896b0a91e48d2d0684cd2019740a186d7",
+          "miner": {
+            "checked": 1789206581,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "6752b9d287ae0a68cde924bc0cc02231499a72e7a10f66ce0a728a56f3dbef3c",
+          "miner": {
+            "checked": 1789206583,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "5a950858414128e0a413726061b47ddac6f18f9b86189e12ccc8dbf30ef60220"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v24.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "5549923aec8e8be77084a7c6bd30f757d6deaa534d1c540094d08c5c38a477ea",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206588,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "7447f3f389af8603fa94436e18f5795d39e2524ea7a6fa7df1be6cf408a6c932",
+          "miner": {
+            "checked": 1789206590,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "6e1ab9bde9d16e4d48ad2fefb8fb8e4c92c22d9dfb97e82fa54108a8faba5cdd",
+          "miner": {
+            "checked": 1789206592,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "2fcea3e06439aff67a2ba5980ea1b480b9d1b3e7783d1c26c59dd01ec0138997"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v25.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "7bc2144979e1fdc660d695398192e214cafcb91240afb0fe6430a5a01d20be7b",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206598,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "026466155c76d4e68d63eeeb98c2d7b27de2723352238dbe1b546f5aeb2cc78a",
+          "miner": {
+            "checked": 1789206600,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "60b78f5d92ea659156edfe63452344750277c43270208546ffefa1cb79f6db64",
+          "miner": {
+            "checked": 1789206602,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "74f9cebf60017eecccd2396156f38d83888526956ecea129e9972827d9dcb7d1"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v26.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "0e74e3763dd9ab05639c022acbfc4ffd70f6c9ca7b0f9f599cad68ae9765e973",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206607,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "6116971c5e6c753b4c2b5900db333f4fd7d8c2d8ddfcebf950fb1efd23db1a3b",
+          "miner": {
+            "checked": 1789206609,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "0f2e830f17533cf95b9fcd423885f074f5fff7dde6a89542ddfd50e43245925d",
+          "miner": {
+            "checked": 1789206611,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "1773aac7914af7decf75453d3a770b5ea1ce00aebc72c6dde7f1250978f3c576"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v27.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "10e3a513767e3084ee121a0b73addb89bf9556597790ffcc321b13a28dc3ca66",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206617,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "31857c51d658747c6bad15b539a7a4050da3e756fa8563c6e7bc0246e4b2038a",
+          "miner": {
+            "checked": 1789206619,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "41b9055f32b8aa3ba4d1b9ba867b1b4e3ba5f7dc48715d25bc086547c86ee1f8",
+          "miner": {
+            "checked": 1789206621,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "5419294b95e5741ed08ee4d532fea39b1cfdc4e5ae18dc9231931cc0648ae18b"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v28.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "506fcd1270779897a6689df53933937e8f9ee06ce4319d7f7429bb51814b7999",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206626,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "4a1a790def9483353e92a5693e7124ed6f490c0ecb8aaaad020c0b8ccca5f74a",
+          "miner": {
+            "checked": 1789206628,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "04a1fcd76dde779303bbd1dcf633cf7eebf0c5589cadaa0d654f1fa58ebe1a3e",
+          "miner": {
+            "checked": 1789206630,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "273b3a5a9be9013dc25bba49f0220afd6004599096bca08e69deeff32125886a"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v29.3.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "71340320ab0f140f6590545fcbc04c2f62d06229dfd250804019b0fb0925d5bf",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206636,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "19b1350524fc19ac7984cad58dafe7ab23c795f81de162123758b424f3d14d1a",
+          "miner": {
+            "checked": 1789206638,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "15be2afcadd1a679a35a102d0d505a194e19c6165009f40e004fcbbeb873c6cc",
+          "miner": {
+            "checked": 1789206640,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "6e1b70892ad4cb9451b7d0e3f16f5b84928894bf76f8c3a18c9a95bcb673220d"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v30.2.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "7236b4bd0063abc1116b80b228911a4fc41bb9e02aef8ba9bed98af15dab634a",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206645,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "419de0d5e41923e592d1f5064897001a1ddc164e1e904704957d00c852664ee7",
+          "miner": {
+            "checked": 1789206647,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "4325783fd06f901b5521786f3796223b85d1db19395746f0fe8e7be2c3981f48",
+          "miner": {
+            "checked": 1789206649,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "72f001c81e460d2cb6051c71d4607ecf53512dd541f415f3a1ffffdc936da487"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v31.1.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "0d7f164079d99c60335a32edb93b613910dda96d0676ed625c5cb615c8ebfa5d",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206655,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "6e91f8852e7111920cce1415754198e74134a5336eb4f5c7dfd9b0ede92a2b21",
+          "miner": {
+            "checked": 1789206657,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "700fcf28700c6067502cdcc07dbd25f68f005ca35168609d83e5a4b8876457a5",
+          "miner": {
+            "checked": 1789206659,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "70b788460e2e081685cfc4cee31a266feaa7f3e949c0ed93445ff787642b0cda"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v22.1.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "202d13af674e425d2de1e56b9138663c8f7c3936fe3bcdff056890ddb1a10648",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206765,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "4e2247c969ae5cd432461c10da7b41b1c57992eca9948fec49958d56edf87a9b",
+          "miner": {
+            "checked": 1789206767,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "3273b8d144ba4c0091bb7190ccf6a8aa518d0547ba08f40f3dd00699f7995b70",
+          "miner": {
+            "checked": 1789206769,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "06353d33cdb01f69589fd68db25dd810c5fc4442a7cdd996957775fbdce5f786"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v28.4.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "3eb5c0be4b0871c097ea6232ed574a19190396da796f463c5342982da887277e",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206774,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "1ae06ec346f659997fe81aeefb0e6a27d06dee22ad92de06fa7dbba5bd28aa87",
+          "miner": {
+            "checked": 1789206776,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "16db5ac229bfe78a7949ac947988b54040eeec138969555f6fb0e4d374d6dfb3",
+          "miner": {
+            "checked": 1789206778,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "4c4df5a675d38125c6d7430697d9426420595aaa59d8f62bce82077de6021e27"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v29.4.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "6af3687b712a1738667c1d29c58348ef1f40798623f9240f249d122cc5a47410",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206784,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "12205c5ea48131e4d648ced876ffa9c56e59233e13fc6e0e1218385336ec04ab",
+          "miner": {
+            "checked": 1789206786,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "1410af1f8e3e647e682e935970646e025ad7562720b192325113e243ab64b3df",
+          "miner": {
+            "checked": 1789206788,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "15e5afd17001ce36634d9ce37ea48fae79d763430bed63ce595c2d4dffff259f"
+    },
+    {
+      "status": "PASS",
+      "core": "Bitcoin Core RPC client version v30.3.0",
+      "network": "isolated regtest",
+      "txindex": false,
+      "checks": [
+        "actual tagged coinbase + valid proof of work + submitblock",
+        "unknown",
+        "ambiguous",
+        "unchanged tip cache",
+        "reorg miner reassignment"
+      ],
+      "blocks": [
+        {
+          "hash": "0efdd8fabcb941630d77231c27fa938c57141aeb10c5d69698c1a93b49503530",
+          "miner": {
+            "basis": [
+              "coinbase_tag"
+            ],
+            "checked": 1789206793,
+            "inferred": true,
+            "name": "Luxor",
+            "status": "identified"
+          }
+        },
+        {
+          "hash": "675f59a86b599e4c7b304a9d241e9a97771a9ea70cafb3dd4aa1727fa539a025",
+          "miner": {
+            "checked": 1789206795,
+            "status": "unknown"
+          }
+        },
+        {
+          "hash": "68c0cfa28d54f5782ee317213c12b894628b246cea4d55b92aa44a86c2505725",
+          "miner": {
+            "checked": 1789206797,
+            "status": "ambiguous"
+          }
+        }
+      ],
+      "reorg_tip": "417cfe9b5092473fc6e1692a99104bd647589fbd4185c04411fe382c1560477f"
+    }
+  ],
+  "matrix_arm64_binary_sha256": "00e057c6a18131eb7b278e6766c0c13adcfb9dd6bb3c23f60fc6f2ec7cffb64d",
+  "frozen_followup": "b3c5f5b exact-runtime source matches abfce56; actual Core31.1 miner_live repeated in image-build.log before packaging"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "scope": "fresh empty Cargo target on same Debian ARM64 builder, offline locked dependencies; independent OS and entire image not asserted",
+  "source_commit": "f9062ed",
+  "application_source_commit": "58ee499",
+  "command": "CARGO_TARGET_DIR=/home/builder/jv-repro-target-a cargo build --release --locked --offline -j2",
+  "rustc": "1.98.0 (88d9e12ae 2026-08-18)",
+  "existing_sha256": "09d80135fff859029ef73ab5ff90fc2c38c98ff7379dea90c290526aa8c17006",
+  "fresh_sha256": "09d80135fff859029ef73ab5ff90fc2c38c98ff7379dea90c290526aa8c17006",
+  "log": ".state/rust-clean-rebuild-a.log",
+  "log_sha256": "07a7b1903011fd7f745e645b710b1885448ffc2eec81660a9002fe1364516a9c"
+}

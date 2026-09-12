@@ -1,0 +1,43 @@
+{
+  "status": "PARTIAL",
+  "scope": "Separate real post-failure recovery and subsequent reboot, not a successful cold Tor startup",
+  "boots": [
+    {
+      "scope": "Existing disposable image after failed Tor boot probe; no factory identity reset",
+      "phase": "baseline_after_failure",
+      "checks": {
+        "existing_policy_core_indexes_electrs_tls_watch_only_psbt": true,
+        "http_login_refresh_favicon_device_preferences": true,
+        "actual_packaged_fixed_tui": true
+      },
+      "tor_bootstrap_percent": 100,
+      "tor_transport": {
+        "status": "BLOCKED",
+        "error": "TimeoutError"
+      },
+      "status": "PARTIAL"
+    },
+    {
+      "scope": "Existing disposable image after failed Tor boot probe; no factory identity reset",
+      "phase": "after_reboot",
+      "checks": {
+        "actual_reboot_same_identity_tip_wallet_uuid": true,
+        "existing_policy_core_indexes_electrs_tls_watch_only_psbt": true,
+        "http_login_refresh_favicon_device_preferences": true,
+        "actual_packaged_fixed_tui": true
+      },
+      "tor_bootstrap_percent": 100,
+      "tor_transport": {
+        "status": "BLOCKED",
+        "error": "TimeoutError"
+      },
+      "status": "PARTIAL"
+    }
+  ],
+  "independent_tor": {
+    "status": "BLOCKED",
+    "error": "TimeoutError",
+    "local_image_gateway": "PASS"
+  },
+  "cold_boot_failures_preserved": true
+}

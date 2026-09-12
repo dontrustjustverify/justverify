@@ -1,0 +1,11 @@
+{
+  "version":"31.1",
+  "network":"main",
+  "binary":"/opt/justverify/core/bin/bitcoind",
+  "catalog":"/opt/justverify/catalog",
+  "managed_config":"/var/lib/justverify/config/managed.conf",
+  "staging":"/var/lib/justverify/preflight",
+  "cookie":"/srv/justverify/data/core/.cookie",
+  "rpc_port":8332,
+  "p2p_backend_port":8335
+}

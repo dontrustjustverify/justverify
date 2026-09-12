@@ -1,0 +1,205 @@
+{
+  "status": "PASS",
+  "core": "31.0",
+  "network": "regtest",
+  "binary_sha256": "6f66822a44b4d4edd2a8ae1a11f63dd4db8d070e219c8eb54a3e2faa536409c2",
+  "test_sha256": "e6a460cb562ebeff90af206fb13dcaa676bf007354789a4b65b9e9838c835952",
+  "cases": [
+    {
+      "case": "limitclustercount parent",
+      "allowed": true,
+      "txid": "1fcdf426823e7479febc510f380460eb7138acaafb0e2901094684d0fa8ba7c9",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "2"
+      }
+    },
+    {
+      "case": "limitclustercount child",
+      "allowed": true,
+      "txid": "b1dd7df05f0b419dc17617a3722b3e789bb9cfe250290b2e0aafcbe1a5f98c93",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "2"
+      }
+    },
+    {
+      "case": "limitclustercount third rejected at 2",
+      "allowed": false,
+      "txid": "b681c6e2af9e91099a4c4b3693f37ff330f0a87f17d1698a6ffe28c215c2e352",
+      "reason": "too-large-cluster",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "2"
+      }
+    },
+    {
+      "case": "limitclustercount same third accepted at 3",
+      "allowed": true,
+      "txid": "b681c6e2af9e91099a4c4b3693f37ff330f0a87f17d1698a6ffe28c215c2e352",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "3"
+      }
+    },
+    {
+      "case": "limitclustersize parent",
+      "allowed": true,
+      "txid": "a9d01331212ac309c907e8f6cac946d0db6c366fe1348f29976e18137ff30569",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "1"
+      }
+    },
+    {
+      "case": "limitclustersize aggregate rejected at 1 kB",
+      "allowed": false,
+      "txid": "eb2047393481520b356b8d3132cc890d529fcf965ef9325b499877aa23935471",
+      "reason": "too-large-cluster",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "1"
+      }
+    },
+    {
+      "case": "limitclustersize same child accepted at 101 kB",
+      "allowed": true,
+      "txid": "eb2047393481520b356b8d3132cc890d529fcf965ef9325b499877aa23935471",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    },
+    {
+      "case": "non-signaling original",
+      "allowed": true,
+      "txid": "c09361a0e3f76eb7e4a87ccc143849fb688700484d373ba21865bb4edc760163",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    },
+    {
+      "case": "non-signaling replacement under selected RBF mode",
+      "allowed": true,
+      "txid": "607ebb3dc145098a5f36513a5d8c630dbe815899c9e8413432c4f1271e80604c",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    },
+    {
+      "case": "opt-in original",
+      "allowed": true,
+      "txid": "2f18de5dc9e5a0af49421f075866850d1c094d3d0370f837448c8425c0a22c63",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    },
+    {
+      "case": "replacement delta below 100 sat/vB incremental fee",
+      "allowed": false,
+      "txid": "eea5607812ed8b7a0345c11df07f2aaef31467a12d18edef8eb7311d5e82d2d3",
+      "reason": "insufficient fee",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    },
+    {
+      "case": "same replacement accepted with 1 sat/vB incremental fee",
+      "allowed": true,
+      "txid": "eea5607812ed8b7a0345c11df07f2aaef31467a12d18edef8eb7311d5e82d2d3",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitclustercount": "64",
+        "limitclustersize": "101"
+      }
+    }
+  ],
+  "height": 116,
+  "tip": "5971a21c3374b8eb5d0a295d7232ebae344053b3afa10696ee47d9efc7c25b04",
+  "private_state": "/tmp/jv-policy-topology-vag2qbv8",
+  "not_run": [
+    "remaining whitelist/private-broadcast/block-template limits",
+    "all input ranges",
+    "other networks"
+  ]
+}

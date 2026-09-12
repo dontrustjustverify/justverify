@@ -1,0 +1,22 @@
+{
+  "version": "3.3.1",
+  "commit": "9332d9db97bcc7beed079acc8f79aa21c9b12a3b",
+  "tag_object": "ce1f34a221fa0e1fc914947d5c0e0fe5b942ff11",
+  "repository": "https://github.com/mempool/mempool",
+  "license": "AGPL-3.0 (see upstream LICENSE and COPYING.md)",
+  "umbrel_apps_commit": "01de454ee9a368245a2513afc8e84969bafb946a",
+  "umbrel_readme_commit": "bfa79ed24031b0065dd2f810411d58b82af1b95e",
+  "mining_pools_commit": "f678a4a620537ad7997a475ad0f14bfab1de3c8b",
+  "mining_pools_sha256": "0491a15f88dbd7726f00b809b65f5fa86f4b072e44aefa93e4f3414a9a61aa90",
+  "node_debian": "20.19.2+dfsg-1+deb13u2",
+  "mariadb_debian": "1:11.8.6-0+deb13u1",
+  "locales": [
+    "en-US",
+    "ko",
+    "ja"
+  ],
+  "port": 3006,
+  "npm_build": "11.8.0",
+  "gbt_rust": "1.84.1",
+  "napi_cli": "2.18.0"
+}

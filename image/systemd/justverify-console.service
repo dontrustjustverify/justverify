@@ -1,0 +1,25 @@
+[Unit]
+Description=JustVerify physical ownership console and fixed TUI
+After=justverify-firstboot.service
+Conflicts=getty@tty1.service
+
+[Service]
+User=justverify
+Group=justverify
+ExecStart=/usr/bin/python3 /opt/justverify/scripts/owner_console.py
+StandardInput=tty
+StandardOutput=tty
+StandardError=journal
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

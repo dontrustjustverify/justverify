@@ -1,0 +1,17 @@
+[Unit]
+Description=Prepare local explorer storage for a registered node
+After=justverify-firstboot.service
+RequiresMountsFor=/srv/justverify/data
+ConditionPathIsMountPoint=/srv/justverify/data
+ConditionPathExists=/etc/justverify/node-ready.json
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
+ExecStart=/usr/bin/python3 -I /opt/justverify/scripts/mempool_data.py
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+ReadWritePaths=/srv/justverify/data
+UMask=0077

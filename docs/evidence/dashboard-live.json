@@ -1,0 +1,16 @@
+{
+  "core": "31.1",
+  "network": "isolated regtest",
+  "height": 9,
+  "tip": "04bab919b6e570ebd297a4e6a09a690beb51824690490baa0254756ce6c452bd",
+  "results": [
+    "linked six headers",
+    "new block refresh",
+    "invalidated tip removed after reorg",
+    "desktop/compact/mobile PTY",
+    "global menu navigation",
+    "Core stop stale flag"
+  ],
+  "pi5": "PASS unprivileged TUI, offline state, navigation; Core/electrs not configured",
+  "new_image_boot": "NOT RUN"
+}

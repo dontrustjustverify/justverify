@@ -1,0 +1,29 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+Wants=justverify-device.service
+After=justverify-device.service
+Description=JustVerify authenticated web terminal
+After=justverify-firstboot.service justverify-manager.service
+Requires=justverify-firstboot.service
+
+[Service]
+User=justverify
+Group=justverify
+WorkingDirectory=/opt/justverify
+ExecStart=/opt/justverify/venv/bin/python /opt/justverify/web/server.py --state /var/lib/justverify/web --binary /opt/justverify/bin/justverify --socket /run/justverify/manager.sock --origin https://justverify.local --listen 0.0.0.0 --port 443 --http-lan-port 80 --lan-onboarding
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/justverify/web
+Restart=on-failure
+RestartSec=3
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

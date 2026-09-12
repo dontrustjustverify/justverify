@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "check": "Tor SOCKS circuit to check.torproject.org",
+  "version": "0.4.9.12",
+  "scope": "not onion wallet integration"
+}

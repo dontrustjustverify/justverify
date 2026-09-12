@@ -1,0 +1,31 @@
+{
+  "version": "22.1",
+  "platform": "aarch64-linux-gnu",
+  "time": 1789144109.1452298,
+  "checks": [
+    {
+      "method": "getnetworkinfo",
+      "returncode": 0
+    },
+    {
+      "method": "getmempoolinfo",
+      "returncode": 0
+    },
+    {
+      "method": "getpeerinfo",
+      "returncode": 0
+    },
+    {
+      "method": "getnettotals",
+      "returncode": 0
+    },
+    {
+      "method": "getindexinfo",
+      "returncode": 0
+    }
+  ],
+  "status": "PASS",
+  "chain": "regtest",
+  "height": 0,
+  "binary_sha256": "db2bf3d820aa5fcb3f87343e636fab03d5983649473d1ac4d7442abfb832a83e"
+}

@@ -1,0 +1,67 @@
+{
+  "status": "FAIL",
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "owner_client_issuance": true,
+        "reviewed_remote_rpc_product_onion": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_sensitive_quick_connect_qr": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "first",
+      "status": "PASS"
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_permissions_verified": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "client_credentials_persisted": true
+      },
+      "boot": "second",
+      "status": "FAIL",
+      "error_type": "TimeoutError",
+      "error_frames": [
+        {
+          "file": "jv-image-boot-probe.py",
+          "line": 81,
+          "function": "probe"
+        },
+        {
+          "file": "threads.py",
+          "line": 25,
+          "function": "to_thread"
+        },
+        {
+          "file": "thread.py",
+          "line": 59,
+          "function": "run"
+        },
+        {
+          "file": "jv-onion-http.py",
+          "line": 17,
+          "function": "request"
+        },
+        {
+          "file": "jv-onion-http.py",
+          "line": 10,
+          "function": "read"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+DataDirectory /var/lib/justverify-tor
+SocksPort 127.0.0.1:9050
+SocksPolicy accept 127.0.0.1
+SocksPolicy reject *
+Log notice stdout
+HiddenServiceDir /var/lib/justverify-tor/p2p
+HiddenServiceVersion 3
+HiddenServicePort 8333 127.0.0.1:8334
+HiddenServiceDir /var/lib/justverify-tor/electrum
+HiddenServiceVersion 3
+HiddenServicePort 50001 127.0.0.1:50001
+HiddenServiceDir /var/lib/justverify-tor/rpc
+HiddenServiceVersion 3
+HiddenServicePort 8332 127.0.0.1:28443
+HiddenServiceDir /var/lib/justverify-tor/web
+HiddenServiceVersion 3
+HiddenServicePort 80 127.0.0.1:28444

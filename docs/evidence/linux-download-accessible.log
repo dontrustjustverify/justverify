@@ -1,0 +1,37 @@
+   Compiling justverify v0.1.0 (/home/builder/justverify)
+    Finished `release` profile [optimized] target(s) in 3.91s
+/etc/sudoers.d/justverify-install-core: parsed OK
+{
+  "status": "PASS",
+  "version": "23.2",
+  "checks": [
+    "fresh official archive download",
+    "pinned trusted signer and official checksum",
+    "fixed root installer binary hash match",
+    "background status stays responsive",
+    "concurrent download refused",
+    "withdrawn and arbitrary URL rejected",
+    "active services unchanged",
+    "downloaded binary passes real preflight"
+  ],
+  "download_evidence": {
+    "version": "23.2",
+    "arch": "aarch64-linux-gnu",
+    "url": "https://bitcoincore.org/bin/bitcoin-core-23.2/bitcoin-23.2-aarch64-linux-gnu.tar.gz",
+    "sha256": "160ce6ce7185faa0db242953b5f93b108835d3790d3ea9ac689f21a85250be35",
+    "signers": [
+      "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+      "152812300785C96444D3334D17565732E08E5E41",
+      "28E72909F1717FE9607754F8A7BEB2621678D37D",
+      "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+      "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+      "C060A6635913D98A3587D7DB1C2491FFEB0EF770",
+      "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+      "E777299FC265DD04793070EB944D35F9AC3DB76A",
+      "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+      "F4FC70F07310028424EFC20A8E4256593F177720"
+    ],
+    "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+    "status": "SIGNATURE_AND_CHECKSUM_PASS"
+  }
+}

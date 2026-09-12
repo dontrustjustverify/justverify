@@ -1,0 +1,26 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+Description=JustVerify shared node collector
+After=justverify-firstboot.service justverify-core.service
+
+[Service]
+User=justverify
+Group=justverify
+RuntimeDirectory=justverify
+RuntimeDirectoryMode=0700
+ExecStartPre=/usr/bin/rm -f /run/justverify/manager.sock
+ExecStart=/opt/justverify/bin/justverify daemon --cookie /srv/justverify/data/core/.cookie --rpc-port 8332 --socket /run/justverify/manager.sock
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

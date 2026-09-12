@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "network": "isolated regtest",
+  "checks": [
+    "mismatched actual Core chain rejected before SQL/data creation",
+    "valid regtest starts after profile correction",
+    "watch-only profile switch closes and reopens a separate SQL store; prior store retained",
+    "actual backend tip after profile switch"
+  ],
+  "height": 107,
+  "source": "aa2f561"
+}

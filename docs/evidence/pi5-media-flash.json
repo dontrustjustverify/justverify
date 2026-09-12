@@ -1,0 +1,21 @@
+{
+  "recorded_utc": "2026-09-12T05:37:41.095821+00:00",
+  "result": "PASS",
+  "tool": "balenaEtcher 2.1.6 GUI",
+  "device": {
+    "observed_device": "/dev/disk6",
+    "model": "GEIL RTL9210 Media",
+    "capacity_bytes": 2000398934016,
+    "logical_sector_bytes": 512,
+    "authorization": "User explicitly authorized erasing all existing partitions and data on this 2 TB NO NAME SSD"
+  },
+  "raw_image_sha256": "fe1354b691df8989bce5bd40594877200ed8745cd00f806d517a0a11fc219d95",
+  "raw_image_size": 9120514048,
+  "bytes_written": 3142582272,
+  "verification": "Etcher blockmapped read-back validation completed; successful=1 failed=0 errors=[]",
+  "gui": "Flash Completed! 1 Successful target",
+  "eject": "diskutil eject /dev/disk6 exit 0",
+  "first_attempt": "FAIL compressed image source/destination checksum mismatch; preserved privately",
+  "physical_pi5_boot": "NOT RUN",
+  "private_log": ".state/pi5-install/etcher-raw-retry-result.json"
+}

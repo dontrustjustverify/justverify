@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "source": "actual PTY module capture",
+  "decoded_exact": true,
+  "payload_sha256": "121f826590cf3ac965751c03d14a9dec45d2b13e8b9e90e07a1d4e5ff8da0775",
+  "scope": "digital decoder only; not phone camera or app import"
+}

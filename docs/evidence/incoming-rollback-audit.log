@@ -1,0 +1,2 @@
+PASS occupied onion backend: failed/incomplete Core startup refused; configuration rolled back and Core recovered
+PASS original policy restored after actual incoming failure injection

@@ -1,0 +1,262 @@
+[
+  {
+    "version": "22.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 3.2
+  },
+  {
+    "version": "22.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.68
+  },
+  {
+    "version": "23.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.73
+  },
+  {
+    "version": "23.1",
+    "platform": "aarch64-linux-gnu",
+    "time": 1789144011.209508,
+    "checks": [
+      {
+        "method": "getnetworkinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getmempoolinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getpeerinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getnettotals",
+        "returncode": 0
+      },
+      {
+        "method": "getindexinfo",
+        "returncode": 0
+      }
+    ],
+    "status": "PASS",
+    "chain": "regtest",
+    "height": 0,
+    "binary_sha256": "5e6ecc6bf0edccaae02bb3b1a8d8c72e6db17a0d57afc21fb4eaa32a265ded16",
+    "elapsed_seconds": 6.44
+  },
+  {
+    "version": "23.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.72
+  },
+  {
+    "version": "24.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.59
+  },
+  {
+    "version": "24.0.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.51
+  },
+  {
+    "version": "24.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.65
+  },
+  {
+    "version": "24.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.37
+  },
+  {
+    "version": "25.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.38
+  },
+  {
+    "version": "25.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.4
+  },
+  {
+    "version": "25.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.44
+  },
+  {
+    "version": "26.0",
+    "platform": "aarch64-linux-gnu",
+    "time": 1789144028.6566904,
+    "checks": [
+      {
+        "method": "getnetworkinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getmempoolinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getpeerinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getnettotals",
+        "returncode": 0
+      },
+      {
+        "method": "getindexinfo",
+        "returncode": 0
+      }
+    ],
+    "status": "PASS",
+    "chain": "regtest",
+    "height": 0,
+    "binary_sha256": "594ac91a084797f157862a37751b87630fa2a1cb50d30b9a9fdb94353c7dbf37",
+    "elapsed_seconds": 5.35
+  },
+  {
+    "version": "26.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.97
+  },
+  {
+    "version": "26.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.89
+  },
+  {
+    "version": "27.0",
+    "platform": "aarch64-linux-gnu",
+    "time": 1789144039.6952972,
+    "checks": [
+      {
+        "method": "getnetworkinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getmempoolinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getpeerinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getnettotals",
+        "returncode": 0
+      },
+      {
+        "method": "getindexinfo",
+        "returncode": 0
+      }
+    ],
+    "status": "PASS",
+    "chain": "regtest",
+    "height": 0,
+    "binary_sha256": "5e603d73b0e5d0f8d423cca71b5eec986c1ed6ebcbb507a468f72d59480a2b59",
+    "elapsed_seconds": 7.7
+  },
+  {
+    "version": "27.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.81
+  },
+  {
+    "version": "27.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 2.04
+  },
+  {
+    "version": "28.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.72
+  },
+  {
+    "version": "28.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.94
+  },
+  {
+    "version": "28.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.65
+  },
+  {
+    "version": "28.3",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 1.76
+  },
+  {
+    "version": "28.4",
+    "platform": "aarch64-linux-gnu",
+    "time": 1789144057.4149077,
+    "checks": [
+      {
+        "method": "getnetworkinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getmempoolinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getpeerinfo",
+        "returncode": 0
+      },
+      {
+        "method": "getnettotals",
+        "returncode": 0
+      },
+      {
+        "method": "getindexinfo",
+        "returncode": 0
+      }
+    ],
+    "status": "PASS",
+    "chain": "regtest",
+    "height": 0,
+    "binary_sha256": "b9998a14ce70efb1a930f746eda00b812dff834a915fbf7efcd8a54f5da17e1e",
+    "elapsed_seconds": 6.49
+  },
+  {
+    "version": "29.0",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 8.92
+  },
+  {
+    "version": "29.1",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 10.07
+  },
+  {
+    "version": "29.2",
+    "status": "FAIL",
+    "error": "Invalid signature present",
+    "elapsed_seconds": 9.89
+  }
+]

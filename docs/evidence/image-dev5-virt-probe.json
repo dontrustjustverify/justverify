@@ -1,0 +1,40 @@
+{
+  "artifact_sha256": "c97f8bf41e9cf589aa42c67a8f4118bbe8938e7d76461ae0afb7a4e129aa68b2",
+  "qemu": "11.1.1 virt/HVF; 3GiB; 2CPU",
+  "external_kernel": "6.12.107+deb13-cloud-arm64; matching initramfs and modules added only to disposable copy",
+  "results": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "packaged_tui_over_authenticated_websocket": true
+      },
+      "boot": "first",
+      "status": "PASS"
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "packaged_tui_over_authenticated_websocket": true
+      },
+      "boot": "second",
+      "status": "PASS"
+    }
+  ],
+  "not_verified": [
+    "packaged Pi kernel/firmware",
+    "physical media installation",
+    "Pi console hardware",
+    "mobile app/camera",
+    "registered data profile in this image boot probe"
+  ]
+}

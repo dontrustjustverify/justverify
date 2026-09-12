@@ -1,0 +1,30 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+Description=JustVerify Bitcoin Core
+After=network-online.target justverify-firstboot.service
+Wants=network-online.target
+RequiresMountsFor=/srv/justverify/data
+ConditionPathIsMountPoint=/srv/justverify/data
+
+ConditionPathExists=/etc/justverify/node-ready.json
+
+[Service]
+User=justverify
+Group=justverify
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
+ExecStart=/opt/justverify/core/bin/bitcoind -datadir=/srv/justverify/data/core -conf=/etc/justverify/bitcoin.conf
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=300
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/justverify/data/core
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

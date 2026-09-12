@@ -1,0 +1,9 @@
+{
+  "version": "0.11.1",
+  "commit": "35216c6d30148be8e6763d913d437330f431fc03",
+  "source_url": "https://codeload.github.com/romanz/electrs/tar.gz/35216c6d30148be8e6763d913d437330f431fc03",
+  "source_sha256": "194069bcfb400fe4646ebac044554153cba13a86ff350465b3985d37b46c6cbc",
+  "cargo_lock_sha256": "f058954adcdd118aaba921a5bae1fbc717b3bca64118c3efe6b2eb99af989257",
+  "tested_arm64_binary_sha256": "24bbc479bd0a19f4d1e564c79dacc68c2deb35683fa0adcd49de17fdee7316bf",
+  "binary_reproducibility": "NOT RUN"
+}

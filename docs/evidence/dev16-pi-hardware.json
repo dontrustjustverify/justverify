@@ -1,0 +1,297 @@
+{
+  "status": "PARTIAL_RELEASE_GATES_REMAIN",
+  "date_utc": "2026-09-12T12:50:06+00:00",
+  "device": "Raspberry Pi 5 Model B Rev 1.0",
+  "kernel": "6.18.34+rpt-rpi-2712",
+  "image": {
+    "name": "justverify-dev16-pi5-private.img",
+    "raw_bytes": 6444548096,
+    "sha256": "2e65e50b536c9fac6e48e8e63fcdff8b3d0d1dcfe891642bd54c87d9cbdecefe",
+    "assembly_commit": "b3c5f5b46d1a42042cfd675cc2130aa0bde4e449",
+    "app_sha256": "8cfa9b71ac44586ad7c10c846adfab2acd3631200efa11f0ff11d6b203c7fd1c",
+    "static_files_match": 13
+  },
+  "boot": {
+    "status": "PASS",
+    "data_volume_bytes": 1994492288512,
+    "data_uuid": "6c03c044-c89d-410e-9da9-5a48a8920d5e",
+    "initial_owner_registration": "Observed already complete; user password neither read nor changed",
+    "services_active": 14,
+    "ssh": {
+      "status": "PASS",
+      "scope": "Actual newly booted Pi5 dev16",
+      "root_public_key": "PASS",
+      "user_default_password": "PASS",
+      "host_key_pinned": true
+    },
+    "reboot": {
+      "status": "PASS",
+      "actual_boot_id_changed": true,
+      "ssh_recovery_seconds": 44.6,
+      "identity_config_files_unchanged": 14,
+      "uuid_unchanged": "6c03c044-c89d-410e-9da9-5a48a8920d5e",
+      "binary_static_bytes_unchanged": true,
+      "pre_reboot_height": 265712,
+      "post_reboot_height": 273501,
+      "prior_tip_remains_current_chain_ancestor": true,
+      "all_product_services_active": 14,
+      "tor_bootstrap_percent": 100,
+      "core_ibd": true,
+      "electrs": {
+        "height": null,
+        "port": 50001,
+        "state": "UNAVAILABLE"
+      },
+      "production_remote_preferences_unchanged": true
+    },
+    "console": {
+      "status": "PASS_PROCESS_ATTACHED_TO_TTY1",
+      "user": "justverify",
+      "exe": "/opt/justverify/bin/justverify",
+      "stdin": "/dev/tty1",
+      "stdout": "/dev/tty1",
+      "physical_display_photo": "NOT RUN",
+      "prior_observer_failure": "ps default USER column truncated the name to justver+; numeric UID and terminal fds are now checked directly"
+    }
+  },
+  "core_sync": {
+    "chain": "main",
+    "blocks": 303442,
+    "headers": 966678,
+    "bestblockhash": "00000000000000004b97a41f4ecca9de8829aa5045bdf86fa283ab6cdaf0f8f2",
+    "bits": "18692842",
+    "target": "0000000000000000692842000000000000000000000000000000000000000000",
+    "difficulty": 10455720138.48484,
+    "time": 1401523571,
+    "mediantime": 1401521484,
+    "verificationprogress": 0.0282788927829977,
+    "initialblockdownload": true,
+    "chainwork": "00000000000000000000000000000000000000000000776b95fa64c82169ccc0",
+    "size_on_disk": 22171140410,
+    "pruned": false,
+    "warnings": []
+  },
+  "core_connections": 10,
+  "mainnet_electrs": {
+    "status": "WAITING_CORE_IBD",
+    "process": "active",
+    "collector": {
+      "height": null,
+      "port": 50001,
+      "state": "UNAVAILABLE"
+    },
+    "full_indexing": "NOT RUN; IBD incomplete"
+  },
+  "tor": {
+    "bootstrap_percent": 100,
+    "p2p": {
+      "socks_reply": "05000001",
+      "connect_seconds": 4.975,
+      "peer_protocol_version": 70016,
+      "status": "PASS",
+      "scope": "Independent Tor to actual Pi mainnet P2P onion, version/verack/ping/pong; no wallet or transaction RPC",
+      "elapsed_seconds": 6.4
+    },
+    "p2p_after_reboot": {
+      "socks_reply": "05000001",
+      "connect_seconds": 14.857,
+      "peer_protocol_version": 70016,
+      "status": "PASS",
+      "scope": "Independent Tor to actual Pi mainnet P2P onion, version/verack/ping/pong; no wallet or transaction RPC",
+      "elapsed_seconds": 16.853
+    },
+    "rpc": {
+      "scope": "Independent builder Tor to newly booted actual Pi RPC onion; temporary node-read client/loopback gateway using unchanged packaged code, production remote preference remains disabled",
+      "checks": [
+        "authenticated Core getblockchaininfo over real onion",
+        {
+          "path": "/rpc",
+          "method": "getblockchaininfo",
+          "status": 401
+        },
+        {
+          "path": "/rpc",
+          "method": "getrpcinfo",
+          "status": 403
+        },
+        {
+          "path": "/login",
+          "method": "getblockchaininfo",
+          "status": 404
+        }
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "http": 200
+        }
+      ],
+      "height": 253745,
+      "ibd": true,
+      "status": "PASS",
+      "elapsed_seconds": 12.537
+    },
+    "scope": "RPC tested with temporary node-read account and unchanged packaged gateway on existing device onion; production remote setting remains disabled. Earlier VM failure remains separate."
+  },
+  "regtest_transaction": {
+    "status": "PASS",
+    "network": "isolated regtest",
+    "checks": [
+      "real wallet funding/creation/signature complete",
+      "testmempoolaccept allowed",
+      "Electrum broadcast reached Core mempool",
+      "unconfirmed Electrum history and receiver wallet",
+      "confirmations 0 -> 1 -> 2",
+      "Core/electrs height and tip match",
+      "receiver wallet confirmed balance",
+      "electrs restart preserves history"
+    ],
+    "core_version": "/Satoshi:31.1.0/",
+    "electrs_version": [
+      "electrs/0.11.1",
+      "1.4"
+    ],
+    "txid": "5c68bc124d2ab0edf21a739dc16d338b9181afe7f5974aaef899eca0db03ab73",
+    "confirmations": [
+      0,
+      1,
+      2
+    ],
+    "height": 103,
+    "core_tip": "66712609a2df6231e4405a57ae69235fb32f7ac0b22549cbd4dd35e3e01c68f1",
+    "electrs_tip_matches": true,
+    "receiver_confirmed_btc": "1.00000000",
+    "not_run": [
+      "public-network transaction",
+      "physical mobile wallet",
+      "mainnet full indexing"
+    ]
+  },
+  "regtest_after_hardware_reboot": {
+    "status": "PASS",
+    "network": "isolated regtest",
+    "scope": "Same test wallets/chain/electrs database reopened after actual Pi hardware reboot",
+    "height": 103,
+    "tip": "66712609a2df6231e4405a57ae69235fb32f7ac0b22549cbd4dd35e3e01c68f1",
+    "txid": "5c68bc124d2ab0edf21a739dc16d338b9181afe7f5974aaef899eca0db03ab73",
+    "confirmations": 2,
+    "receiver_confirmed_btc": "1.00000000",
+    "core_electrs_tip_match": true
+  },
+  "native_tui": {
+    "status": "PASS",
+    "user": "justverify",
+    "target": "actual Pi5 packaged TUI and live mainnet collector",
+    "screens": [
+      {
+        "columns": 120,
+        "rows": 40,
+        "live_core_summary": true,
+        "box_sections": true
+      },
+      {
+        "columns": 80,
+        "rows": 24,
+        "live_core_summary": true,
+        "box_sections": true
+      },
+      {
+        "columns": 42,
+        "rows": 24,
+        "live_core_summary": true,
+        "box_sections": true
+      }
+    ],
+    "clean_exit": true
+  },
+  "web": {
+    "status": "PASS_WEB_QR_TLS",
+    "checks": [
+      "authentication required",
+      "login and refresh session continuity",
+      "missing CSRF and foreign Origin blocked",
+      "actual mainnet collector data",
+      "actual fixed TUI over authenticated WebSocket",
+      "logout revokes session",
+      "production HTTP favicon bytes",
+      "plaintext HTTP RPC not exposed"
+    ],
+    "scope": "Installed Pi5 packaged web code under justverify, temporary loopback-only account, actual production collector/endpoints; production owner unchanged",
+    "qr": [
+      {
+        "network": "lan",
+        "payload_sha256": "121f826590cf3ac965751c03d14a9dec45d2b13e8b9e90e07a1d4e5ff8da0775",
+        "exact_digital_decode": true,
+        "service_active": true,
+        "backend_active": true
+      },
+      {
+        "network": "tor",
+        "payload_sha256": "20e807b8d89116fce91674e8e8818a346f25b7834c71fd8f324058a159d98a15",
+        "exact_digital_decode": true,
+        "service_active": true,
+        "backend_active": true
+      }
+    ],
+    "electrum_lan_tls": "PASS: hostname/certificate verified and matches QR",
+    "electrum_protocol": "NOT READY: Core IBD; no Electrum response yet",
+    "not_run": [
+      "mainnet electrs readiness",
+      "physical camera/mobile wallet",
+      "authenticated production owner session"
+    ]
+  },
+  "version_policy": {
+    "core": "31.1",
+    "releases_listed": 34,
+    "settings_listed": 43,
+    "negative_maxmempool": "Rejected with HTTP409",
+    "version_switch_on_this_new_pi": "NOT RUN; prior isolated matrix is unchanged",
+    "settings_mutation_on_mainnet": "Not performed"
+  },
+  "collector_fault_recovery": {
+    "status": "PASS",
+    "fault": "SIGKILL only the shared read-only collector",
+    "recovery_seconds": 4.81,
+    "collector_pid_changed": true,
+    "restart_count_increased_by_one": true,
+    "core_process_unchanged": true,
+    "fresh_rpc_sample": true,
+    "height": 290355,
+    "core_ibd": true,
+    "earlier_harness_failure": "First attempt read the fresh empty collector before its first sample; retry waits for the key and retains fresh sample/unchanged Core assertions."
+  },
+  "new_configuration_backup": {
+    "sha256": "e0cb4084c5baad54f37efae40a894b83b4752e0275e0e50ccac5849ad09c1334",
+    "bytes": 41063,
+    "files": 28,
+    "chain_data_included": false,
+    "status": "PASS",
+    "scope": "Actual new Pi configuration encrypted/decrypted and inspected; no restore applied"
+  },
+  "cleanup": {
+    "status": "PASS",
+    "temporary_web_account_removed_by_reboot": true,
+    "temporary_rpc_client_revoked_before_reboot": true,
+    "temporary_ports_closed": true,
+    "isolated_regtest_wallet_private_keys_removed": true,
+    "selected_test_logs_and_results_retained_on_mac": true,
+    "production_remote_rpc": "default disabled; unchanged"
+  },
+  "test_harness_failures_preserved": [
+    "SSH PTY exit wait did not drain output; fixed harness while preserving zero exit check.",
+    "UTF-8 decoder was reset mid-byte at resize; preserve incremental decoder across sizes.",
+    "Dedicated regtest directory creation denied by root-owned data mount; created narrow test-only parent owned by justverify.",
+    "Temporary web restart/readiness race caused connection reset; checked service ready before retry.",
+    "Collector recovery queried empty snapshot before first sample; wait for fresh RPC sample.",
+    "ps displayed truncated USER; verify numeric UID and tty file descriptors."
+  ],
+  "not_complete": [
+    "Mainnet IBD/electrs full tip agreement",
+    "Physical camera and mobile wallet connection",
+    "Actual HDMI screen appearance",
+    "24-hour operation after full sync",
+    "Remaining policy semantics/update-failure/new-volume-restore/reproducible OS release gates in ACCEPTANCE.md"
+  ],
+  "product_changes_this_turn": "None; new read-only and isolated regtest hardware test harnesses only. Signed image bundle unchanged."
+}

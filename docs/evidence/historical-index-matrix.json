@@ -1,0 +1,162 @@
+[
+  {
+    "version": "22.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/22.0.json"
+  },
+  {
+    "version": "22.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/22.1.json"
+  },
+  {
+    "version": "23.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/23.0.json"
+  },
+  {
+    "version": "23.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/23.1.json"
+  },
+  {
+    "version": "23.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/23.2.json"
+  },
+  {
+    "version": "24.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/24.0.json"
+  },
+  {
+    "version": "24.0.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/24.0.1.json"
+  },
+  {
+    "version": "24.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/24.1.json"
+  },
+  {
+    "version": "24.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/24.2.json"
+  },
+  {
+    "version": "25.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/25.0.json"
+  },
+  {
+    "version": "25.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/25.1.json"
+  },
+  {
+    "version": "25.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/25.2.json"
+  },
+  {
+    "version": "26.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/26.0.json"
+  },
+  {
+    "version": "26.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/26.1.json"
+  },
+  {
+    "version": "26.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/26.2.json"
+  },
+  {
+    "version": "27.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/27.0.json"
+  },
+  {
+    "version": "27.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/27.1.json"
+  },
+  {
+    "version": "27.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/27.2.json"
+  },
+  {
+    "version": "28.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/28.0.json"
+  },
+  {
+    "version": "28.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/28.1.json"
+  },
+  {
+    "version": "28.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/28.2.json"
+  },
+  {
+    "version": "28.3",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/28.3.json"
+  },
+  {
+    "version": "28.4",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/28.4.json"
+  },
+  {
+    "version": "29.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/29.0.json"
+  },
+  {
+    "version": "29.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/29.1.json"
+  },
+  {
+    "version": "29.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/29.2.json"
+  },
+  {
+    "version": "29.3",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/29.3.json"
+  },
+  {
+    "version": "29.4",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/29.4.json"
+  },
+  {
+    "version": "30.2",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/30.2.json"
+  },
+  {
+    "version": "30.3",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/30.3.json"
+  },
+  {
+    "version": "31.0",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/31.0.json"
+  },
+  {
+    "version": "31.1",
+    "status": "PASS",
+    "evidence": "docs/evidence/historical-index-matrix/31.1.json"
+  }
+]

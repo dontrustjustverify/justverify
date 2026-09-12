@@ -1,0 +1,361 @@
+{
+  "status": "PASS",
+  "core": "26.1",
+  "network": "regtest",
+  "binary_sha256": "c399a4467a108ca0b992a83224777fc629dcc1f0b7936a3b7aebbbd3d48c99d9",
+  "test_sha256": "e6a460cb562ebeff90af206fb13dcaa676bf007354789a4b65b9e9838c835952",
+  "cases": [
+    {
+      "case": "limitancestorcount parent",
+      "allowed": true,
+      "txid": "1882bf253aae7ae24915c64b97e0c30514797cdb5ae8d6f9ec81e8850ba29ade",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "2"
+      }
+    },
+    {
+      "case": "limitancestorcount child",
+      "allowed": true,
+      "txid": "cdd1e43f4ed2e4170878de81a7cb64af7ed0fbf1cbed7ff3174a45f763dd5501",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "2"
+      }
+    },
+    {
+      "case": "limitancestorcount third rejected at 2",
+      "allowed": false,
+      "txid": "3f63040e52050c512bfd805c68e1dd21c4d11a7d1be630b884af78198fcdb1fd",
+      "reason": "too-long-mempool-chain",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "2"
+      }
+    },
+    {
+      "case": "limitancestorcount same third accepted at 3",
+      "allowed": true,
+      "txid": "3f63040e52050c512bfd805c68e1dd21c4d11a7d1be630b884af78198fcdb1fd",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "3"
+      }
+    },
+    {
+      "case": "limitancestorsize parent",
+      "allowed": true,
+      "txid": "8512964b336f91238aabc5245e2d91a00c82ce485d9dff18372a34d407b041a9",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "1"
+      }
+    },
+    {
+      "case": "limitancestorsize aggregate rejected at 1 kB",
+      "allowed": false,
+      "txid": "ed753351186ca656d5232cb3cb168553e2081277cd191edf765024ac04c7b5f1",
+      "reason": "too-long-mempool-chain",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "1"
+      }
+    },
+    {
+      "case": "limitancestorsize same child accepted at 101 kB",
+      "allowed": true,
+      "txid": "ed753351186ca656d5232cb3cb168553e2081277cd191edf765024ac04c7b5f1",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101"
+      }
+    },
+    {
+      "case": "descendant parent",
+      "allowed": true,
+      "txid": "fd3ead0614ae43f5e2e29b42cc7bf94f2efc17616b2abef5da83c70954b3cffc",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "2"
+      }
+    },
+    {
+      "case": "first descendant",
+      "allowed": true,
+      "txid": "11b2723ba0ad124eeb13f1b41da884e138dac8a2a48bbfce08cdfd949e5f75ed",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "2"
+      }
+    },
+    {
+      "case": "second descendant exceeds count; larger than CPFP carve-out",
+      "allowed": false,
+      "txid": "8d8a89d929d78a31b5a4ad76b4f31a9748bf621054583aa513737b0911ad25d8",
+      "reason": "too-long-mempool-chain",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "2"
+      }
+    },
+    {
+      "case": "same second descendant accepted at 3",
+      "allowed": true,
+      "txid": "8d8a89d929d78a31b5a4ad76b4f31a9748bf621054583aa513737b0911ad25d8",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "3"
+      }
+    },
+    {
+      "case": "descendant-size parent",
+      "allowed": true,
+      "txid": "5769dc9971bdef34a021bacd06e9608f3e73d87fb75901fa12be4777e8f5344f",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "1"
+      }
+    },
+    {
+      "case": "descendant aggregate exceeds 1 kB without carve-out",
+      "allowed": false,
+      "txid": "a30e8f6f72a6559fde00b05f6080679a7407c7471657da447e0f2c7c11ce222f",
+      "reason": "too-long-mempool-chain",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "1"
+      }
+    },
+    {
+      "case": "same descendant accepted at 101 kB",
+      "allowed": true,
+      "txid": "a30e8f6f72a6559fde00b05f6080679a7407c7471657da447e0f2c7c11ce222f",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101"
+      }
+    },
+    {
+      "case": "non-signaling original",
+      "allowed": true,
+      "txid": "09d294a77082f279c09324298e49c9bbb975856ff6b600390828d0d51435c048",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "0"
+      }
+    },
+    {
+      "case": "non-signaling replacement under selected RBF mode",
+      "allowed": false,
+      "txid": "8f7df004e33484087c9688047195cb6b8ba14f25c8c1d7d6cdb66c9917be4438",
+      "reason": "txn-mempool-conflict",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "0"
+      }
+    },
+    {
+      "case": "same non-signaling replacement with full RBF enabled",
+      "allowed": true,
+      "txid": "8f7df004e33484087c9688047195cb6b8ba14f25c8c1d7d6cdb66c9917be4438",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "1"
+      }
+    },
+    {
+      "case": "opt-in original",
+      "allowed": true,
+      "txid": "a5b0d20f47783b22e28e09c26981f99ed86bfb4d1cc1149b2510983582681369",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "1"
+      }
+    },
+    {
+      "case": "replacement delta below 100 sat/vB incremental fee",
+      "allowed": false,
+      "txid": "bd78c397f68527450c90b4c67ca48949d7dfae699e8c108f342b445dfaaae32f",
+      "reason": "insufficient fee",
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "1"
+      }
+    },
+    {
+      "case": "same replacement accepted with 1 sat/vB incremental fee",
+      "allowed": true,
+      "txid": "bd78c397f68527450c90b4c67ca48949d7dfae699e8c108f342b445dfaaae32f",
+      "reason": null,
+      "options": {
+        "acceptnonstdtxn": "0",
+        "persistmempool": "1",
+        "minrelaytxfee": "0.00001",
+        "incrementalrelayfee": "0.00001",
+        "datacarriersize": "20000",
+        "maxmempool": "64",
+        "limitancestorcount": "25",
+        "limitancestorsize": "101",
+        "limitdescendantcount": "25",
+        "limitdescendantsize": "101",
+        "mempoolfullrbf": "1"
+      }
+    }
+  ],
+  "height": 118,
+  "tip": "376f5d10b7bb9079b583827b97e56591af7244647c37a2d8b3dc72e0b89a5b83",
+  "private_state": "/tmp/jv-policy-topology-cyr1vson",
+  "not_run": [
+    "remaining whitelist/private-broadcast/block-template limits",
+    "all input ranges",
+    "other networks"
+  ]
+}

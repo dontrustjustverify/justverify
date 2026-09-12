@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<title>JustVerify — BTC circle</title>
+<circle cx="32" cy="32" r="29.5" fill="#080d10" stroke="#FFB000" stroke-width="3"/>
+<path d="M10 19L10 45L17 45L22 41L22 36L18 32L10 32" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 19L17 19L21 22L21 28L18 32" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27 19L39 19" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M33 19L33 45" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 22L51 19L46 19L43 22L43 42L46 45L51 45L54 42" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

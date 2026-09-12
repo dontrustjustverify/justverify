@@ -1,0 +1,15 @@
+info: syncing channel updates for 1.98.0-aarch64-unknown-linux-gnu
+info: latest update on 2026-08-20 for version 1.98.0 (88d9e12ae 2026-08-18)
+info: downloading 2 components
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.1
+   Compiling cpufeatures v0.2.17
+   Compiling generic-array v0.14.7
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling sha2 v0.10.9
+   Compiling justverify v0.1.0 (/home/builder/justverify)
+    Finished `release` profile [optimized] target(s) in 6.57s
+/etc/sudoers.d/justverify-core: parsed OK
+Created symlink '/etc/systemd/system/multi-user.target.wants/justverify-policy.service' → '/etc/systemd/system/justverify-policy.service'.

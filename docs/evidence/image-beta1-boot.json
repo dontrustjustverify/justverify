@@ -1,0 +1,52 @@
+{
+  "status": "FAIL",
+  "environment": "QEMU virt, external Debian kernel; not Pi firmware or physical hardware",
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 13.337053125,
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "packaged_lan_login_session_favicon_device_settings": true
+      },
+      "boot": "first",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "tor_diagnostics": {
+        "warnings": 0,
+        "errors": 0,
+        "bootstrap_complete": false
+      },
+      "error_frames": [
+        {
+          "file": "jv-image-boot-probe.py",
+          "line": 74,
+          "function": "probe"
+        },
+        {
+          "file": "jv-image-data-probe.py",
+          "line": 48,
+          "function": "configure"
+        },
+        {
+          "file": "jv-image-data-probe.py",
+          "line": 10,
+          "function": "version"
+        }
+      ],
+      "boot_elapsed_seconds": 11.387155
+    }
+  ],
+  "private_image": ".state/vm/probe-beta1-final.img",
+  "private_data": "None",
+  "original_disk_bytes": 6444548096,
+  "boot_disk_bytes": 12884901888,
+  "console_log": ".state/release-beta1/image-boot-console.log",
+  "observer_sha256": "4055c3e4a535449e63bfb6d3240a610985906ca3f49fc98ebb062dad649f2798"
+}

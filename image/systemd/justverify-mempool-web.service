@@ -1,0 +1,21 @@
+[Unit]
+Description=JustVerify local mempool explorer on port 3006
+After=network-online.target justverify-firstboot.service
+Wants=network-online.target
+
+[Service]
+User=justverify
+Group=justverify
+ExecStart=/opt/justverify/venv/bin/python /opt/justverify/web/mempool_proxy.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+InaccessiblePaths=/srv/justverify/data /var/lib/justverify/web /var/lib/tor /var/lib/justverify-tor /root
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

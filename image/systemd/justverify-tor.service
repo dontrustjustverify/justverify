@@ -1,0 +1,29 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+Description=JustVerify Tor circuit and separate P2P/Electrum/RPC onions
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+User=debian-tor
+Group=debian-tor
+StateDirectory=justverify-tor
+StateDirectoryMode=0700
+RuntimeDirectory=justverify-tor
+RuntimeDirectoryMode=0755
+ExecStart=/usr/bin/tor --RunAsDaemon 0 -f /etc/justverify/torrc
+ExecStartPost=/usr/bin/python3 /opt/justverify/scripts/publish_onions.py
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

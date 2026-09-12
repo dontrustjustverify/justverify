@@ -1,0 +1,13 @@
+{
+  "version": "24.2",
+  "arch": "aarch64-linux-gnu",
+  "url": "https://bitcoincore.org/bin/bitcoin-core-24.2/bitcoin-24.2-aarch64-linux-gnu.tar.gz",
+  "sha256": "6842e974adb8b88fd929013a0881172acab1ba86fb9114cee8ff0ca1c6daa7c8",
+  "signers": [
+    "71A3B16735405025D447E8F274810B012346C9A6",
+    "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+    "F4FC70F07310028424EFC20A8E4256593F177720"
+  ],
+  "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+  "status": "SIGNATURE_AND_CHECKSUM_PASS"
+}

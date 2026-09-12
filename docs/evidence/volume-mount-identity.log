@@ -1,0 +1,2 @@
+PASS real newly formatted ext4 mount UUID visible to root and justverify after descriptor closes, before reboot
+Preserved isolated fixture: /var/tmp/jv-mount-identity-jb67gc_7

@@ -1,0 +1,32 @@
+[
+  {
+    "repo": "raspberrypi/documentation",
+    "commit": "5e2c40fe1125bb8ff7374de2c11c94761084eb1f",
+    "path": "documentation/asciidoc/computers/config_txt/autoboot.adoc",
+    "url": "https://raw.githubusercontent.com/raspberrypi/documentation/5e2c40fe1125bb8ff7374de2c11c94761084eb1f/documentation/asciidoc/computers/config_txt/autoboot.adoc"
+  },
+  {
+    "repo": "raspberrypi/rpi-system-update",
+    "commit": "a5b32dad7579e949e77ef95edcfa1a7df8773274",
+    "path": "rpi-system-update",
+    "url": "https://raw.githubusercontent.com/raspberrypi/rpi-system-update/a5b32dad7579e949e77ef95edcfa1a7df8773274/rpi-system-update"
+  },
+  {
+    "repo": "raspberrypi/rpi-system-update",
+    "commit": "a5b32dad7579e949e77ef95edcfa1a7df8773274",
+    "path": "README.md",
+    "url": "https://raw.githubusercontent.com/raspberrypi/rpi-system-update/a5b32dad7579e949e77ef95edcfa1a7df8773274/README.md"
+  },
+  {
+    "repo": "raspberrypi/rpi-system-update",
+    "commit": "a5b32dad7579e949e77ef95edcfa1a7df8773274",
+    "path": "LICENSE",
+    "url": "https://raw.githubusercontent.com/raspberrypi/rpi-system-update/a5b32dad7579e949e77ef95edcfa1a7df8773274/LICENSE"
+  },
+  {
+    "repo": "raspberrypi/rpi-eeprom",
+    "commit": "279e8b86fd038f026a8daad1223305a15a7d1f2b",
+    "path": "firmware-2712/release-notes.md",
+    "url": "https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/279e8b86fd038f026a8daad1223305a15a7d1f2b/firmware-2712/release-notes.md"
+  }
+]

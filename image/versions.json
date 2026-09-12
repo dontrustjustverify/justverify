@@ -1,0 +1,6 @@
+{
+  "catalog":"/opt/justverify/catalog",
+  "binaries":"/opt/justverify/versions",
+  "data":"/srv/justverify/data/instances",
+  "state":"/var/lib/justverify/versions"
+}

@@ -1,0 +1,206 @@
+[
+  {
+    "version": "22.0",
+    "commit": "a0988140b71485ad12c3c3a4a9573f7c21b1eff8",
+    "source": "https://github.com/bitcoin/bitcoin/tree/a0988140b71485ad12c3c3a4a9573f7c21b1eff8",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "22.1",
+    "commit": "6fd35e2cb18d325221644a33b058c109aed3e767",
+    "source": "https://github.com/bitcoin/bitcoin/tree/6fd35e2cb18d325221644a33b058c109aed3e767",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "23.0",
+    "commit": "fcf6c8f4eb217763545ede1766831a6b93f583bd",
+    "source": "https://github.com/bitcoin/bitcoin/tree/fcf6c8f4eb217763545ede1766831a6b93f583bd",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "23.1",
+    "commit": "ffef91a5c18a6c369cf2deb70dd490d23ee62099",
+    "source": "https://github.com/bitcoin/bitcoin/tree/ffef91a5c18a6c369cf2deb70dd490d23ee62099",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "23.2",
+    "commit": "4d2f2fae9782a4736c2e271f5d6107b677f2e14d",
+    "source": "https://github.com/bitcoin/bitcoin/tree/4d2f2fae9782a4736c2e271f5d6107b677f2e14d",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "24.0",
+    "commit": "dd314fe0c2f64818d2789955a8ceef50d3d6597d",
+    "source": "https://github.com/bitcoin/bitcoin/tree/dd314fe0c2f64818d2789955a8ceef50d3d6597d",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "24.0.1",
+    "commit": "b3f866a8dfd652b6339b79124843e58bd0bf3013",
+    "source": "https://github.com/bitcoin/bitcoin/tree/b3f866a8dfd652b6339b79124843e58bd0bf3013",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "24.1",
+    "commit": "3116ccd790e76de8f64d2ef9aa5a2641c15bbd8b",
+    "source": "https://github.com/bitcoin/bitcoin/tree/3116ccd790e76de8f64d2ef9aa5a2641c15bbd8b",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "24.2",
+    "commit": "d3a352256064d62a3e2e2d054ffa0faecb49dd71",
+    "source": "https://github.com/bitcoin/bitcoin/tree/d3a352256064d62a3e2e2d054ffa0faecb49dd71",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "25.0",
+    "commit": "8105bce5b384c72cf08b25b7c5343622754e7337",
+    "source": "https://github.com/bitcoin/bitcoin/tree/8105bce5b384c72cf08b25b7c5343622754e7337",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "25.1",
+    "commit": "7da4ae1f78ab4f6c8b19c8ca89bd6b2a6c4836ea",
+    "source": "https://github.com/bitcoin/bitcoin/tree/7da4ae1f78ab4f6c8b19c8ca89bd6b2a6c4836ea",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "25.2",
+    "commit": "62c22dd679ba479e56c133b126174234d91bc857",
+    "source": "https://github.com/bitcoin/bitcoin/tree/62c22dd679ba479e56c133b126174234d91bc857",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "26.0",
+    "commit": "44d8b13c81e5276eb610c99f227a4d090cc532f6",
+    "source": "https://github.com/bitcoin/bitcoin/tree/44d8b13c81e5276eb610c99f227a4d090cc532f6",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "26.1",
+    "commit": "0b4aa31c34b239ec7da36760a2670792184c3ba8",
+    "source": "https://github.com/bitcoin/bitcoin/tree/0b4aa31c34b239ec7da36760a2670792184c3ba8",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "26.2",
+    "commit": "7b7041019ba5e7df7bde1416aa6916414a04f3db",
+    "source": "https://github.com/bitcoin/bitcoin/tree/7b7041019ba5e7df7bde1416aa6916414a04f3db",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "27.0",
+    "commit": "d82283950f5ff3b2116e705f931c6e89e5fdd0be",
+    "source": "https://github.com/bitcoin/bitcoin/tree/d82283950f5ff3b2116e705f931c6e89e5fdd0be",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "27.1",
+    "commit": "1088a98f5aad080cc6cca2da174f206509fcda6c",
+    "source": "https://github.com/bitcoin/bitcoin/tree/1088a98f5aad080cc6cca2da174f206509fcda6c",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "27.2",
+    "commit": "bf03c458e994abab9be85486ed8a6d8813313579",
+    "source": "https://github.com/bitcoin/bitcoin/tree/bf03c458e994abab9be85486ed8a6d8813313579",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "28.0",
+    "commit": "110183746150428e6385880c79f8c5733b1361ba",
+    "source": "https://github.com/bitcoin/bitcoin/tree/110183746150428e6385880c79f8c5733b1361ba",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "28.1",
+    "commit": "32efe850438ef22e2de39e562af557872a402c31",
+    "source": "https://github.com/bitcoin/bitcoin/tree/32efe850438ef22e2de39e562af557872a402c31",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "28.2",
+    "commit": "e44d72b6480acb356f0a4793a76a5e2bc4e4118d",
+    "source": "https://github.com/bitcoin/bitcoin/tree/e44d72b6480acb356f0a4793a76a5e2bc4e4118d",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "28.3",
+    "commit": "ad8b23e589096776332ddae11878be03297ec04c",
+    "source": "https://github.com/bitcoin/bitcoin/tree/ad8b23e589096776332ddae11878be03297ec04c",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "28.4",
+    "commit": "b110304705e1e1f97c88c4bb1455ab03c909450a",
+    "source": "https://github.com/bitcoin/bitcoin/tree/b110304705e1e1f97c88c4bb1455ab03c909450a",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "29.0",
+    "commit": "f490f5562d4b20857ef8d042c050763795fd43da",
+    "source": "https://github.com/bitcoin/bitcoin/tree/f490f5562d4b20857ef8d042c050763795fd43da",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "29.1",
+    "commit": "fd784f277427aea7b25a8cdcd328b18a9fa64c0d",
+    "source": "https://github.com/bitcoin/bitcoin/tree/fd784f277427aea7b25a8cdcd328b18a9fa64c0d",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "29.2",
+    "commit": "2d6426c296ea43e62980d87d94fde0e94318a341",
+    "source": "https://github.com/bitcoin/bitcoin/tree/2d6426c296ea43e62980d87d94fde0e94318a341",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "29.3",
+    "commit": "99003bed87333f1be51bf3070235591b3a72f007",
+    "source": "https://github.com/bitcoin/bitcoin/tree/99003bed87333f1be51bf3070235591b3a72f007",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "29.4",
+    "commit": "3fc0865963a38b871e9f7d94e6151c4953563516",
+    "source": "https://github.com/bitcoin/bitcoin/tree/3fc0865963a38b871e9f7d94e6151c4953563516",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "30.0",
+    "commit": "d0f6d9953a15d7c7111d46dcb76ab2bb18e5dee3",
+    "source": "https://github.com/bitcoin/bitcoin/tree/d0f6d9953a15d7c7111d46dcb76ab2bb18e5dee3",
+    "binary_verification": "FAIL"
+  },
+  {
+    "version": "30.1",
+    "commit": "dd47caee822b0154b573b6c4627eedaa133330fe",
+    "source": "https://github.com/bitcoin/bitcoin/tree/dd47caee822b0154b573b6c4627eedaa133330fe",
+    "binary_verification": "FAIL"
+  },
+  {
+    "version": "30.2",
+    "commit": "4d7d5f6b79d4c11c47e7a828d81296918fd11d4d",
+    "source": "https://github.com/bitcoin/bitcoin/tree/4d7d5f6b79d4c11c47e7a828d81296918fd11d4d",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "30.3",
+    "commit": "49faec4f87f5cd19c88db01a82e5c68b087c8227",
+    "source": "https://github.com/bitcoin/bitcoin/tree/49faec4f87f5cd19c88db01a82e5c68b087c8227",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "31.0",
+    "commit": "6574cb40869b96b9ffc79c19dc8f4e467d60f321",
+    "source": "https://github.com/bitcoin/bitcoin/tree/6574cb40869b96b9ffc79c19dc8f4e467d60f321",
+    "binary_verification": "PASS"
+  },
+  {
+    "version": "31.1",
+    "commit": "9be056a8a72b624dae9623b2f7bded92c2a21c91",
+    "source": "https://github.com/bitcoin/bitcoin/tree/9be056a8a72b624dae9623b2f7bded92c2a21c91",
+    "binary_verification": "PASS"
+  }
+]

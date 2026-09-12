@@ -1,0 +1,101 @@
+{
+  "scope": "source audit only; installed mobile applications and camera pairing NOT RUN",
+  "targets": [
+    {
+      "repository": "nunchuk-io/nunchuk-android",
+      "source_commit": "1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22",
+      "latest_release_tag_observed": "android.2.8.5",
+      "release_url": "https://github.com/nunchuk-io/nunchuk-android/releases/tag/android.2.8.5",
+      "files": [
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/SelectElectrumServerActivity.kt",
+          "sha256": "5e0ca93ac6abcdfc2bb3b9e218517c4dbf11c6d97caccd7b91769b2440e50bf1",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/SelectElectrumServerActivity.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingFragment.kt",
+          "sha256": "44ed1f16ab536d18bc2f71bbbf0e83717cd5b5ea94882cfef7bd4eaeea138d05",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingFragment.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerViewModel.kt",
+          "sha256": "fdaea6f74be6f5b40d90cea8cd822e84d31c3bd5fa967cfdf5d5d98ec1faa8fa",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerViewModel.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/ProxySettingViewModel.kt",
+          "sha256": "8069eeddd1a77f9818f091822eca966fee8b57028d8bd3dafb73997aa1ffc97e",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/ProxySettingViewModel.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/SelectElectrumServerViewModel.kt",
+          "sha256": "c74484b25473b71327dae58c060dc4b637e93332efa2e5d26fdfb216cfc477e5",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/SelectElectrumServerViewModel.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerBottomSheet.kt",
+          "sha256": "637225945aca34a29c26f6e85fd86aaee9fdf66b0c5dc4e9888cf4659d6ec720",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerBottomSheet.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingViewModel.kt",
+          "sha256": "d2add3f16ccb13073f1b66da5f5e909efed4c82516bb1de71c7d85281e54a3c1",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingViewModel.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingEvent.kt",
+          "sha256": "21f692e833eb54204889c93e364a323dc07936b29e49deb863b41ede6970379f",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingEvent.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/ProxySettingScreen.kt",
+          "sha256": "69d58321d586015fb19977afce7af44bb88dc456095a8bf061f43df3bd1e1b47",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/ProxySettingScreen.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerScreen.kt",
+          "sha256": "b2709050bf8bfecaf87d980404b73ee8335d1c44748c653242c18a3f211d41a7",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/CustomExplorerScreen.kt"
+        },
+        {
+          "path": "nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingActivity.kt",
+          "sha256": "f94ef047d3ead7a2eda159f5cce7a82b0bd474a9273a92058ce94ca8ef0954e7",
+          "url": "https://github.com/nunchuk-io/nunchuk-android/blob/1f07b4e2f9d30ff2c6ad7ad797885ba862d98e22/nunchuk-settings/src/main/java/com/nunchuk/android/settings/network/NetworkSettingActivity.kt"
+        }
+      ]
+    },
+    {
+      "repository": "Fonta1n3/FullyNoded",
+      "source_commit": "d0d1502eef2840c0457aa321b88cf606ee8b4650",
+      "latest_release_tag_observed": "v2.1.0",
+      "release_url": "https://github.com/Fonta1n3/FullyNoded/releases/tag/v2.1.0",
+      "files": [
+        {
+          "path": "FullyNoded/Helpers/QuickConnect.swift",
+          "sha256": "09025fa6f055188124a0011a842e0c5abab1b91fb1bfc9c8a5539c9c1f159942",
+          "url": "https://github.com/Fonta1n3/FullyNoded/blob/d0d1502eef2840c0457aa321b88cf606ee8b4650/FullyNoded/Helpers/QuickConnect.swift"
+        },
+        {
+          "path": "FullyNoded/Helpers/Commands.swift",
+          "sha256": "ccdbfa246c3f184ba32307d4cfee9208c5af2d343c08b221e7beff1238a6c4cc",
+          "url": "https://github.com/Fonta1n3/FullyNoded/blob/d0d1502eef2840c0457aa321b88cf606ee8b4650/FullyNoded/Helpers/Commands.swift"
+        },
+        {
+          "path": "FullyNoded/Helpers/URL Requests/MakeRPCCall.swift",
+          "sha256": "e41fb52e75674d66eb2d3b09f4ac356f92702635c0234c047b5a70c0a4e3bfa7",
+          "url": "https://github.com/Fonta1n3/FullyNoded/blob/d0d1502eef2840c0457aa321b88cf606ee8b4650/FullyNoded/Helpers/URL%20Requests/MakeRPCCall.swift"
+        },
+        {
+          "path": "FullyNoded/View Controllers/Wallets/UTXO's/LockedViewController.swift",
+          "sha256": "6215259089a5e21e82b7594c1460e37f5e0862be6e2661f20d4f3897c172db86",
+          "url": "https://github.com/Fonta1n3/FullyNoded/blob/d0d1502eef2840c0457aa321b88cf606ee8b4650/FullyNoded/View%20Controllers/Wallets/UTXO%27s/LockedViewController.swift"
+        },
+        {
+          "path": "FullyNoded/View Controllers/Wallets/UTXO's/UTXOViewController.swift",
+          "sha256": "77455a16a05bb133841a9966d0dabf0d1ee056ee28593d1cb9dd0ddbd44836fa",
+          "url": "https://github.com/Fonta1n3/FullyNoded/blob/d0d1502eef2840c0457aa321b88cf606ee8b4650/FullyNoded/View%20Controllers/Wallets/UTXO%27s/UTXOViewController.swift"
+        }
+      ]
+    }
+  ]
+}

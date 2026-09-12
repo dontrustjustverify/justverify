@@ -1,0 +1,1 @@
+justverify ALL=(root) NOPASSWD: /usr/libexec/justverify-install-core ""

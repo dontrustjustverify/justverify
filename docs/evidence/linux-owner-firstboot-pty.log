@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "actual Linux firstboot imports and removes boot owner file",
+    "firstboot output does not reveal setup secret",
+    "repeated firstboot preserves TLS identity",
+    "physical PTY requires Enter before displaying owner code",
+    "claim over certificate-verified HTTPS",
+    "one-time token removed",
+    "console switches to fixed real TUI",
+    "Ctrl-C exits without shell"
+  ]
+}

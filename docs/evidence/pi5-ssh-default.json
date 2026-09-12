@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "host": "192.168.10.47",
+  "model": "Raspberry Pi 5 Model B Rev 1.0",
+  "account": "justverify",
+  "actual_password_login_before_reboot": "PASS uid name justverify",
+  "actual_password_login_after_reboot": "PASS uid name justverify",
+  "boot_ids": [
+    "0054206b-c429-4a7e-aa95-f0464e4839be",
+    "cbbea070-852f-4299-9e8f-71060735024c"
+  ],
+  "private_LAN_password_auth": "yes",
+  "public_address_password_auth": "no",
+  "root_password_auth": "no",
+  "https_verified_with_device_certificate": "200 OK with mDNS justverify.local",
+  "http_redirect": "302 to https://justverify.local/",
+  "service_states_after_reboot": {
+    "ssh": "active",
+    "web": "active",
+    "http_redirect": "active",
+    "console": "active"
+  },
+  "scope": "No claim of node configuration, mobile wallet or complete release validation"
+}

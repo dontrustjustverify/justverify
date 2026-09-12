@@ -1,0 +1,28 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+Description=JustVerify verified version administration
+After=justverify-firstboot.service
+RequiresMountsFor=/srv/justverify/data
+ConditionPathIsMountPoint=/srv/justverify/data
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+User=justverify
+Group=justverify
+RuntimeDirectory=justverify-versions
+RuntimeDirectoryMode=0700
+ExecStartPre=/usr/bin/rm -f /run/justverify-versions/control.sock
+ExecStart=/opt/justverify/bin/justverify version-service --config /etc/justverify/versions.json --socket /run/justverify-versions/control.sock
+Restart=on-failure
+RestartSec=5
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/justverify/data/instances /var/lib/justverify/versions /var/lib/justverify/config /etc/justverify /etc/systemd/system /opt/justverify/versions /var/lib/justverify/downloads
+# Filesystem permissions keep both /etc paths root-only; only the fixed sudo helper writes them.
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

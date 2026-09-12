@@ -1,0 +1,66 @@
+{
+  "status": "FAIL",
+  "environment": "QEMU virt, external Debian kernel; not Pi firmware or physical hardware",
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 133.778235666,
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "packaged_lan_login_session_favicon_device_settings": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "packaged_mempool_units_sql_locales_tip": true,
+        "owner_client_issuance": true,
+        "actual_tor_bootstrap_complete": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_single_nvme_storage_ready_screen": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_sensitive_quick_connect_qr": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "first",
+      "mempool": {
+        "version": "3.3.1",
+        "tip": "528e97ca5a37c6a0affb26b3cbb50371dfd5f27ee76356b284a2e366e5e9b1b4",
+        "core_index_ready": true
+      },
+      "clock": {
+        "unix": 1789225325,
+        "ntp_synchronized": "no"
+      },
+      "tor_bootstrap": {
+        "percent": 100,
+        "wait_seconds": 0.0
+      },
+      "tor_transport_failure": "TimeoutError",
+      "status": "FAIL",
+      "error_type": "TimeoutError",
+      "tor_diagnostics": {
+        "warnings": 0,
+        "errors": 0,
+        "bootstrap_complete": true
+      },
+      "error_frames": [
+        {
+          "file": "jv-image-boot-probe.py",
+          "line": 227,
+          "function": "probe"
+        }
+      ],
+      "boot_elapsed_seconds": 125.675865
+    }
+  ],
+  "private_image": ".state/vm/probe-beta1-r3.img",
+  "private_data": "None",
+  "original_disk_bytes": 6444548096,
+  "boot_disk_bytes": 12884901888,
+  "console_log": ".state/release-beta1/image-r3-full-boot-console.log",
+  "observer_sha256": "4055c3e4a535449e63bfb6d3240a610985906ca3f49fc98ebb062dad649f2798"
+}

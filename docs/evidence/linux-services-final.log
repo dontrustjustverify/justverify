@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "time": 1789144763.4219909,
+  "platform": "Debian ARM64 QEMU VM",
+  "checks": [
+    "all services start with real regtest RPC",
+    "manager/web restart",
+    "Core stop stale, start recovery",
+    "missing mount blocks Core and prevents system disk writes",
+    "low disk space rejects startup with explicit diagnostic",
+    "disk recovery preserves regtest height"
+  ],
+  "not_run": [
+    "Pi hardware",
+    "OS update rollback",
+    "electrs recovery",
+    "24h soak"
+  ]
+}

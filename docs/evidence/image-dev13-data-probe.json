@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "environment": "QEMU virt, external Debian kernel; not Pi firmware or physical hardware",
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 88.88078879204113,
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "owner_client_issuance": true,
+        "actual_tor_bootstrap_complete": true,
+        "reviewed_remote_rpc_product_onion": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_sensitive_quick_connect_qr": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "first",
+      "clock": {
+        "unix": 1789184353,
+        "ntp_synchronized": "no"
+      },
+      "tor_bootstrap": {
+        "percent": 100,
+        "wait_seconds": 4.04
+      },
+      "status": "PASS",
+      "boot_elapsed_seconds": 61.815768
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_permissions_verified": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "client_credentials_persisted": true,
+        "actual_tor_bootstrap_complete": true,
+        "remote_rpc_actual_reboot_restore": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "second",
+      "clock": {
+        "unix": 1789184412,
+        "ntp_synchronized": "no"
+      },
+      "tor_bootstrap": {
+        "percent": 100,
+        "wait_seconds": 0.0
+      },
+      "status": "PASS",
+      "boot_elapsed_seconds": 24.836649
+    }
+  ],
+  "private_image": ".state/vm/probe-dev13-data.img",
+  "private_data": ".state/vm/image-data-16.qcow2",
+  "console_log": ".state/dev13-image-probe.log",
+  "observer_sha256": "6e1c39feffbc6303b031c70e826fa75a520d3c5b40a34a40d108ff7789008f18"
+}

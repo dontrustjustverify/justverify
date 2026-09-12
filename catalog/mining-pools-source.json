@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/mempool/mining-pools",
+  "commit": "f678a4a620537ad7997a475ad0f14bfab1de3c8b",
+  "file": "pools-v2.json",
+  "sha256": "0491a15f88dbd7726f00b809b65f5fa86f4b072e44aefa93e4f3414a9a61aa90",
+  "license": "MIT",
+  "checked": "2026-09-12",
+  "mode": "offline literal coinbase tags and mainnet reward addresses; ambiguous matches remain unknown"
+}

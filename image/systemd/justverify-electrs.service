@@ -1,0 +1,33 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+Description=JustVerify Electrum indexer
+After=justverify-firstboot.service justverify-core.service
+Wants=justverify-core.service
+RequiresMountsFor=/srv/justverify/data
+ConditionPathIsMountPoint=/srv/justverify/data
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+ConditionPathExists=/etc/justverify/node-ready.json
+
+[Service]
+User=justverify
+Group=justverify
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/wait_core_rpc.py
+TimeoutStartSec=150
+ExecStart=/opt/justverify/bin/electrs --skip-default-conf-files --conf /etc/justverify/electrs.toml
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=300
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/justverify/data/electrs
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

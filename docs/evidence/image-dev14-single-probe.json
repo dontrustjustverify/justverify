@@ -1,0 +1,30 @@
+{
+  "status": "FAIL",
+  "environment": "QEMU virt, external Debian kernel; not Pi firmware or physical hardware",
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 9.338153542019427,
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true
+      },
+      "boot": "first",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error_frames": [
+        {
+          "file": "jv-image-boot-probe.py",
+          "line": 19,
+          "function": "probe"
+        }
+      ],
+      "boot_elapsed_seconds": 7.93782
+    }
+  ],
+  "private_image": ".state/vm/probe-dev14-single.img",
+  "private_data": "None",
+  "console_log": ".state/dev14-single-image-console.log",
+  "observer_sha256": "6e1c39feffbc6303b031c70e826fa75a520d3c5b40a34a40d108ff7789008f18"
+}

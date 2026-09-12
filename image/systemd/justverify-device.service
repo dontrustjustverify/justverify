@@ -1,0 +1,18 @@
+[Unit]
+Description=JustVerify device information and orderly power controls
+After=justverify-firstboot.service
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/justverify/scripts/device_service.py
+RuntimeDirectory=justverify-device
+RuntimeDirectoryMode=0755
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK
+Restart=on-failure
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

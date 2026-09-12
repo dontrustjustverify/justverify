@@ -1,0 +1,38 @@
+{
+  "artifact_sha256": "2743fba94fe20589b2186935262402923860ee638f20f5b383087e1824eb262b",
+  "scope": "Pristine dev7 image copy plus external Debian kernel/modules and test-only scripts/VT decoder. Production source unchanged. NOT Raspberry Pi boot or physical mobile app.",
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "owner_client_issuance": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true
+      },
+      "boot": "first",
+      "status": "PASS"
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_permissions_verified": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "client_credentials_persisted": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true
+      },
+      "boot": "second",
+      "status": "PASS"
+    }
+  ]
+}

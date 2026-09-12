@@ -1,0 +1,26 @@
+/etc/sudoers.d/justverify-profile: parsed OK
+{
+  "status": "PASS",
+  "checks": [
+    "strict root helper identifiers",
+    "unsafe and withdrawn inputs rejected before service stop",
+    "actual systemd31.1 to22.0 to31.1 profile switch",
+    "version-specific cookie/data/index paths",
+    "Core/electrs/manager/policy services restart",
+    "original data directory preserved"
+  ]
+}
+Traceback (most recent call last):
+  File "/home/builder/justverify/tests/linux_profile_helper.py", line 51, in <module>
+    system('daemon-reload');system('reset-failed',*UNITS);system('start',*UNITS);system('reload-or-restart','justverify-tor')
+                                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/builder/justverify/tests/linux_profile_helper.py", line 10, in system
+    def system(*args):return cmd('systemctl',*args)
+                             ~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/builder/justverify/tests/linux_profile_helper.py", line 9, in cmd
+    def cmd(*args,**kwargs):return subprocess.run(args,check=True,capture_output=True,text=True,**kwargs)
+                                   ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '('systemctl', 'reload-or-restart', 'justverify-tor')' returned non-zero exit status 1.

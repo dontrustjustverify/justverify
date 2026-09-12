@@ -1,0 +1,78 @@
+{
+  "recorded_at": "2026-09-12T08:25:31.654934+00:00",
+  "scope": "Six browser/node-start fixes. Mainnet IBD, electrs full indexing, physical mobile wallet and new installation image are not complete.",
+  "reference": {
+    "repository": "https://github.com/getumbrel/umbrel-bitcoin",
+    "commit": "2fe07948f99e101dbee95ce34e5947a69c441ee4",
+    "files": [
+      "apps/ui/src/pages/settings/Toggle.tsx",
+      "apps/ui/src/pages/settings/Form.tsx",
+      "apps/ui/src/pages/settings/InputField.tsx",
+      "apps/ui/src/pages/settings/SaveSettingsDialog.tsx"
+    ],
+    "reuse": "UX reference only; independently implemented; no copied code or assets"
+  },
+  "software": {
+    "core": "31.1",
+    "electrs": "0.11.1",
+    "version_transition_exercised": [
+      "31.1",
+      "23.2",
+      "31.1"
+    ],
+    "rust_binary_sha256": "441ba4a6f15480599ae4656e4e699d8225c4140d57e8801801a8ac4b6a1ea347",
+    "web": {
+      "status": "PASS",
+      "source_file_count": 21,
+      "web_manifest_sha256": "d35deb0c4a0a5bd0fd69b5dddef9e02494543b250868e6ec5ba830a764b70ff3"
+    }
+  },
+  "checks": {
+    "refresh_session": "PASS: actual HTTP cookie restore, cross-origin denied, logout revocation; actual Pi and VM browser reload",
+    "menus": "PASS: Electrs and version-change names; no separate browser peers button",
+    "policy": "PASS: real API and browser persistmempool toggle, preview/apply, Core restart and saved value; upload target RPC and maxconnections startup limit",
+    "version": "PASS: browser and API 31.1 -> 23.2 ->31.1, distinct data, old tip/index preserved; expired/used token refused",
+    "hover": "PASS: actual unselected27.2 card :hover=true and rgb(27,61,53); selected23.2 aria-pressed=true",
+    "responsive": "PASS:1200px desktop and390px mobile; scrollWidth=innerWidth; captured native browser screenshots",
+    "pi_start": "PASS: first registration uses production empty-volume/owner/hash guard and regular transaction; no data bypass",
+    "qr": "PASS: actual Pi LAN/Tor payload decoded, auth/CSRF/invalid network/logout checks",
+    "pi_reboot": {
+      "new_boot": true,
+      "identity_profile_owner_preserved": true,
+      "previous_tip_preserved_as_ancestor": true,
+      "blocks_before": 250969,
+      "blocks_after": 252303,
+      "headers": 966644,
+      "peers": 2,
+      "ibd": true,
+      "services": {
+        "core": "active",
+        "electrs": "active",
+        "policy": "active",
+        "manager": "active",
+        "tor": "active",
+        "web": "active"
+      }
+    },
+    "storage_tls": "PASS: actual root inventory, HTTP auth/CSRF/Origin/extra-field rejection, system device preview refused, client issue/RPC/revocation; no formatting",
+    "environment_restored": "PASS: original VM volume/profile/owner/catalog restored; Core/electrs/web/storage active, no test browser-ready marker or owner left"
+  },
+  "regression_status": "PASS: actual registered Linux integration including policy, version, TLS, Tor, QR, watch-only wallet/PSBT access, interrupted-version recovery; original VM restored. .state/browser-ui/settings-integration-audit.log",
+  "not_run": [
+    "New installation image containing these UI changes",
+    "Pi mainnet IBD=false and electrs exact full tip",
+    "Physical mobile camera/wallet acceptance for this build"
+  ],
+  "failure_history": [
+    "VM test checkout used old menu shortcut; synced current tests",
+    "Current image unit requires backup.service, missing in legacy VM; installed current prerequisite",
+    "Test runner used venv without aiohttp; switched to installed web venv",
+    "Separate rapid fixture launches hit existing service start limit; reset only before stopped independent fixture",
+    "Same version preview correctly refused; exercised a different installed version",
+    "Test initially requested uninstalled30.3; used verified installed23.2",
+    "maxconnections is a startup log value, not getnetworkinfo field; verified actual log and uploadtarget RPC",
+    "VM policy catalog metadata stale; fixture now backs up, installs and restores both policy and resource catalogs",
+    "80-column QR return test expected old footer; now asserts actual overview panel, QR assertions unchanged",
+    "TLS client fixture copied an incomplete list of Python modules; now packages all actual web modules"
+  ]
+}

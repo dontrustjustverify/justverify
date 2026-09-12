@@ -1,0 +1,1535 @@
+{
+  "retrieved": "2026-09-11T16:12:41.722411+00:00",
+  "source": "https://bitcoincore.org/bin/",
+  "releases": [
+    {
+      "version": "22.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-22.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/22.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-22.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "22.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-22.0/bitcoin-22.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "ac718fed08570a81b3587587872ad85a25173afa5f9fbbd0c03ba4d1714cfa3e",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "948444FCE03B05BA5AB0591EC37B1C1D44C786EE",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "b97abfda159ed8ff913d7450ae3cb9a7d9be6808f0a86afa1885891dc4cadd2e"
+    },
+    {
+      "version": "22.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-22.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/22.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-22.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "22.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-22.1/bitcoin-22.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "a0dcdd1eb422ba8d0f409ebe909a40f5349b405e31231312f15b12fd2e9b6153",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "28E72909F1717FE9607754F8A7BEB2621678D37D",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "79D00BAC68B56D422F945A8F8E3A8F3247DBCBBF",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "db2bf3d820aa5fcb3f87343e636fab03d5983649473d1ac4d7442abfb832a83e"
+    },
+    {
+      "version": "23.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-23.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/23.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-23.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "23.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "06f4c78271a77752ba5990d60d81b1751507f77efda1e5981b4e92fd4d9969fb",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "948444FCE03B05BA5AB0591EC37B1C1D44C786EE",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "282bfa9cc26bf8e2d2ef8460f6cda4c1d942dd2e9bcd70a092c03a0e4845b06d"
+    },
+    {
+      "version": "23.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-23.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/23.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-23.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "23.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-23.1/bitcoin-23.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "b18ec21db91c59850f837528b00844052fc1f92bd90ad34ddf5eaefe40ec94e3",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "5e6ecc6bf0edccaae02bb3b1a8d8c72e6db17a0d57afc21fb4eaa32a265ded16"
+    },
+    {
+      "version": "23.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-23.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/23.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-23.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "23.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-23.2/bitcoin-23.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "160ce6ce7185faa0db242953b5f93b108835d3790d3ea9ac689f21a85250be35",
+        "signers": [
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "9481e89f08e761e98a51f6a2b4a9be447a72844871ca4f73a5ec189a7d634f9e"
+    },
+    {
+      "version": "24.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-24.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/24.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-24.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "24.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-24.0/bitcoin-24.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "904e103f08f776d03935118568411724f9e070e0e888e52c9e5692308fa47d49",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "28E72909F1717FE9607754F8A7BEB2621678D37D",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "c31ac9e548279cdd814300b2950b8462b7cd159b3ba1c81519434b6385a7431e"
+    },
+    {
+      "version": "24.0.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-24.0.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/24.0.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-24.0.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "24.0.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-24.0.1/bitcoin-24.0.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "0b48b9e69b30037b41a1e6b78fb7cbcc48c7ad627908c99686e81f3802454609",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "28E72909F1717FE9607754F8A7BEB2621678D37D",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "79D00BAC68B56D422F945A8F8E3A8F3247DBCBBF",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "5a63f7cfa64e7d21005b4fb3956a9192442a4565bd7c03824f5559b9b8499552"
+    },
+    {
+      "version": "24.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-24.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/24.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-24.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "24.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-24.1/bitcoin-24.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "69ef67b290ce05120d8a5a5a5c0aa3e7d4878838286e6dc96935d15fc0d44b56",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "28E72909F1717FE9607754F8A7BEB2621678D37D",
+          "616516B8EB6ED02882FC4A7A8ADCB558C4F33D65",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C060A6635913D98A3587D7DB1C2491FFEB0EF770",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "08cbf8c34a8d0d1198ec89d1b4358187f625ac62b1494705f404f771a7d4366c"
+    },
+    {
+      "version": "24.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-24.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/24.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-24.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "24.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-24.2/bitcoin-24.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "6842e974adb8b88fd929013a0881172acab1ba86fb9114cee8ff0ca1c6daa7c8",
+        "signers": [
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "49b7624e023e8faa0451224a0dc25f9c5a523c1da19244e8de3d5724b86eca5f"
+    },
+    {
+      "version": "25.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-25.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/25.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-25.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "25.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-25.0/bitcoin-25.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "3a7bdd959a0b426624f63f394f25e5b7769a5a2f96f8126dcc2ea53f3fa5212b",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "28E72909F1717FE9607754F8A7BEB2621678D37D",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C060A6635913D98A3587D7DB1C2491FFEB0EF770",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "cedfa65ea54d619b95bdde94049358e313d0dae84b17a1aff7be2d50ccd96e86"
+    },
+    {
+      "version": "25.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-25.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/25.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-25.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "25.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-25.1/bitcoin-25.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "69b49bd4eda484a8b8e0e806649e5b7ae9b93b3dbb9889af23696437359bc52c",
+        "signers": [
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "55873211bdced92df8b513d00014766001c967789003c2ef9663a5938ae908a0"
+    },
+    {
+      "version": "25.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-25.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/25.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-25.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "25.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-25.2/bitcoin-25.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "7928e046d83a9a4f82edee843a793bd0627294ac6309664bdfde1743afc1cfdb",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "8f847020adffcb03a9ab78b1bc1a8eb62258b48e7dcb9196261195f25efc4760"
+    },
+    {
+      "version": "26.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-26.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/26.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-26.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "26.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-26.0/bitcoin-26.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "9cf64f42c72d8a96892aa1e2ec9cbca6f3b7094148a8261127390bc6fb4d20c4",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+          "616516B8EB6ED02882FC4A7A8ADCB558C4F33D65",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "594ac91a084797f157862a37751b87630fa2a1cb50d30b9a9fdb94353c7dbf37"
+    },
+    {
+      "version": "26.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-26.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/26.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-26.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "26.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-26.1/bitcoin-26.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "e198461d981b675d39caaec4d5e69e79d7fd52c3d3508f5821e2effe7d4f12c2",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "c399a4467a108ca0b992a83224777fc629dcc1f0b7936a3b7aebbbd3d48c99d9"
+    },
+    {
+      "version": "26.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-26.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/26.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-26.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "26.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-26.2/bitcoin-26.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "f9d723aec022b9a857f27a76fc3500f8d82ce02ca496e0d907c07081437204c8",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "77f8d1174efe5688b2e316cb59ef4df3324500750c753126de13464d550ef360"
+    },
+    {
+      "version": "27.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-27.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/27.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-27.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "27.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-27.0/bitcoin-27.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "cb35e250ae9d0328aa90e7aad0b877ed692597420a1092e8ab1a5dd756209722",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "5e603d73b0e5d0f8d423cca71b5eec986c1ed6ebcbb507a468f72d59480a2b59"
+    },
+    {
+      "version": "27.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-27.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/27.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-27.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "27.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-27.1/bitcoin-27.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "bb878df4f8ff8fb8acfb94207c50f959c462c39e652f507c2a2db20acc6a1eee",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "a033ca7d86f09de92790ce22a3279d4fe97ea3d8384ab0bf61dd3670f102cce9"
+    },
+    {
+      "version": "27.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-27.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/27.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-27.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "27.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-27.2/bitcoin-27.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "154c9b9e6e17136edc8f20fda5d252fb339e727e4a85ef49e7d8facb9085f2d3",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "2a6535f27647f62fb4e716899637b3e2f4c6d76e9dbcfce45df85a5ce9d7645e"
+    },
+    {
+      "version": "28.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-28.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/28.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-28.0.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "28.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-28.0/bitcoin-28.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "7fa582d99a25c354d23e371a5848bd9e6a79702870f9cbbf1292b86e647d0f4e",
+        "signers": [
+          "133EAC179436F14A5CF1B794860FEB804E669320",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "50fe18f489ff63a683f0aed9fadf1faf07789fa3cf4dc2ad93001e970a89a483"
+    },
+    {
+      "version": "28.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-28.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/28.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-28.1.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "28.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-28.1/bitcoin-28.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "6ddb6990690bd4c9a9f4319ed6f6e9c995c85ce5530ee9f120e80ce09e090c44",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "b69817de646e2a4f1616850bde0c0944c516719d1be930a7e22cf9192d0a3d9f"
+    },
+    {
+      "version": "28.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-28.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/28.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-28.2.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "28.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-28.2/bitcoin-28.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "10581b6d4aeb091c08c9e69eb4e4ced000038c009286dc1edb8a876656ccf6df",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "502983957f244e7d33692454ff244260c5e1a005df59dc37c99929074f2c9a2f"
+    },
+    {
+      "version": "28.3",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-28.3/",
+      "release_notes": "https://bitcoincore.org/en/releases/28.3/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-28.3.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "28.3",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-28.3/bitcoin-28.3-aarch64-linux-gnu.tar.gz",
+        "sha256": "57a4ed87177f9db83ff62905b96a3197cd0cfc9eda62f1075e38e93e68959ead",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "13aff65f0210ff3255f75a7e7cc034bdb994a6675f98940f6e11ceb6757403b7"
+    },
+    {
+      "version": "28.4",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-28.4/",
+      "release_notes": "https://bitcoincore.org/en/releases/28.4/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-28.4.json",
+      "support_status": "EOL upstream (major <=28)",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "28.4",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-28.4/bitcoin-28.4-aarch64-linux-gnu.tar.gz",
+        "sha256": "4895df4664a11afd8195c387a7a4a0bbee8ff153c490d0f7f491c93cf44a5e7f",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "b9998a14ce70efb1a930f746eda00b812dff834a915fbf7efcd8a54f5da17e1e"
+    },
+    {
+      "version": "29.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-29.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/29.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-29.0.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "29.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-29.0/bitcoin-29.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "7922ac99363dd28f79e57ef7098581fd48ebd1119b412b07e73b1fd19fd0443f",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "C388F6961FB972A95678E327F62711DBDCA8AE56",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "4bf6f26571112e32f2d0c30e15ea8344b396a30eb614c4442f766954b253e7e6"
+    },
+    {
+      "version": "29.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-29.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/29.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-29.1.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "29.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-29.1/bitcoin-29.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "d6be913e1abc5effe57f50630b4bff2f89b38c092182c47f1fcde0ae12afc71c",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "54ed8d266ae6518249d2a9f75b0a46ba69a01b29d3a7a5f73bb71df4ca8be84b"
+    },
+    {
+      "version": "29.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-29.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/29.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-29.2.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "29.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-29.2/bitcoin-29.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "f88f72a3c5bf526581aae573be8c1f62133eaecfe3d34646c9ffca7b79dfdc7a",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "71A3B16735405025D447E8F274810B012346C9A6",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "2e7e56a80d52e61ecbc5f5bec8e705f5098965a2538edef976649df2d7a4438f"
+    },
+    {
+      "version": "29.3",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-29.3/",
+      "release_notes": "https://bitcoincore.org/en/releases/29.3/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-29.3.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "29.3",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-29.3/bitcoin-29.3-aarch64-linux-gnu.tar.gz",
+        "sha256": "9b9269b396f629d29d449e1913587b56f8fa78393eb1db99314201938ccf8847",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "71b4a5062608db4a3b4860be8b8488bf3a72a8bcf68a7c4eb1c97ec084e20ba7"
+    },
+    {
+      "version": "29.4",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-29.4/",
+      "release_notes": "https://bitcoincore.org/en/releases/29.4/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-29.4.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "29.4",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-29.4/bitcoin-29.4-aarch64-linux-gnu.tar.gz",
+        "sha256": "bc5353b3cda4a32c4ab7e46feed7fdb6ad68f23430743fee2e1fe0718df78db9",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "be9b112a9b139eafa78a480ebe283e194e2d77d00fb62f9461e6f305094b84a7"
+    },
+    {
+      "version": "30.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-30.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/30.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "FAIL",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "NOT RUN",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "NOT RUN",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "availability": "UPSTREAM_WITHDRAWN",
+      "reason": "Official binaries withdrawn due to wallet migration data deletion bug",
+      "notice": "https://bitcoincore.org/en/2026/01/05/wallet-migration-bug/",
+      "arm64_binary_sha256": null
+    },
+    {
+      "version": "30.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-30.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/30.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "FAIL",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "NOT RUN",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "NOT RUN",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "signet",
+        "regtest"
+      ],
+      "availability": "UPSTREAM_WITHDRAWN",
+      "reason": "Official binaries withdrawn due to wallet migration data deletion bug",
+      "notice": "https://bitcoincore.org/en/2026/01/05/wallet-migration-bug/",
+      "arm64_binary_sha256": null
+    },
+    {
+      "version": "30.2",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-30.2/",
+      "release_notes": "https://bitcoincore.org/en/releases/30.2/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-30.2.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "30.2",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-30.2/bitcoin-30.2-aarch64-linux-gnu.tar.gz",
+        "sha256": "73e76c14edc79808a0511c744d102ffbb494807ee90cbcba176568243254b532",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "ef420fad3db5e8769acbf7a179d4a4122b558d62939a425d34b07e45f64e6997"
+    },
+    {
+      "version": "30.3",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-30.3/",
+      "release_notes": "https://bitcoincore.org/en/releases/30.3/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-30.3.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "30.3",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-30.3/bitcoin-30.3-aarch64-linux-gnu.tar.gz",
+        "sha256": "a4687d825d8afa62b7b04dd6f3e53ac6bb1d12d8377979c27423c6746eca52f2",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "647403867fac9e20715afff357440224e9df93a0c5558e06f1d9abd2974b98b0"
+    },
+    {
+      "version": "31.0",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-31.0/",
+      "release_notes": "https://bitcoincore.org/en/releases/31.0/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-31.0.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "31.0",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-31.0/bitcoin-31.0-aarch64-linux-gnu.tar.gz",
+        "sha256": "4de1d568dedd48604f75132421bc0abeca432639589b49a3909c81db3a813112",
+        "signers": [
+          "152812300785C96444D3334D17565732E08E5E41",
+          "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+          "982A193E3CE0EED535E09023188CBB2648416AD5",
+          "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "6f66822a44b4d4edd2a8ae1a11f63dd4db8d070e219c8eb54a3e2faa536409c2"
+    },
+    {
+      "version": "31.1",
+      "source": "https://bitcoincore.org/bin/bitcoin-core-31.1/",
+      "release_notes": "https://bitcoincore.org/en/releases/31.1/",
+      "architectures": [
+        "aarch64-linux-gnu",
+        "x86_64-linux-gnu"
+      ],
+      "verification": "PASS",
+      "electrs": {
+        "version": "0.11.1",
+        "status": "PASS",
+        "scope": "ARM Linux regtest indexing/history/broadcast/confirmation/restart"
+      },
+      "data_reuse": "DENY_UNVERIFIED",
+      "configuration_schema": "policy-31.1.json",
+      "support_status": "review supported maintenance window at release",
+      "networks": [
+        "main",
+        "test",
+        "testnet4",
+        "signet",
+        "regtest"
+      ],
+      "arm64_artifact": {
+        "version": "31.1",
+        "arch": "aarch64-linux-gnu",
+        "url": "https://bitcoincore.org/bin/bitcoin-core-31.1/bitcoin-31.1-aarch64-linux-gnu.tar.gz",
+        "sha256": "dcf1873f2208ba4f962f3398d47e154c39c0084be8f4553e05c940d0ace3d004",
+        "signers": [
+          "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+          "152812300785C96444D3334D17565732E08E5E41",
+          "5B286407E1EA6FE01CF9AF48BF131C2D0536F8AC",
+          "67AA5B46E7AF78053167FE343B8F814A784218F8",
+          "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+          "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+          "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+          "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+          "E777299FC265DD04793070EB944D35F9AC3DB76A",
+          "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+          "F4FC70F07310028424EFC20A8E4256593F177720"
+        ],
+        "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+        "status": "SIGNATURE_AND_CHECKSUM_PASS"
+      },
+      "availability": "OFFICIAL_BINARY_VERIFIED",
+      "arm64_binary_sha256": "1b279e038691c10e30d9c99a071ff967439020c4352e8ea3b156fb6b03751f83"
+    }
+  ],
+  "default_version": "31.1"
+}

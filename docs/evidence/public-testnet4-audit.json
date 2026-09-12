@@ -1,0 +1,121 @@
+{
+  "status": "PASS_WITH_LIMITS",
+  "network": "testnet4",
+  "core": "31.1",
+  "electrs": "0.11.1",
+  "sync_before": {
+    "chain": {
+      "chain": "testnet4",
+      "blocks": 151993,
+      "headers": 151993,
+      "bestblockhash": "0000000000cbd3292f2b411172b48d89f1b2961e2a48feda8ca5f9b156198a36",
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "time": 1789180248,
+      "mediantime": 1789174243,
+      "verificationprogress": 1,
+      "initialblockdownload": false,
+      "chainwork": "000000000000000000000000000000000000000000000e4111f4f1590273d4db",
+      "size_on_disk": 13616436905,
+      "pruned": false,
+      "warnings": []
+    },
+    "time_utc": "2026-09-12T00:46:16.039472+00:00",
+    "peer_count": 11,
+    "status": "LOCAL_SYNCED_EXTERNAL_TIP_DIVERGENCE",
+    "handshaken_peers": 11,
+    "electrs": {
+      "height": 151993,
+      "tip": "0000000000cbd3292f2b411172b48d89f1b2961e2a48feda8ca5f9b156198a36"
+    },
+    "block_time_age_seconds": -6271.947923898697,
+    "future_time_bound_source": "https://github.com/bitcoin/bitcoin/blob/9be056a8a72b624dae9623b2f7bded92c2a21c91/src/chain.h",
+    "recent_block_within_two_hours": true,
+    "local_sync": true,
+    "independent_tip_at_height": "000000000094f6a023dda9a666a6e298d37a34f0608c18d76b3b0ace27152c51"
+  },
+  "txid": "50fae20278c3230093255e222d7a30e10d20fc77f68f6e07fcd7d91890ac7578",
+  "confirmations": 6,
+  "independent_status": {
+    "confirmed": true,
+    "block_height": 151996,
+    "block_hash": "0000000000deb44eb966b2b15f63b779c78ae9573c165825f9f1bd662f1ea45e",
+    "block_time": 1789183851
+  },
+  "propagation": "PASS: independent mempool.space lookup",
+  "wallet_and_electrs": "PASS",
+  "device_reboot": "NOT RUN",
+  "sync_after_restart": {
+    "chain": {
+      "chain": "testnet4",
+      "blocks": 151993,
+      "headers": 151993,
+      "bestblockhash": "0000000000cbd3292f2b411172b48d89f1b2961e2a48feda8ca5f9b156198a36",
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "time": 1789180248,
+      "mediantime": 1789174243,
+      "verificationprogress": 1,
+      "initialblockdownload": false,
+      "chainwork": "000000000000000000000000000000000000000000000e4111f4f1590273d4db",
+      "size_on_disk": 13616436905,
+      "pruned": false,
+      "warnings": []
+    },
+    "time_utc": "2026-09-12T00:46:19.292276+00:00",
+    "peer_count": 2,
+    "status": "LOCAL_SYNCED_EXTERNAL_TIP_DIVERGENCE",
+    "handshaken_peers": 1,
+    "electrs": {
+      "height": 151993,
+      "tip": "0000000000cbd3292f2b411172b48d89f1b2961e2a48feda8ca5f9b156198a36"
+    },
+    "block_time_age_seconds": -6268.699334859848,
+    "future_time_bound_source": "https://github.com/bitcoin/bitcoin/blob/9be056a8a72b624dae9623b2f7bded92c2a21c91/src/chain.h",
+    "recent_block_within_two_hours": true,
+    "local_sync": true,
+    "independent_tip_at_height": "000000000094f6a023dda9a666a6e298d37a34f0608c18d76b3b0ace27152c51"
+  },
+  "settings_restart": "PASS maxmempool420 MB actual RPC; chain/wallet/electrs retained",
+  "latest_sync": {
+    "chain": {
+      "chain": "testnet4",
+      "blocks": 152001,
+      "headers": 152001,
+      "bestblockhash": "00000000b38289bd0f7900985c1cbc83776bfd64ef875977a58ef3e36d4bd2a3",
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "time": 1789185877,
+      "mediantime": 1789180249,
+      "verificationprogress": 1,
+      "initialblockdownload": false,
+      "chainwork": "000000000000000000000000000000000000000000000e4160f8d4c7fe43c7c8",
+      "size_on_disk": 13616481149,
+      "pruned": false,
+      "warnings": []
+    },
+    "time_utc": "2026-09-12T02:14:31.692956+00:00",
+    "peer_count": 11,
+    "status": "PASS",
+    "handshaken_peers": 11,
+    "electrs": {
+      "height": 152001,
+      "tip": "00000000b38289bd0f7900985c1cbc83776bfd64ef875977a58ef3e36d4bd2a3"
+    },
+    "block_time_age_seconds": -6605.274920940399,
+    "future_time_bound_source": "https://github.com/bitcoin/bitcoin/blob/9be056a8a72b624dae9623b2f7bded92c2a21c91/src/chain.h",
+    "recent_block_within_two_hours": true,
+    "local_sync": true,
+    "independent_tip_at_height": "00000000b38289bd0f7900985c1cbc83776bfd64ef875977a58ef3e36d4bd2a3"
+  },
+  "electrs_transaction_height": 151996,
+  "confirmed_merkle_proof": {
+    "status": "PASS",
+    "block_height": 151996,
+    "block_hash": "0000000000deb44eb966b2b15f63b779c78ae9573c165825f9f1bd662f1ea45e",
+    "branch_length": 4
+  }
+}

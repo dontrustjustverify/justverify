@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/builder/justverify/tests/linux_policy_crash.py", line 63, in <module>
+    wait(lambda: visible('JustVerify'))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/builder/justverify/tests/linux_policy_crash.py", line 26, in wait
+    raise AssertionError('bounded wait timed out')
+AssertionError: bounded wait timed out

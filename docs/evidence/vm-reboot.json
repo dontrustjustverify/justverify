@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "scope": "QEMU Debian ARM64 VM; not Pi image hardware boot",
+  "checks": [
+    "kernel boot id changed",
+    "SSH host identity retained",
+    "machine identity retained",
+    "data loop mount automatic",
+    "Core/manager/web automatic start",
+    "actual RPC recovered"
+  ],
+  "height": 0,
+  "time": 1789144847.538322
+}

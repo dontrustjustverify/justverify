@@ -1,0 +1,11 @@
+{
+  "result": "PASS_OFFLINE_ONLY",
+  "raw_sha256": "f2a6786673e477f339ca37462095c926fddc0ed113df47d8c3f5f7d831c32c23",
+  "change": "remove sole resize token from boot cmdline; boot FAT mounted/unmounted by Linux",
+  "outside_boot_partition_byte_equal": true,
+  "boot_fsck": "PASS fsck.fat -n exit0",
+  "prior_physical_boot": "FAIL interactive resize prompt",
+  "corrected_physical_boot": "NOT RUN",
+  "flash": "PASS Etcher Flash Completed! 1 Successful target; read-back validation not skipped",
+  "eject": "PASS diskutil eject /dev/disk6"
+}

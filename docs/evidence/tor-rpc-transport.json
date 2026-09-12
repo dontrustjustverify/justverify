@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "environment": "Debian ARM64 development VM; isolated real Core regtest and separate Tor daemon",
+  "core_versions_loopback": [
+    "22.0",
+    "31.1"
+  ],
+  "core_version_actual_onion": "31.1",
+  "tor_version": "0.4.9.11",
+  "source_sha256": {
+    "web/server.py": "8de214322b291eb77edb8e5511a300f0028c307320461a4c6e9fef6923cb2567",
+    "web/rpc_gateway.py": "b4ce15ffc7edb5e79b24b63a255ef70dfd8c327e313918baf3713cb7952f1290",
+    "web/wallet_gateway.py": "7e9740142fb31b22c3613236ae3916e9077b391d1b98896e1acbc44451eb7611",
+    "web/watch_only.py": "8251804c193d227d2e2f8d4a4bef41cd0d806a4dfcb5f6333477d57885f33619",
+    "tests/wallet_gateway_tls.py": "2c56047215b203307d5552bbb89504dc9f7a057514311627ec1c706c13ceb850",
+    "tests/onion_http.py": "34e1c84997ebaa32cd47aa8007699097b1e6dcfd37fa168bd3fc0929602a88d7"
+  },
+  "evidence_log": "docs/evidence/tor-rpc-transport.log",
+  "limits": [
+    "same test Tor daemon provides SOCKS client and hidden service",
+    "product owner enable/disable UI not implemented",
+    "not included in dev8",
+    "not a mobile app or image/reboot test",
+    "production flag remains off by default"
+  ]
+}

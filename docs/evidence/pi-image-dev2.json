@@ -1,0 +1,19 @@
+{
+  "artifact": "justverify-0.1.0-dev2-rpi5-arm64.img.xz",
+  "sha256": "201ab81c02b111cb0a29a7022aa202a9ad4bb6e08a4d67786658af08ce296604",
+  "bytes": 887233244,
+  "source_checkpoint": "f8c0410",
+  "core": "31.1",
+  "electrs": "0.11.1",
+  "tor": "0.4.9.11",
+  "status": "DEVELOPMENT_IMAGE",
+  "checks": "pi-image-dev2-verify.log",
+  "hardware_boot": "BLOCKED",
+  "limitations": [
+    "onboarding incomplete",
+    "full policy/version UI incomplete",
+    "mobile pairing incomplete",
+    "backup and update incomplete",
+    "not a release candidate"
+  ]
+}

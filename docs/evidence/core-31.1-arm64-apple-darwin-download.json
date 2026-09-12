@@ -1,0 +1,12 @@
+{
+  "version": "31.1",
+  "arch": "arm64-apple-darwin",
+  "url": "https://bitcoincore.org/bin/bitcoin-core-31.1/bitcoin-31.1-arm64-apple-darwin.tar.gz",
+  "sha256": "16a097c09fbd7eb78b240ce1dae123663ea2e5e377cfd6a951e71e227e23cf2f",
+  "signers": [
+    "152812300785C96444D3334D17565732E08E5E41",
+    "E777299FC265DD04793070EB944D35F9AC3DB76A"
+  ],
+  "key_commit": "3b667ee3ebb3dcd9e1990cf03e38a0935eec1683",
+  "status": "SIGNATURE_AND_CHECKSUM_PASS"
+}

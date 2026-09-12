@@ -1,0 +1,30 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+Description=JustVerify validated policy administration
+After=justverify-firstboot.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+ConditionPathExists=/etc/justverify/node-ready.json
+
+[Service]
+User=justverify
+Group=justverify
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
+RuntimeDirectory=justverify-policy
+RuntimeDirectoryMode=0700
+ExecStartPre=/usr/bin/rm -f /run/justverify-policy/control.sock
+ExecStart=/opt/justverify/bin/justverify policy-service --profile /etc/justverify/profile.json --socket /run/justverify-policy/control.sock
+Restart=on-failure
+RestartSec=5
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/justverify/config /var/lib/justverify/preflight
+# sudo is restricted to the root-owned, argument-free restart-core helper.
+# NoNewPrivileges would disable that specific privilege boundary.
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

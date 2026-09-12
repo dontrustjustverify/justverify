@@ -1,0 +1,15 @@
+   Compiling justverify v0.1.0 (/home/builder/justverify)
+    Finished `release` profile [optimized] target(s) in 3.25s
+{
+  "status": "PASS",
+  "checks": [
+    "actual unprivileged version service and fixed privileged bridge",
+    "real PTY V/network/review/Escape cancellation/Enter application",
+    "34 releases retained in API",
+    "real preview and systemd apply31.1 to22.0 to31.1",
+    "one-time apply token",
+    "unknown request fields denied",
+    "policy/electrs/Core/collector restart"
+  ]
+}
+Original development profile restored; unregistered version API kept stopped.

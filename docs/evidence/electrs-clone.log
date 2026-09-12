@@ -1,0 +1,19 @@
+Cloning into '.cache/electrs-0.11.1'...
+warning: refs/tags/v0.11.1 8e9bf28431b00286552248bd438ba5c2d4efaada is not a commit!
+Note: switching to '35216c6d30148be8e6763d913d437330f431fc03'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+

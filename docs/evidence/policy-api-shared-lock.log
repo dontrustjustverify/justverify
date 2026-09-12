@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "platform": "Debian ARM64 VM",
+  "uid_role": "unprivileged justverify",
+  "checks": [
+    "unsupported key rejected",
+    "config injection rejected",
+    "unknown API field rejected",
+    "real isolated preflight",
+    "actual systemd Core restart through fixed helper",
+    "observable policy values applied",
+    "one-use preview token",
+    "arbitrary sudo command denied",
+    "helper arguments denied",
+    "original configuration restored"
+  ],
+  "time": 1789148514.4922316
+}

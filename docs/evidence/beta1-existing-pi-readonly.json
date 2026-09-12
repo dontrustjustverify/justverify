@@ -1,0 +1,20 @@
+{
+  "scope": "Read-only old dev16 Pi; not beta1 image validation",
+  "unix": 1789222149,
+  "os": {
+    "version": "0.1.0-dev16"
+  },
+  "chain": {
+    "chain": "main",
+    "blocks": 440886,
+    "headers": 966685,
+    "bestblockhash": "000000000000000000989208f2110b691f138972a9936f51f60e2e484354d985",
+    "initialblockdownload": true
+  },
+  "services": {
+    "core": "active",
+    "electrs": "active",
+    "tor": "active",
+    "web": "active"
+  }
+}

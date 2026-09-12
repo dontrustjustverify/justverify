@@ -1,0 +1,35 @@
+[Unit]
+Requires=justverify-backup.service
+After=justverify-backup.service
+Description=JustVerify LAN Electrum TLS transport
+After=justverify-firstboot.service justverify-electrs.service
+Requires=justverify-firstboot.service
+PartOf=justverify-electrs.service
+RequiresMountsFor=/srv/justverify/data
+ConditionPathIsMountPoint=/srv/justverify/data
+ConditionPathExists=/etc/justverify/node-ready.json
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+User=justverify
+Group=justverify
+ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
+ExecStart=/opt/justverify/venv/bin/python /opt/justverify/web/electrum_tls.py
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_INET AF_UNIX
+IPAddressDeny=any
+IPAddressAllow=localhost
+IPAddressAllow=10.0.0.0/8
+IPAddressAllow=172.16.0.0/12
+IPAddressAllow=192.168.0.0/16
+IPAddressAllow=169.254.0.0/16
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=justverify-electrs.service

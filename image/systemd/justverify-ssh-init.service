@@ -1,0 +1,10 @@
+[Unit]
+Description=Initialize user-requested LAN SSH account and unique host keys
+After=local-fs.target
+Before=ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/justverify/scripts/ssh-firstboot.sh
+RemainAfterExit=yes
+UMask=0077

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/tmp/jv-policy-tui-test.py", line 2, in <module>
+    import socket,json,time,os,pwd,subprocess,pty,fcntl,termios,struct,select,codecs,pyte
+ModuleNotFoundError: No module named 'pyte'

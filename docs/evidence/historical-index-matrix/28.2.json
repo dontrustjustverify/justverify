@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "core": "/Satoshi:28.2.0/",
+  "network": "regtest",
+  "electrs": "0.11.1",
+  "height": 65,
+  "tip": "43de65f8017deae46f1695da53e4c7f27c139f5fb94978186ae91483f0ccf4e3",
+  "old_block_time": 1787969454,
+  "upload_target_bytes": 1048576,
+  "unprivileged_historical_download": "EXPECTED_REFUSAL: actual Core log",
+  "dedicated_backend_indexing": "PASS: fresh electrs index/header equality",
+  "backend_permissions": [
+    "noban",
+    "download"
+  ],
+  "private_state": "/tmp/jv-historical-index-pwtamuqo"
+}

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/jv-policy-tui-test.py", line 28, in <module>
+    os.write(master,b'a');read_until(b'REVIEW POLICY CHANGE',25);assert snapshot()['rpc']['getmempoolinfo']['value']['maxmempool']==before
+                          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/jv-policy-tui-test.py", line 22, in read_until
+    raise AssertionError('TUI state text not observed: '+text.decode())
+AssertionError: TUI state text not observed: REVIEW POLICY CHANGE

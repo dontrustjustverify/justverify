@@ -1,0 +1,41 @@
+   Compiling justverify v0.1.0 (/home/builder/justverify)
+    Finished `release` profile [optimized] target(s) in 1.82s
+     Running tests/policy_matrix.rs (target/release/deps/policy_matrix-e78406bb50cb2fa7)
+
+running 1 test
+Core 22.0: common policy preflight PASS
+Core 22.1: common policy preflight PASS
+Core 23.0: common policy preflight PASS
+Core 23.1: common policy preflight PASS
+Core 23.2: common policy preflight PASS
+Core 24.0: common policy preflight PASS
+Core 24.0.1: common policy preflight PASS
+Core 24.1: common policy preflight PASS
+Core 24.2: common policy preflight PASS
+Core 25.0: common policy preflight PASS
+Core 25.1: common policy preflight PASS
+Core 25.2: common policy preflight PASS
+Core 26.0: common policy preflight PASS
+Core 26.1: common policy preflight PASS
+Core 26.2: common policy preflight PASS
+Core 27.0: common policy preflight PASS
+Core 27.1: common policy preflight PASS
+Core 27.2: common policy preflight PASS
+Core 28.0: common policy preflight PASS
+Core 28.1: common policy preflight PASS
+Core 28.2: common policy preflight PASS
+Core 28.3: common policy preflight PASS
+Core 28.4: common policy preflight PASS
+Core 29.0: common policy preflight PASS
+Core 29.1: common policy preflight PASS
+Core 29.2: common policy preflight PASS
+Core 29.3: common policy preflight PASS
+Core 29.4: common policy preflight PASS
+Core 30.2: common policy preflight PASS
+Core 30.3: common policy preflight PASS
+Core 31.0: common policy preflight PASS
+Core 31.1: common policy preflight PASS
+test real_common_policy_preflight_all_supported_releases ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.60s
+

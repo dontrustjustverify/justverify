@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "image": "justverify-0.1.0-beta1.img.xz",
+  "sha256": "31ed2db7a8f16de4a0947eb5468cb61054a3eeff4ea6001c5ebb86498bed462d",
+  "compressed_bytes": 654231760,
+  "raw_sha256": "16eab677813fbb946da00849367ea611978b7dc7bde3499442acf241353e979a",
+  "raw_bytes": 6444548096,
+  "xz_integrity": "PASS",
+  "linux_pristine_raw_equality": "PASS"
+}

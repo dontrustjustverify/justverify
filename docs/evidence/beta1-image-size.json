@@ -1,0 +1,220 @@
+{
+  "scope": "Final unbooted r3 readonly root filesystem",
+  "runtime_sha256": {
+    "opt/justverify/bin/justverify": "c9afbf3f16e981f82eac258d91cd1edd2b49a54385dd46eb24c8fb26750f2c36",
+    "opt/justverify/scripts/mempool_service.py": "ad063f687e7d6bdaf492522ba425aa3caffa24c28f4842eb84b1c6b1a7e2c36f",
+    "opt/justverify/scripts/mempool_data.py": "65f6f44deac0a23d2d6513eee995931ceb453bfe4cd89b22cd294da986ccc751",
+    "usr/libexec/justverify-profile": "a6c92261acfb1ca45147f139a7f4efdcb2baa87033c19f2708932ae7bc5b4b69",
+    "etc/systemd/system/justverify-mempool.service": "0d7db6974589f605412d510403b26e877f5b265f87024bf9a2f241fc6cb75b58",
+    "etc/systemd/system/justverify-mempool-data.service": "55a4161d7409d0b0b7cf735562696a72f5aab9320869cdd7025fd23d5803604b",
+    "opt/justverify/scripts/firstboot.sh": "a566e344a3942e1185f9eac392664ff8fe0e469598cf8a3f183c1c1489c5b3a7"
+  },
+  "largest_directories": [
+    {
+      "bytes": 2139951104,
+      "path": "/."
+    },
+    {
+      "bytes": 1881604096,
+      "path": "/usr"
+    },
+    {
+      "bytes": 868851712,
+      "path": "/usr/lib"
+    },
+    {
+      "bytes": 383168512,
+      "path": "/usr/share"
+    },
+    {
+      "bytes": 368766976,
+      "path": "/usr/bin"
+    },
+    {
+      "bytes": 358252544,
+      "path": "/usr/lib/aarch64-linux-gnu"
+    },
+    {
+      "bytes": 205778944,
+      "path": "/usr/lib/firmware"
+    },
+    {
+      "bytes": 171241472,
+      "path": "/opt"
+    },
+    {
+      "bytes": 171237376,
+      "path": "/opt/justverify"
+    },
+    {
+      "bytes": 148082688,
+      "path": "/usr/share/locale"
+    },
+    {
+      "bytes": 100032512,
+      "path": "/usr/libexec"
+    },
+    {
+      "bytes": 94363648,
+      "path": "/usr/libexec/gcc"
+    },
+    {
+      "bytes": 94359552,
+      "path": "/usr/libexec/gcc/aarch64-linux-gnu"
+    },
+    {
+      "bytes": 85827584,
+      "path": "/usr/lib/python3"
+    },
+    {
+      "bytes": 85823488,
+      "path": "/usr/lib/python3/dist-packages"
+    },
+    {
+      "bytes": 78663680,
+      "path": "/opt/justverify/mempool"
+    },
+    {
+      "bytes": 72798208,
+      "path": "/usr/src"
+    },
+    {
+      "bytes": 66928640,
+      "path": "/usr/lib/modules"
+    },
+    {
+      "bytes": 66039808,
+      "path": "/usr/lib/firmware/ath11k"
+    },
+    {
+      "bytes": 66023424,
+      "path": "/usr/src/linux-headers-6.18.34+rpt-common-rpi"
+    },
+    {
+      "bytes": 62472192,
+      "path": "/usr/src/linux-headers-6.18.34+rpt-common-rpi/include"
+    },
+    {
+      "bytes": 59727872,
+      "path": "/usr/sbin"
+    },
+    {
+      "bytes": 49205248,
+      "path": "/usr/share/doc"
+    },
+    {
+      "bytes": 47099904,
+      "path": "/usr/lib/firmware/mediatek"
+    },
+    {
+      "bytes": 44584960,
+      "path": "/boot"
+    },
+    {
+      "bytes": 38699008,
+      "path": "/opt/justverify/versions"
+    },
+    {
+      "bytes": 38694912,
+      "path": "/opt/justverify/versions/31.1"
+    },
+    {
+      "bytes": 36929536,
+      "path": "/var"
+    },
+    {
+      "bytes": 35426304,
+      "path": "/opt/justverify/mempool/web"
+    },
+    {
+      "bytes": 33468416,
+      "path": "/usr/lib/modules/6.18.34+rpt-rpi-2712"
+    },
+    {
+      "bytes": 33456128,
+      "path": "/usr/lib/modules/6.18.34+rpt-rpi-v8"
+    },
+    {
+      "bytes": 33341440,
+      "path": "/usr/share/python-babel-localedata"
+    },
+    {
+      "bytes": 32874496,
+      "path": "/usr/share/python-babel-localedata/locale-data"
+    },
+    {
+      "bytes": 30511104,
+      "path": "/var/lib"
+    },
+    {
+      "bytes": 30367744,
+      "path": "/usr/lib/python3.13"
+    },
+    {
+      "bytes": 28848128,
+      "path": "/var/lib/dpkg"
+    },
+    {
+      "bytes": 28725248,
+      "path": "/usr/lib/aarch64-linux-gnu/perl"
+    },
+    {
+      "bytes": 28454912,
+      "path": "/opt/justverify/venv"
+    },
+    {
+      "bytes": 28217344,
+      "path": "/opt/justverify/venv/lib"
+    },
+    {
+      "bytes": 28147712,
+      "path": "/usr/include"
+    },
+    {
+      "bytes": 27967488,
+      "path": "/usr/share/man"
+    },
+    {
+      "bytes": 27271168,
+      "path": "/var/lib/dpkg/info"
+    },
+    {
+      "bytes": 24854528,
+      "path": "/usr/lib/gcc"
+    },
+    {
+      "bytes": 24850432,
+      "path": "/usr/lib/gcc/aarch64-linux-gnu"
+    },
+    {
+      "bytes": 24424448,
+      "path": "/opt/justverify/mempool/backend"
+    }
+  ],
+  "bundle": {
+    "version": "3.3.1",
+    "commit": "9332d9db97bcc7beed079acc8f79aa21c9b12a3b",
+    "tag_object": "ce1f34a221fa0e1fc914947d5c0e0fe5b942ff11",
+    "repository": "https://github.com/mempool/mempool",
+    "license": "AGPL-3.0 (see upstream LICENSE and COPYING.md)",
+    "umbrel_apps_commit": "01de454ee9a368245a2513afc8e84969bafb946a",
+    "umbrel_readme_commit": "bfa79ed24031b0065dd2f810411d58b82af1b95e",
+    "mining_pools_commit": "f678a4a620537ad7997a475ad0f14bfab1de3c8b",
+    "mining_pools_sha256": "0491a15f88dbd7726f00b809b65f5fa86f4b072e44aefa93e4f3414a9a61aa90",
+    "node_debian": "20.19.2+dfsg-1+deb13u2",
+    "mariadb_debian": "1:11.8.6-0+deb13u1",
+    "locales": [
+      "en-US",
+      "ko",
+      "ja"
+    ],
+    "port": 3006,
+    "npm_build": "11.8.0",
+    "gbt_rust": "1.84.1",
+    "napi_cli": "2.18.0"
+  },
+  "os": {
+    "version": "0.1.0-beta1"
+  },
+  "base_development_headers_retained": true
+}

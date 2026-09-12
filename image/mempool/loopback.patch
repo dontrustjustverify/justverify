@@ -1,0 +1,11 @@
+--- a/backend/src/index.ts
++++ b/backend/src/index.ts
+@@ -217,7 +217,7 @@
+       void this.$runLightningBackend();
+     }
+ 
+-    this.server.listen(config.MEMPOOL.HTTP_PORT, () => {
++    this.server.listen(config.MEMPOOL.HTTP_PORT, '127.0.0.1', () => {
+       if (worker) {
+         logger.info(`Mempool Server worker #${process.pid} started`);
+       } else {

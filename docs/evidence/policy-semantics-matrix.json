@@ -1,0 +1,236 @@
+[
+  {
+    "version": "22.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/22.0.json",
+    "log": ".state/policy-semantics/22.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "22.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/22.1.json",
+    "log": ".state/policy-semantics/22.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "23.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/23.0.json",
+    "log": ".state/policy-semantics/23.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "23.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/23.1.json",
+    "log": ".state/policy-semantics/23.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "23.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/23.2.json",
+    "log": ".state/policy-semantics/23.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "24.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/24.0.json",
+    "log": ".state/policy-semantics/24.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "24.0.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/24.0.1.json",
+    "log": ".state/policy-semantics/24.0.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "24.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/24.1.json",
+    "log": ".state/policy-semantics/24.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "24.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/24.2.json",
+    "log": ".state/policy-semantics/24.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "25.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/25.0.json",
+    "log": ".state/policy-semantics/25.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "25.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/25.1.json",
+    "log": ".state/policy-semantics/25.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "25.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/25.2.json",
+    "log": ".state/policy-semantics/25.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "26.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/26.0.json",
+    "log": ".state/policy-semantics/26.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "26.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/26.1.json",
+    "log": ".state/policy-semantics/26.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "26.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/26.2.json",
+    "log": ".state/policy-semantics/26.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "27.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/27.0.json",
+    "log": ".state/policy-semantics/27.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "27.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/27.1.json",
+    "log": ".state/policy-semantics/27.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "27.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/27.2.json",
+    "log": ".state/policy-semantics/27.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "28.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/28.0.json",
+    "log": ".state/policy-semantics/28.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "28.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/28.1.json",
+    "log": ".state/policy-semantics/28.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "28.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/28.2.json",
+    "log": ".state/policy-semantics/28.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "28.3",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/28.3.json",
+    "log": ".state/policy-semantics/28.3.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "28.4",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/28.4.json",
+    "log": ".state/policy-semantics/28.4.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "29.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/29.0.json",
+    "log": ".state/policy-semantics/29.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "29.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/29.1.json",
+    "log": ".state/policy-semantics/29.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "29.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/29.2.json",
+    "log": ".state/policy-semantics/29.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "29.3",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/29.3.json",
+    "log": ".state/policy-semantics/29.3.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "29.4",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/29.4.json",
+    "log": ".state/policy-semantics/29.4.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "30.0",
+    "status": "BLOCKED",
+    "reason": "official verified binary unavailable"
+  },
+  {
+    "version": "30.1",
+    "status": "BLOCKED",
+    "reason": "official verified binary unavailable"
+  },
+  {
+    "version": "30.2",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/30.2.json",
+    "log": ".state/policy-semantics/30.2.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "30.3",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/30.3.json",
+    "log": ".state/policy-semantics/30.3.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "31.0",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/31.0.json",
+    "log": ".state/policy-semantics/31.0.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  },
+  {
+    "version": "31.1",
+    "status": "PASS",
+    "report": "docs/evidence/policy-semantics/31.1.json",
+    "log": ".state/policy-semantics/31.1.log",
+    "test_sha256": "c990708326eab37f466d042078825332040d4b18386b34cab388b7beb30730bf"
+  }
+]

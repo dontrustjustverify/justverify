@@ -1,0 +1,3 @@
+PASS selected Tor-only incoming persists after reboot; loopback/indexer/onion available and clearnet closed
+PASS actual new boot ID; registered UUID/identity preserved; startup gate/Core/electrs height1 and services ready
+PASS baseline UUID/fstab/profile/owner/binaries/unit enablement restored

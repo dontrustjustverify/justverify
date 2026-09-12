@@ -1,0 +1,26 @@
+[Unit]
+Description=JustVerify initial storage provisioning API
+After=justverify-firstboot.service
+Requires=justverify-firstboot.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /opt/justverify/scripts/storage_service.py
+RuntimeDirectory=justverify-storage
+RuntimeDirectoryMode=0755
+StateDirectory=justverify-storage
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+RestrictAddressFamilies=AF_UNIX
+# Mounts must reach host services. Filesystem namespace hardening (including
+# ProtectSystem/ProtectHome/ReadWritePaths) would isolate these mounts.
+LockPersonality=yes
+SystemCallArchitectures=native
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

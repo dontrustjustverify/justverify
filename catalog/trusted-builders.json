@@ -1,0 +1,197 @@
+{
+  "0xb10c": {
+    "fingerprint": "982A193E3CE0EED535E09023188CBB2648416AD5",
+    "sha256": "ccd3cc6fd3c58e8717abc31472ca9318a657711ecbdcf1a26289b3214045195e",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/0xb10c.gpg"
+  },
+  "CoinForensics": {
+    "fingerprint": "101598DC823C1B5F9A6624ABA5E0907A0380E6C3",
+    "sha256": "3e1dff163c3a4a6f3dd50e18bed497888b18a7bc1c0745ef1f97def8b71735a4",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/CoinForensics.gpg"
+  },
+  "Emzy": {
+    "fingerprint": "9EDAFF80E080659604F4A76B2EBB056FD847F8A7",
+    "sha256": "406d1c33a00a95228569c56585cb28ff1beba2851d17ba2aa29a727b3b748631",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/Emzy.gpg"
+  },
+  "Sjors": {
+    "fingerprint": "ED9BDF7AD6A55E232E84524257FF9BDBCC301009",
+    "sha256": "f7d0c746d69686302cb8465bddd4faf2e1930a22785dfc98c6f0cd149d0cfb13",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/Sjors.gpg"
+  },
+  "TheCharlatan": {
+    "fingerprint": "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+    "sha256": "9eb99905bbd8aca6c310a9a76587e2c37524bbc6df18c00cbe277231ea8d1508",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/TheCharlatan.gpg"
+  },
+  "achow101": {
+    "fingerprint": "152812300785C96444D3334D17565732E08E5E41",
+    "sha256": "1b31ab2e336d5ee44dd4d9f5703ad4445798fcee3b1352ab75afa145e737224a",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/achow101.gpg"
+  },
+  "benthecarman": {
+    "fingerprint": "0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8",
+    "sha256": "438417e4db2106a1be8105f9b9abb777967840f7d4a81f1e5c0607d286b82735",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/benthecarman.gpg"
+  },
+  "cfields": {
+    "fingerprint": "C060A6635913D98A3587D7DB1C2491FFEB0EF770",
+    "sha256": "ade3096ffb3020eea7c30f7ef626b3d890387b782dde502b74f54044b4e9a502",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/cfields.gpg"
+  },
+  "darosior": {
+    "fingerprint": "590B7292695AFFA5B672CBB2E13FC145CD3F4304",
+    "sha256": "9ab192ac8fb23d2f562dd675fed22669f9622596a8982bfab98be6fdad1c9f42",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/darosior.gpg"
+  },
+  "davidgumberg": {
+    "fingerprint": "8B612DE5D84D2683C5BF160410F2A3D26839321E",
+    "sha256": "6fa99bf54d7c43e1fb3d4dd1525d4d72e950e05944249198f139742ef849af9e",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/davidgumberg.gpg"
+  },
+  "dunxen": {
+    "fingerprint": "948444FCE03B05BA5AB0591EC37B1C1D44C786EE",
+    "sha256": "402901a80bc6eab5aa45eadc22407b23382c83e085955af6e94b9b5d0ba77a2f",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/dunxen.gpg"
+  },
+  "fanquake": {
+    "fingerprint": "E777299FC265DD04793070EB944D35F9AC3DB76A",
+    "sha256": "d9d6d89f5d9da0811ed94469f790d5bd0e185b7ee678e7ca7b3121995ded3d26",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/fanquake.gpg"
+  },
+  "glozow": {
+    "fingerprint": "6B002C6EA3F91B1B0DF0C9BC8F617F1200A6D25C",
+    "sha256": "78c3c941d0063a6a03ef354c0415636eae59c760c0235852fb40e2b97e6f7cf2",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/glozow.gpg"
+  },
+  "guggero": {
+    "fingerprint": "F4FC70F07310028424EFC20A8E4256593F177720",
+    "sha256": "09d130b060d28e257a9e76773252d1ae35238e93425848b86bc67bd0f6b28675",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/guggero.gpg"
+  },
+  "hebasto": {
+    "fingerprint": "D1DBF2C4B96F2DEBF4C16654410108112E7EA81F",
+    "sha256": "f305e90cb6b3cfe47beb71a51242395f1fc8d46840a1d2345283df2fefca021b",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/hebasto.gpg"
+  },
+  "ismaelsadeeq": {
+    "fingerprint": "E9F76FD7F0B66653A7D893990E3908F364989888",
+    "sha256": "9e6b9cdd2629e88616b9d3ab6140237afa344afdc517818014f718105ccf5806",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/ismaelsadeeq.gpg"
+  },
+  "jackielove4u": {
+    "fingerprint": "287AE4CA1187C68C08B49CB2D11BD4F33F1DB499",
+    "sha256": "50d7dbc07a6eedbb24700bd80c122094f6e24dbc0812781f5f3318658d47d9b6",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/jackielove4u.gpg"
+  },
+  "josibake": {
+    "fingerprint": "616516B8EB6ED02882FC4A7A8ADCB558C4F33D65",
+    "sha256": "47d60a0490a93e3261347e73d5c94311bd77538d822e315f6d68b6be5746e887",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/josibake.gpg"
+  },
+  "kvaciral": {
+    "fingerprint": "C388F6961FB972A95678E327F62711DBDCA8AE56",
+    "sha256": "c1e5fc38fb917b0a795c245cee7a13cffe6562cbb822be020ac5abbcf392e563",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/kvaciral.gpg"
+  },
+  "laanwj": {
+    "fingerprint": "71A3B16735405025D447E8F274810B012346C9A6",
+    "sha256": "556c62caf73e85a56ac2d15ecd814cf733f2a425cf72edb89eb7bafad6178656",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/laanwj.gpg"
+  },
+  "luke-jr": {
+    "fingerprint": "1A3E761F19D2CC7785C5502EA291A2C45D0C504A",
+    "sha256": "e7259d18c91d54fd8d177fb9c128dd17fa65a394aafa7709e037fa8ed50477fd",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/luke-jr.gpg"
+  },
+  "m3dwards": {
+    "fingerprint": "E86AE73439625BBEE306AAE6B66D427F873CB1A3",
+    "sha256": "c6affc7b4375d0a4a36c6d6ab684c351dba28e45da6aadc083ec93c243e7908e",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/m3dwards.gpg"
+  },
+  "maflcko": {
+    "fingerprint": "A01783C082652969B9C492B5F9C5154E44D75DF8",
+    "sha256": "ec4b76e9c72ae67c283f100c6962fd0d3ba1c60abd9f8ed4044f53a329ba83d4",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/maflcko.gpg"
+  },
+  "marcofleon": {
+    "fingerprint": "5B286407E1EA6FE01CF9AF48BF131C2D0536F8AC",
+    "sha256": "1d9740a6691b9fe48a7e9a9e30e578a928610360afe4effa603133aef260b661",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/marcofleon.gpg"
+  },
+  "nkatha23": {
+    "fingerprint": "AC5DDD2ED0068633D2223CFFD5DBABC9625AB5BE",
+    "sha256": "41f648a5b3157c7adbdba2f22b0416caa24210c7c34f35746aa5ef2ead39ed78",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/nkatha23.gpg"
+  },
+  "pinheadmz": {
+    "fingerprint": "E61773CD6E01040E2F1BD78CE7E2984B6289C93A",
+    "sha256": "c69f6402bc7d63c60f2bcba1d2e853af521e625319118ab0fb57ec32f8405437",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/pinheadmz.gpg"
+  },
+  "satsie": {
+    "fingerprint": "2F78ACF677029767C8736F13747A7AE2FB0FD25B",
+    "sha256": "905c2c1b14b43fbc6a0562884f2365e1728428141fccc365a83843db1d3b7f76",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/satsie.gpg"
+  },
+  "sedited": {
+    "fingerprint": "A8FC55F3B04BA3146F3492E79303B33A305224CB",
+    "sha256": "4ccc4bd4de9b05625671dd6817f29d65e52bae8bb0fad402b5bd1f04eb211802",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/sedited.gpg"
+  },
+  "sipa": {
+    "fingerprint": "133EAC179436F14A5CF1B794860FEB804E669320",
+    "sha256": "96804841ba5801e581569b4dad0e8f8826190d0016969d5e765c6533b3d7c077",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/sipa.gpg"
+  },
+  "sipsorcery": {
+    "fingerprint": "9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C",
+    "sha256": "6fdba7ccb6271d25ebf4ca5dca3d85c321b456300ec82ed633fe01f1e7bfc66c",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/sipsorcery.gpg"
+  },
+  "svanstaa": {
+    "fingerprint": "33C103B4B2794170546CCF7BCFB2C83C66CD792A",
+    "sha256": "d2dea2019cae472606e033e42a757a9fc67fccca1a4c8b30dafae453c1aec65a",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/svanstaa.gpg"
+  },
+  "tapcrafter": {
+    "fingerprint": "2197D5689DE3AF13B4FDABC47B18557E3AF1CDA5",
+    "sha256": "b59b9eb4a52583772225572886c37a203ed3c50835b96019b9cf240f52ba458e",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/tapcrafter.gpg"
+  },
+  "theStack": {
+    "fingerprint": "6A8F9C266528E25AEB1D7731C2371D91CB716EA7",
+    "sha256": "ffd7e42d89dae3c30dc26e5b472f1eee8d887600c03c1bdc3bc2a98ad93fae06",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/theStack.gpg"
+  },
+  "vertiond": {
+    "fingerprint": "28E72909F1717FE9607754F8A7BEB2621678D37D",
+    "sha256": "c5820b35cb13180002e2af1a584ba037392fcde2bff75b992eb7b024f36d23c0",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/vertiond.gpg"
+  },
+  "willcl-ark": {
+    "fingerprint": "67AA5B46E7AF78053167FE343B8F814A784218F8",
+    "sha256": "bc7e27b822682dde35d38b024848a27525ce76f5c9874f141318ea4a304c11ed",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/willcl-ark.gpg"
+  },
+  "willyko": {
+    "fingerprint": "79D00BAC68B56D422F945A8F8E3A8F3247DBCBBF",
+    "sha256": "30cdc743f5d480ad24a1a28fa3c4f306111f0e8a22ecd8eaad86596d96a5e57c",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/willyko.gpg"
+  },
+  "xyephy": {
+    "fingerprint": "C5A8B1394FC9188223F99E089F81364FD4AF0DF6",
+    "sha256": "9141e40972419f70b5fdab544d0d3bf800c09120b14e222c492c0f7bdf3bfea3",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/xyephy.gpg"
+  },
+  "xyzconstant": {
+    "fingerprint": "21B0C796F747F2C7966B7A00EB562DE99F42B3D1",
+    "sha256": "3e8d85cf487e841347e95e247b7d826ea64f66ffd781d83e773390e6c520df06",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/xyzconstant.gpg"
+  },
+  "yuvicc": {
+    "fingerprint": "40D97A0E5A4F40B1CC582522CA247AC78DF0509C",
+    "sha256": "49bd066101c04bc65f1bd57d13fb9f06c799aecbfe3cc9bffc42f3f39a998e9e",
+    "source": "https://raw.githubusercontent.com/bitcoin-core/guix.sigs/3b667ee3ebb3dcd9e1990cf03e38a0935eec1683/builder-keys/yuvicc.gpg"
+  }
+}

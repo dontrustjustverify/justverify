@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "kind": "LAN endpoint example",
+      "payload_sha256": "8a90f0ccb893e093a7e66e69f4f99d658e32bc8a3114b45333fe874793c016a3",
+      "quiet_zone_modules": 4,
+      "decoded_exact": true,
+      "dimensions": [
+        290,
+        290
+      ]
+    },
+    {
+      "kind": "onion endpoint",
+      "payload_sha256": "f5e53c267aa15f9c393f64b84d503590b2361a894708860d2ef3c9fa6110c3f9",
+      "quiet_zone_modules": 4,
+      "decoded_exact": true,
+      "dimensions": [
+        450,
+        450
+      ]
+    }
+  ],
+  "scope": "digital decoder only; NOT actual camera or app import",
+  "payload_format": "plain host:port; no claim of automatic wallet import"
+}

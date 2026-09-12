@@ -1,0 +1,83 @@
+{
+  "utc": "2026-09-12T00:52:52.699078+00:00",
+  "tips": [
+    {
+      "height": 151994,
+      "hash": "0000000000bde8a1963fe42f77596a2b5bab407925186901dc47e61712fa5da6",
+      "branchlen": 9,
+      "status": "valid-headers"
+    },
+    {
+      "height": 151994,
+      "hash": "0000000000e06330d4c0e25477f8ea59cf830b62eebac1b44a46a0b47e26ad68",
+      "branchlen": 0,
+      "status": "active"
+    },
+    {
+      "height": 151992,
+      "hash": "0000000071c1ed58a2d4397ea1c0bdb648f93e78542ddd848f2985b1b39d82d8",
+      "branchlen": 1,
+      "status": "headers-only"
+    }
+  ],
+  "headers": [
+    {
+      "hash": "0000000000bde8a1963fe42f77596a2b5bab407925186901dc47e61712fa5da6",
+      "confirmations": -1,
+      "height": 151994,
+      "version": 651288576,
+      "versionHex": "26d1e000",
+      "merkleroot": "0c62598a75fdc3d0830b515a9766f857f770de8fdb977545cc74aa78a82f9f31",
+      "time": 1789181449,
+      "mediantime": 1789175444,
+      "nonce": 1899233542,
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "chainwork": "000000000000000000000000000000000000000000000e4111f4f15a0274d4dc",
+      "nTx": 10,
+      "previousblockhash": "0000000000cbd3292f2b411172b48d89f1b2961e2a48feda8ca5f9b156198a36"
+    },
+    {
+      "hash": "0000000000e06330d4c0e25477f8ea59cf830b62eebac1b44a46a0b47e26ad68",
+      "confirmations": 1,
+      "height": 151994,
+      "version": 597139456,
+      "versionHex": "2397a000",
+      "merkleroot": "06643ca4cb2f35d2b942646d242b41eecadb17502c74ba35b1dadf84f59ffb74",
+      "time": 1789181449,
+      "mediantime": 1789175444,
+      "nonce": 125436362,
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "chainwork": "000000000000000000000000000000000000000000000e4111f4f15a0274d4dc",
+      "nTx": 10,
+      "previousblockhash": "000000000094f6a023dda9a666a6e298d37a34f0608c18d76b3b0ace27152c51"
+    },
+    {
+      "hash": "0000000071c1ed58a2d4397ea1c0bdb648f93e78542ddd848f2985b1b39d82d8",
+      "confirmations": -1,
+      "height": 151992,
+      "version": 536870912,
+      "versionHex": "20000000",
+      "merkleroot": "02565ff6f08c84e53812e1c00fd2f32639c097de14041717828073a00b413790",
+      "time": 1789179047,
+      "mediantime": 1789173042,
+      "nonce": 4207348042,
+      "bits": "1d00ffff",
+      "target": "00000000ffff0000000000000000000000000000000000000000000000000000",
+      "difficulty": 1,
+      "chainwork": "000000000000000000000000000000000000000000000e4111f4f1580272d4da",
+      "nTx": 0,
+      "previousblockhash": "000000000050e1a04faad9e48f074fe378367e00fecdebeecd742ac35cd6cb91"
+    }
+  ],
+  "transaction": {
+    "txid": "50fae20278c3230093255e222d7a30e10d20fc77f68f6e07fcd7d91890ac7578",
+    "independent_status": {
+      "confirmed": false
+    }
+  },
+  "actions": "No invalidateblock, preciousblock, consensus flag change, or checkpoint override. Local Core selects chain normally."
+}

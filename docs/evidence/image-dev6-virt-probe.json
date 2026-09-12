@@ -1,0 +1,41 @@
+{
+  "artifact_sha256": "49f78e4faedf42db56acf7ef3dcb155d22d96173ff55a1965e18e12cddee5d6f",
+  "environment": "QEMU11.1.1 virt/HVF; 3GiB/2CPU; external Debian6.12.107 kernel/initramfs/modules; test-only pyte0.8.2/wcwidth0.8.3",
+  "results": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "owner_client_issuance": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true
+      },
+      "boot": "first",
+      "status": "PASS"
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "client_credentials_persisted": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_client_wallet_transaction_menu": true
+      },
+      "boot": "second",
+      "status": "PASS"
+    }
+  ],
+  "not_verified": [
+    "Pi kernel/firmware/physical installation",
+    "registered Core/electrs profile inside this image probe",
+    "actual phone/camera/hardware signer"
+  ]
+}

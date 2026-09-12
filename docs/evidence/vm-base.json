@@ -1,0 +1,6 @@
+{
+  "url": "https://cloud.debian.org/images/cloud/trixie/20260831-2587/debian-13-genericcloud-arm64-20260831-2587.qcow2",
+  "sha512": "321adcf21b6d2941e09e96f333af0c8f35b0865904834a4eb8149cfd2286b902d4868494ddfc863052a3267886533796aa3e21db24a243c0fc56a49c753471be",
+  "validation": "official HTTPS SHA512 match; no detached signature validation yet",
+  "scope": "development VM, not Pi image"
+}

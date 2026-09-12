@@ -1,0 +1,23 @@
+e2fsck 1.47.2 (1-Jan-2025)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+rootfs: 75448/469440 files (0.2% non-contiguous), 604574/1964032 blocks
+v0.11.1
+Tor version 0.4.9.11.
+This build of Tor is covered by the GNU General Public License (https://www.gnu.org/licenses/gpl-3.0.en.html)
+Tor is running on Linux with Libevent 2.1.13-stable, OpenSSL 3.5.7, Zlib 1.3.1, Liblzma 5.8.1, Libzstd 1.5.7 and Glibc 2.41 as libc.
+Tor compiled with GCC version 14.2.0
+/etc/sudoers.d/justverify-core: parsed OK
+/etc/sudoers.d/justverify-profile: parsed OK
+/etc/sudoers.d/justverify-install-core: parsed OK
+gpg (GnuPG) 2.4.7
+libgcrypt 1.11.0
+PASS verified hashes, version/setup tooling, root ownership, production guard and enabled services
+justverify 0.1.0
+Bitcoin Core daemon version v31.1.0 bitcoind
+
+PASS gateway/client/QR imports; aiohttp 3.13.3 qrcode 8.2
+PASS filesystem, identity absence, ARM executables, Python runtime and systemd unit verification. Pi hardware boot NOT RUN.

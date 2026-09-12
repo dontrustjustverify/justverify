@@ -1,0 +1,73 @@
+   Compiling justverify v0.1.0 (/home/builder/justverify)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.73s
+     Running tests/auxiliary_preflight.rs (target/debug/deps/auxiliary_preflight-e7fe55f332af3747)
+
+running 1 test
+22.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+22.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+22.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+22.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+23.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+23.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+23.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+23.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+23.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+23.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+24.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+24.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+24.0.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+24.0.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+24.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+24.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+24.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+24.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+25.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+25.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+25.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+25.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+25.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+25.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+26.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+26.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+26.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+26.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+26.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+26.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+27.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+27.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+test real_auxiliary_preflight_and_roundtrip has been running for over 60 seconds
+27.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+27.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+27.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+27.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+28.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+28.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+28.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+28.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+28.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+28.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+28.3 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+28.3 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+28.4 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+28.4 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+29.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+29.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+29.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+29.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+29.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+29.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+29.3 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+29.3 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+29.4 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+29.4 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+30.2 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+30.2 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+30.3 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+30.3 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+31.0 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true},"txospenderindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+31.0 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+31.1 enabled=1: actual indexes {"basic block filter index":{"best_block_height":0,"synced":true},"txindex":{"best_block_height":0,"synced":true},"txospenderindex":{"best_block_height":0,"synced":true}} / service bits, REST and supported ASMAP PASS
+31.1 enabled=0: actual indexes {} / service bits, REST and supported ASMAP PASS
+test real_auxiliary_preflight_and_roundtrip ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 127.29s

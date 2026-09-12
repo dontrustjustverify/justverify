@@ -1,0 +1,9 @@
+Collecting pyte==0.8.2
+  Downloading pyte-0.8.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting wcwidth (from pyte==0.8.2)
+  Downloading wcwidth-0.8.3-py3-none-any.whl.metadata (43 kB)
+Downloading pyte-0.8.2-py3-none-any.whl (31 kB)
+Downloading wcwidth-0.8.3-py3-none-any.whl (331 kB)
+Installing collected packages: wcwidth, pyte
+
+Successfully installed pyte-0.8.2 wcwidth-0.8.3

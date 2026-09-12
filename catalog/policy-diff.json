@@ -1,0 +1,268 @@
+[
+  {
+    "from": "22.0",
+    "to": "22.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "22.1",
+    "to": "23.0",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "23.0",
+    "to": "23.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "23.1",
+    "to": "23.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "23.2",
+    "to": "24.0",
+    "added": [
+      "mempoolfullrbf",
+      "permitbaremultisig"
+    ],
+    "removed": [],
+    "changed": [
+      "incrementalrelayfee"
+    ]
+  },
+  {
+    "from": "24.0",
+    "to": "24.0.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "24.0.1",
+    "to": "24.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "24.1",
+    "to": "24.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "24.2",
+    "to": "25.0",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "25.0",
+    "to": "25.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "25.1",
+    "to": "25.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "25.2",
+    "to": "26.0",
+    "added": [],
+    "removed": [],
+    "changed": [
+      "acceptnonstdtxn",
+      "datacarriersize"
+    ]
+  },
+  {
+    "from": "26.0",
+    "to": "26.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "26.1",
+    "to": "26.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "26.2",
+    "to": "27.0",
+    "added": [
+      "persistmempoolv1"
+    ],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "27.0",
+    "to": "27.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "27.1",
+    "to": "27.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "27.2",
+    "to": "28.0",
+    "added": [],
+    "removed": [],
+    "changed": [
+      "blocksonly",
+      "mempoolfullrbf",
+      "permitbaremultisig",
+      "whitelistforcerelay",
+      "whitelistrelay"
+    ]
+  },
+  {
+    "from": "28.0",
+    "to": "28.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "28.1",
+    "to": "28.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "28.2",
+    "to": "28.3",
+    "added": [],
+    "removed": [],
+    "changed": [
+      "blockmintxfee",
+      "incrementalrelayfee",
+      "minrelaytxfee"
+    ]
+  },
+  {
+    "from": "28.3",
+    "to": "28.4",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "28.4",
+    "to": "29.0",
+    "added": [
+      "blockreservedweight"
+    ],
+    "removed": [
+      "mempoolfullrbf"
+    ],
+    "changed": [
+      "blockmaxweight",
+      "blockmintxfee",
+      "incrementalrelayfee",
+      "minrelaytxfee"
+    ]
+  },
+  {
+    "from": "29.0",
+    "to": "29.1",
+    "added": [],
+    "removed": [],
+    "changed": [
+      "blockmintxfee",
+      "incrementalrelayfee",
+      "minrelaytxfee"
+    ]
+  },
+  {
+    "from": "29.1",
+    "to": "29.2",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "29.2",
+    "to": "29.3",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "29.3",
+    "to": "29.4",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "29.4",
+    "to": "30.2",
+    "added": [],
+    "removed": [],
+    "changed": [
+      "blockmaxweight",
+      "datacarriersize",
+      "maxorphantx"
+    ]
+  },
+  {
+    "from": "30.2",
+    "to": "30.3",
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  {
+    "from": "30.3",
+    "to": "31.0",
+    "added": [
+      "limitclustercount",
+      "limitclustersize",
+      "privatebroadcast"
+    ],
+    "removed": [
+      "limitancestorsize",
+      "limitdescendantsize",
+      "maxorphantx"
+    ],
+    "changed": [
+      "blockreservedweight",
+      "limitancestorcount",
+      "limitdescendantcount"
+    ]
+  },
+  {
+    "from": "31.0",
+    "to": "31.1",
+    "added": [],
+    "removed": [],
+    "changed": []
+  }
+]

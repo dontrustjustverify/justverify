@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "real Core31.1/electrs initial startup",
+    "real isolated downgrade to22.0",
+    "old Core gets fresh chain and separate index",
+    "return to31.1 preserves generated blocks and index",
+    "actual target startup failure restores previous separate data profile",
+    "withdrawn version and unsupported network rejected",
+    "missing active data refuses empty replacement",
+    "changed data root refuses fallback writes",
+    "actual transition process SIGKILL after selection write",
+    "recovery restores previous Core and electrs data after process death",
+    "missing target binary does not prevent restoring verified prior binary"
+  ],
+  "limitations": [
+    "native service bridge and TUI not yet connected"
+  ],
+  "status": "PASS"
+}

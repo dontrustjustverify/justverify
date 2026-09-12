@@ -1,0 +1,13 @@
+[Unit]
+Description=JustVerify device identity initialization
+Before=justverify-web.service justverify-core.service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/justverify/scripts/firstboot.sh
+RemainAfterExit=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

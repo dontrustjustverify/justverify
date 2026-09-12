@@ -1,0 +1,32 @@
+{
+  "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+  "checks": {
+    "os_user_dialog_masked": true,
+    "installed_services_active": true,
+    "identity_created_and_unregistered_node_blocked": true,
+    "pairing_proof": true,
+    "https_owner_claim": true
+  },
+  "boot": "first",
+  "status": "FAIL",
+  "error_type": "AssertionError",
+  "error_frames": [
+    {
+      "file": "jv-image-boot-probe.py",
+      "line": 54,
+      "function": "probe"
+    },
+    {
+      "file": "jv-image-data-probe.py",
+      "line": 30,
+      "function": "configure"
+    }
+  ],
+  "diagnosis": {
+    "volume_committed": true,
+    "findmnt_source": "/proc/self/fd/6",
+    "findmnt_uuid": "",
+    "scope": "Pristine dev6 userspace with external generic kernel and test scripts",
+    "fix_status": "Source changed to device-number path checked against open descriptor; new real ext4 root/nonroot immediate UUID regression PASS; full image retest pending"
+  }
+}

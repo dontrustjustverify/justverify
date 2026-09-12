@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "environment": "QEMU virt, external Debian kernel; not Pi firmware or physical hardware",
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 67.16170175001025,
+  "boots": [
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_created_and_unregistered_node_blocked": true,
+        "pairing_proof": true,
+        "https_owner_claim": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "owner_client_issuance": true,
+        "actual_tor_bootstrap_complete": true,
+        "reviewed_remote_rpc_product_onion": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_single_nvme_storage_ready_screen": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_sensitive_quick_connect_qr": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "first",
+      "clock": {
+        "unix": 1789187671,
+        "ntp_synchronized": "no"
+      },
+      "tor_bootstrap": {
+        "percent": 100,
+        "wait_seconds": 3.04
+      },
+      "status": "PASS",
+      "boot_elapsed_seconds": 30.872727
+    },
+    {
+      "environment": "QEMU virt with external Debian kernel; NOT Raspberry Pi boot",
+      "checks": {
+        "os_user_dialog_masked": true,
+        "installed_services_active": true,
+        "identity_permissions_verified": true,
+        "actual_reboot_identity_preserved": true,
+        "https_owner_login_after_reboot": true,
+        "registered_image_core_electrs_wallet_psbt": true,
+        "client_credentials_persisted": true,
+        "actual_tor_bootstrap_complete": true,
+        "remote_rpc_actual_reboot_restore": true,
+        "packaged_tui_over_authenticated_websocket": true,
+        "packaged_single_nvme_storage_ready_screen": true,
+        "packaged_client_wallet_transaction_menu": true,
+        "packaged_remote_rpc_state_screen": true,
+        "packaged_lan_tls_connection_screen": true
+      },
+      "boot": "second",
+      "clock": {
+        "unix": 1789187699,
+        "ntp_synchronized": "no"
+      },
+      "tor_bootstrap": {
+        "percent": 100,
+        "wait_seconds": 0.0
+      },
+      "status": "PASS",
+      "boot_elapsed_seconds": 32.556359
+    }
+  ],
+  "private_image": ".state/vm/probe-dev15-single.img",
+  "private_data": "None",
+  "console_log": ".state/dev15-single-image-console.log",
+  "observer_sha256": "b2955300029ed73a4fd076862d473e0df9489a5698f6d8f2d8fc84434c46240c"
+}
