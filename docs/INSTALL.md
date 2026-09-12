@@ -33,7 +33,7 @@ Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF
 ## Flash and start
 
 1. Keep your encrypted configuration backup and its password off the NVMe. Flashing replaces the selected disk contents.
-2. In balenaEtcher, select `justverify-0.1.0-beta1.img.xz` and the intended NVMe. Flash and wait for validation to succeed. Etcher supports `.img.xz` directly and decompresses it while flashing; no manual extraction is required. [Official format support](https://github.com/balena-io/etcher/blob/master/lib/shared/supported-formats.ts).
+2. Extract `justverify-0.1.0-beta1.img.xz` with an XZ-capable archive tool, then select `justverify-0.1.0-beta1.img` and the intended NVMe in balenaEtcher. Keep validation enabled and wait for success. On our macOS/Etcher 2.1.6 test, direct XZ input failed with `EVALIDATION`; the extracted IMG passed on the same target. Etcher supports XZ in general, but this tested installation uses the extracted image.
 3. Eject the NVMe safely, connect it to your Pi 5, attach Ethernet and power it on.
 4. Open **http://justverify.local** on the same LAN. Use the IP shown by your router if mDNS is unavailable. HTTP is the normal initial setup path.
 5. Create and confirm a new web administrator password. The default Core profile starts automatically after registration.

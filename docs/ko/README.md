@@ -44,7 +44,7 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 1. 이 저장소의 [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1)에 게시된 [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
 2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta1.img.xz`로 파일 해시를 계산해 [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
-3. **balenaEtcher**에서 이미지를 선택하고 지정한 NVMe에 기록하세요. Etcher가 `.img.xz`를 직접 읽고 기록 중에 압축을 풀므로 미리 해제하지 않아도 됩니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
+3. XZ 압축을 지원하는 도구로 `.img.xz`를 풀고, **balenaEtcher**에서 나온 `.img`와 지정한 NVMe를 선택해 기록하세요. 실제 macOS/Etcher 2.1.6 시험에서 XZ 직접 기록은 검증에 실패했고, 압축을 푼 IMG는 통과했습니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
 4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
 5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.
 6. 앞으로 사용할 웹 관리자 암호와 확인 암호를 입력합니다. 기기별 신원과 데이터 영역이 준비되고 기본 Core 프로필이 자동 시작됩니다.

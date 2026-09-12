@@ -44,7 +44,7 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 
 1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1) に公開された [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz)、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
 2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
-3. **balenaEtcher**でイメージと対象NVMeを選択して書き込みます。Etcherは`.img.xz`を直接読み込み、書き込み中に展開するため、事前の解凍は不要です。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
+3. XZ対応の展開ツールで`.img.xz`を解凍し、**balenaEtcher**で展開した`.img`と対象NVMeを選択して書き込みます。macOS/Etcher 2.1.6の実測ではXZの直接書き込みは検証に失敗し、展開したIMGは成功しました。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
 6. Web管理者パスワードと確認用パスワードを入力します。機器固有の識別情報とデータ領域を準備し、既定のCoreプロファイルを自動で起動します。

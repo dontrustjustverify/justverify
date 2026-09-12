@@ -18,3 +18,9 @@ This is a testing candidate, not a completed hardware acceptance release. The [m
 | Byte-for-byte reproduction of the whole OS | NOT COMPLETE |
 
 Build and test scripts remain in `scripts/` and `tests/`. Generated local logs and historical development notes are not shipped in the source tree. Removing those notes does not remove test requirements or turn a failed result into a pass.
+
+## Pi5 NVMe recording (2026-09-13)
+
+macOS and balenaEtcher2.1.6, GEIL RTL9210 2TB NVMe: direct XZ input failed with EVALIDATION, and an independent read-only check confirmed that the recorded image extent differed from the original. Both the compressed download and its decompressed IMG matched the signed manifest hashes.
+
+Retrying the extracted IMG on the same target passed Etcher's write and read-back validation:1successful target,0failures, noerrors. The IMG uses2,979,004,416bytes of mapped data within its6,444,548,096-byte image extent. An additional independent comparison after retry was NOT RUN because the NVMe was no longer attached. This validates the Etcher recording procedure; the new beta1 Pi5 boot and physical mobile acceptance are still NOT RUN.
