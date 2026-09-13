@@ -73,7 +73,7 @@ Save an encrypted configuration backup and its password **off the Pi** before re
 
 ## Build and verification
 
-Source, pinned component manifests and executable tests are included. Image assembly runs in an isolated **ARM64 Linux** builder; see [build instructions](docs/BUILD.md). macOS is used for development and flashing, not for running Linux systemd services directly. [Test results and remaining checks](docs/TESTING.md) and [release notes](docs/RELEASE_NOTES.md) distinguish actual hardware tests, VM tests and untested requirements.
+Source, pinned component manifests and executable tests are included. Image assembly runs in an isolated **ARM64 Linux** builder; see [source-to-image guide](docs/BUILD.md). macOS is used for development and flashing, not for running Linux systemd services directly. [Test results and remaining checks](docs/TESTING.md) and [release notes](docs/RELEASE_NOTES.md) distinguish actual hardware tests, VM tests and untested requirements.
 
 ## Licenses and credits
 

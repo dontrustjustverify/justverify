@@ -73,6 +73,6 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 ## 빌드·검증·라이선스
 
-이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [빌드 방법](../BUILD.md), [검증 결과와 남은 항목](../TESTING.md), [릴리스 안내](../RELEASE_NOTES.md)를 함께 제공합니다.
+이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [GitHub 소스·라이브러리 받기부터 이미지 생성까지](BUILD.md), [검증 결과와 남은 항목](../TESTING.md), [릴리스 안내](../RELEASE_NOTES.md)를 함께 제공합니다.
 
 JustVerify와 각 구성요소에는 각각의 라이선스가 적용됩니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)를 확인하세요. mempool은 upstream AGPL 조건으로 별도 포함하며, 탐색기의 **소스 · AGPL**에서 원본 소스·빌드 수정·잠금 파일을 받을 수 있습니다. Umbrel은 설치 안내와 앱 구성 비교에 참고했으며 코드를 복사하지 않았습니다. 각 upstream 프로젝트의 공식 제품이나 승인을 의미하지 않습니다.
