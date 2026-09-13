@@ -229,5 +229,3 @@ Follow [installation](INSTALL.md) with Etcher validation enabled. Direct XZ inpu
 | Build killed / disk full | Check RAM and free disk including `/var/tmp`; reduce concurrency or enlarge the builder |
 
 To resume in a new shell, restore `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS` and `JV_MEMPOOL` to the paths used for that build, enable `set -euo pipefail`, and `cd "$JV_REPO"`. Reuse verified downloads/completed outputs; do not rerun commands requiring a new directory over existing output. For another test attempt use new `tests-...` and `jv-mempool-test-...` paths, then preserve both attempts' reports. For another assembly choose a new tag.
-
-The commands follow the shipped scripts. Documentation/command validation is separate from a complete clean-builder run; this documentation update does not imply additional whole-image or physical-device validation.

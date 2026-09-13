@@ -229,5 +229,3 @@ git diff --binary > .state/build-guide/local-source.patch
 | 빌드 강제 종료·디스크 부족 | RAM과 `/var/tmp`를 포함한 여유 공간 확인; 동시 작업 수 감소 또는 빌드 VM 확장 |
 
 새 셸에서 재개할 때는 기존 빌드의 `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS`, `JV_MEMPOOL` 값을 복원하고 `set -euo pipefail`, `cd "$JV_REPO"`를 실행합니다. 검증한 다운로드·완성된 출력은 재사용하되 새 폴더가 필요한 명령을 기존 출력 위에 다시 실행하지 마세요. 재시험은 새 `tests-...` 및 `jv-mempool-test-...` 경로를 쓰고 두 시도의 보고서를 보존합니다. 재조립은 새 태그를 사용합니다.
-
-이 안내는 저장소의 실제 스크립트를 기준으로 작성했습니다. 문서·명령 검증과 새 빌드 환경의 전체 실행은 구분합니다. 안내 추가만으로 새로운 이미지 전체 빌드나 실기 검증을 통과했다고 주장하지 않습니다.
