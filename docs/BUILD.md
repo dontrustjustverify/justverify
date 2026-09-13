@@ -184,6 +184,8 @@ sudo bash image/verify-pi.sh "dist/justverify-$JV_TAG.img.xz" \
 
 Assembly verifies inputs, installs runtime/systemd units offline, removes machine identities, creates **one OS plus a separate data partition**, removes caches, zeroes unused filesystem blocks and compresses the image. It does not create two OS slots. Never use a booted VM/Pi disk as the base.
 
+Current source reserves 0.5% of the ext4 data volume for root, including after first-boot expansion. The published beta1 image used 5%; updating source alone does not change an installed drive.
+
 The verifier checks the filesystem, packaged source/binary hashes, ownership, enabled units, ARM executables, Python imports and absence of generated identities. It does **not** boot a Pi or prove synchronization, Tor reachability or physical wallet connectivity. Diagnose any failure before proceeding.
 
 ## 6. Checksum, extract and install

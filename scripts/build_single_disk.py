@@ -32,7 +32,8 @@ def build(source,output,expected,binary=None,binary_sha256=None):
   run(['/usr/sbin/sfdisk',str(output)],input='\n'.join(lines)+'\n',text=True)
   for index in (1,2):run(['/usr/bin/dd',f'if={old}p{index}',f'of={output}','bs=4M','conv=sparse,notrunc','oflag=seek_bytes',f'seek={parts[index-1]["start"]*512}','status=none'])
   with loop(output) as new:
-   run(['/usr/sbin/mkfs.ext4','-q','-U',layout['factory_data_uuid'],'-L','JustVerify-data',new+'p3'])
+   # The large data volume needs only a small root reserve; keep this in compaction too.
+   run(['/usr/sbin/mkfs.ext4','-q','-m','0.5','-U',layout['factory_data_uuid'],'-L','JustVerify-data',new+'p3'])
    with tempfile.TemporaryDirectory(prefix='jv-single-') as tmp:
     tmp=pathlib.Path(tmp)
     with mount(new+'p3',tmp/'data') as data:(data/'.jv-factory').write_bytes(b'JustVerify single-OS factory data v1\n')

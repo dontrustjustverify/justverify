@@ -41,7 +41,8 @@ size=(parts[-1]['start']+parts[-1]['size']+2048)*512
 with a.image.open('r+b') as f:f.truncate(size)
 run(['/usr/sbin/sfdisk',str(a.image)],input='\n'.join(lines)+'\n',text=True)
 with loop(a.image) as dev:
- run(['/usr/sbin/mkfs.ext4','-q','-U',layout['factory_data_uuid'],'-L','JustVerify-data',dev+'p3'])
+ # Match assembly: expansion preserves this percentage on the final data volume.
+ run(['/usr/sbin/mkfs.ext4','-q','-m','0.5','-U',layout['factory_data_uuid'],'-L','JustVerify-data',dev+'p3'])
  with tempfile.TemporaryDirectory() as tmp:
   with mount(dev+'p3',pathlib.Path(tmp)/'data') as data:(data/'.jv-factory').write_bytes(b'JustVerify single-OS factory data v1\n')
  for i in (2,3):

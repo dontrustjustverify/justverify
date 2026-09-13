@@ -4,6 +4,10 @@ import hashlib,json,os,pathlib,signal,socket,subprocess,sys,tempfile,uuid
 ROOT=pathlib.Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'scripts'))
 import factory_volume as f
 assert os.geteuid()==0 and socket.gethostname()=='justverify-dev'
+def reserved_percent(device):
+ output=f.run(['/usr/sbin/tune2fs','-l',str(device)],text=True).stdout
+ fields=dict(line.split(':',1) for line in output.splitlines() if ':' in line)
+ return 100*int(fields['Reserved block count'])/int(fields['Block count'])
 work=pathlib.Path(tempfile.mkdtemp(prefix='jv-single-factory-',dir='/var/tmp'));image=work/'disk.img'
 with image.open('xb') as file:file.truncate(2*1024**3)
 parts=[];start=2048
@@ -16,7 +20,8 @@ loop=f.run(['/usr/sbin/losetup','--find','--show','--partscan',str(image)],text=
 data=work/'data';root=work/'root';state=work/'state';data.mkdir();root.mkdir()
 try:
  found=f.devices(pathlib.Path(loop),layout)
- for role in ('root','data'):f.run(['/usr/sbin/mkfs.ext4','-q','-U',layout['factory_data_uuid'] if role=='data' else str(uuid.uuid4()),str(found[role])])
+ for role in ('root','data'):f.run(['/usr/sbin/mkfs.ext4','-q',*(['-m','0.5'] if role=='data' else []),'-U',layout['factory_data_uuid'] if role=='data' else str(uuid.uuid4()),str(found[role])])
+ reserve_before=reserved_percent(found['data']);assert abs(reserve_before-0.5)<0.002
  f.run(['/usr/bin/mount',str(found['root']),str(root)]);(root/'sentinel').write_bytes(b'protected OS files\n')
  f.mount_data(found['data'],data);(data/'.jv-factory').write_bytes(f.MARKER);(data/'unexpected').write_bytes(b'preserve me')
  f.run(['/usr/bin/umount',str(data)])
@@ -41,7 +46,9 @@ try:
  (data/'instances/sentinel').write_bytes(b'node data preserved\n');f.run(['/usr/bin/umount',str(data)])
  assert f.provision(pathlib.Path(loop),layout,state,data)==result and (data/'instances/sentinel').read_bytes()==b'node data preserved\n'
  capacity=os.statvfs(data).f_blocks*os.statvfs(data).f_frsize;assert capacity>1024**3
+ reserve_after=reserved_percent(found['data']);assert abs(reserve_after-0.5)<0.002
  report={'status':'PASS','scope':'actual three-partition GPT/ext4, SIGKILL before commit, unmount/remount; OS boot and physical Pi NOT RUN','unique_data_uuid':True,'crash_reuses_uuid':True,'existing_files_refused_and_preserved':True,'os_and_node_sentinels_preserved':True,'data_filesystem_bytes':capacity,'source_sha256':hashlib.sha256((ROOT/'scripts/factory_volume.py').read_bytes()).hexdigest(),'private_fixture':str(work)}
+ report['data_reserved_percent']={'before':reserve_before,'after_expansion_and_recovery':reserve_after}
  (ROOT/'docs/evidence/single-os-factory-volume.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report),flush=True)
 finally:
  for target in (data,root):
