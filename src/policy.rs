@@ -80,6 +80,25 @@ impl Policy {
                 entries.insert(key, row);
             }
         }
+        // Core 31 derives this default on the running device; a catalog captured
+        // on an 8 GiB builder must not advertise 1024 MiB on a smaller Pi.
+        if version.starts_with("31.") {
+            let mut system = sysinfo::System::new();
+            system.refresh_memory();
+            if let Some(entry) = entries.get_mut("dbcache") {
+                let default = if system.total_memory() >= 4_294_967_296 {
+                    "1024"
+                } else {
+                    "450"
+                };
+                entry["default"] = serde_json::json!(default);
+                if let Some(description) = entry["description"].as_str() {
+                    entry["description"] = serde_json::json!(
+                        description.replace("default: 1024", &format!("default: {default}"))
+                    );
+                }
+            }
+        }
         let runtime: Value =
             serde_json::from_slice(&fs::read(catalog.join("runtime-options.json"))?)?;
         for (key, kind, default, description) in [
@@ -126,7 +145,8 @@ impl Policy {
                 "{key}: unsupported policy option for {}",
                 self.version
             ))?;
-            if entry["ignored_or_wallet_only"] == true
+            if entry["editable"] == false
+                || entry["ignored_or_wallet_only"] == true
                 || entry["source_registration_present"] != true
             {
                 bail!("{key}: ignored, wallet-only or unverified option");
@@ -364,6 +384,14 @@ impl Policy {
             .any(|key| core_values.get(*key).is_some_and(|v| v == "1"))
         {
             warning.push("Optional Core indexes build asynchronously and require extra disk space. Startup acceptance is not index sync completion; getindexinfo tracks progress. Disabling an index retains its files.".into());
+        }
+        if old.get("txindex").is_some_and(|v| v == "1")
+            && !core_values.get("txindex").is_some_and(|v| v == "1")
+        {
+            warning.push("Disabling txindex prevents the bundled mempool explorer from becoming ready. Historical transaction lookup is limited; existing index files are retained.".into());
+        }
+        if core_values.get("datacarrier").is_some_and(|v| v == "0") {
+            warning.push("OP_RETURN data outputs will be rejected by local standard transaction policy. This does not reject valid blocks or filter every kind of arbitrary data. datacarriersize is inactive while datacarrier=0.".into());
         }
         if core_values.get("rest").is_some_and(|v| v == "1") {
             warning.push("REST provides unauthenticated public chain reads on the local Core RPC listener only; it is not forwarded by the LAN/onion wallet gateway.".into());
@@ -960,8 +988,23 @@ impl Policy {
             };
             input.insert(key, value);
         }
-        self.validate(&input)?;
+        // Previously exposed in Core 30 even though Core ignores it. Preserve
+        // the saved request for explicit removal in review, never accept a new
+        // save of this option or treat it as an effective runtime setting.
+        let mut effective = input.clone();
+        self.remove_obsolete(&mut effective);
+        self.validate(&effective)?;
         Ok(input)
+    }
+    fn remove_obsolete(&self, values: &mut Values) {
+        if self.version.starts_with("30.") {
+            values.remove("maxorphantx");
+        }
+    }
+    pub fn current_effective(&self, path: &Path) -> Result<Values> {
+        let mut values = self.current(path)?;
+        self.remove_obsolete(&mut values);
+        self.validate(&values)
     }
     pub fn recover(
         &self,

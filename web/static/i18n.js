@@ -301,7 +301,10 @@ const messages={
   "en": "Change password",
   "ja": "パスワードを変更"
  },
- "멤풀": {"en":"Mempool","ja":"メンプール"},
+ "멤풀": {
+  "en": "Mempool",
+  "ja": "メンプール"
+ },
  "글자색 선택": {
   "en": "Text color",
   "ja": "文字色"
@@ -877,6 +880,178 @@ const messages={
  "블록의 보상 거래에서 채굴 풀을 식별하지 못했습니다.": {
   "en": "Could not identify the mining pool from this block’s coinbase transaction.",
   "ja": "このブロックのコインベースからマイニングプールを識別できませんでした。"
+ },
+ "주소 복사": {
+  "en": "Copy address",
+  "ja": "アドレスをコピー"
+ },
+ "복사됨": {
+  "en": "Copied",
+  "ja": "コピーしました"
+ },
+ "자동 복사가 지원되지 않습니다. 선택된 주소를 복사하세요.": {
+  "en": "Automatic copying is unavailable. Copy the selected address.",
+  "ja": "自動コピーを利用できません。選択されたアドレスをコピーしてください。"
+ },
+ "로그인은 7일간 유지되며, 사용 중에는 자동 연장됩니다. 공용 기기에서는 사용 후 로그아웃하세요.": {
+  "en": "Stay signed in for 7 days, renewed while in use. Log out after using a shared device.",
+  "ja": "ログインは7日間保持され、使用中は自動延長されます。共有デバイスでは使用後にログアウトしてください。"
+ },
+ "OP_RETURN 데이터 거래 전파": {
+  "en": "Relay OP_RETURN data transactions",
+  "ja": "OP_RETURNデータ取引の中継"
+ },
+ "OP_RETURN 허용 크기": {
+  "en": "OP_RETURN size limit",
+  "ja": "OP_RETURNサイズ上限"
+ },
+ "블록 템플릿 최소 수수료": {
+  "en": "Minimum block template fee",
+  "ja": "ブロックテンプレートの最小手数料"
+ },
+ "최대 고아 거래 수": {
+  "en": "Maximum orphan transactions",
+  "ja": "孤立取引の最大数"
+ },
+ "거래 출력 소비 인덱스": {
+  "en": "Transaction output spender index",
+  "ja": "取引出力の使用先インデックス"
+ },
+ "최적화": {
+  "en": "Optimization",
+  "ja": "最適化"
+ },
+ "인덱스 · 서비스": {
+  "en": "Indexes · Services",
+  "ja": "インデックス・サービス"
+ },
+ "Core 기본값으로": {
+  "en": "Reset to Core default",
+  "ja": "Coreの既定値に戻す"
+ },
+ "효력 없는 설정 제거": {
+  "en": "Remove ineffective setting",
+  "ja": "無効な設定を削除"
+ },
+ "OP_RETURN 전파를 켜면 크기를 변경할 수 있습니다.": {
+  "en": "Enable OP_RETURN relay to change the size limit.",
+  "ja": "OP_RETURNの中継を有効にするとサイズ上限を変更できます。"
+ },
+ "OP_RETURN 데이터 출력을 포함한 미확인 거래의 로컬 수용·전파를 허용합니다. 끄더라도 유효한 블록은 검증하며, 모든 종류의 임의 데이터를 차단하는 기능은 아닙니다.": {
+  "en": "Accept and relay unconfirmed transactions with OP_RETURN data outputs. Valid blocks are still verified when disabled. This does not block every form of arbitrary data.",
+  "ja": "OP_RETURNデータ出力を含む未確認取引をローカルで受け入れ、中継します。無効でも有効なブロックは検証します。任意データのすべての形式を遮断する機能ではありません。"
+ },
+ "한 거래에 있는 OP_RETURN 출력 스크립트의 합계 한도입니다. 여러 출력을 허용하며 Core 30부터 기본값은 100,000 bytes입니다.": {
+  "en": "Combined OP_RETURN output script size per transaction. Multiple outputs are allowed; Core 30 and later default to 100,000 bytes.",
+  "ja": "取引内のOP_RETURN出力スクリプトの合計上限です。複数出力に対応し、Core 30以降の既定値は100,000 bytesです。"
+ },
+ "OP_RETURN 출력 스크립트의 크기 한도입니다. 이 버전의 기본값은 83 bytes입니다.": {
+  "en": "OP_RETURN output script size limit. This version defaults to 83 bytes.",
+  "ja": "OP_RETURN出力スクリプトのサイズ上限です。このバージョンの既定値は83 bytesです。"
+ },
+ "UTXO 데이터베이스 캐시의 RAM 상한입니다. 초기 동기화에 도움이 될 수 있으며, 미사용 mempool 메모리가 추가로 공유될 수 있습니다.": {
+  "en": "RAM limit for the UTXO database cache. It can help initial sync; unused mempool memory may also be shared with the cache.",
+  "ja": "UTXOデータベースキャッシュのRAM上限です。初期同期に役立つ場合があります。未使用のmempoolメモリもキャッシュと共有されることがあります。"
+ },
+ "전체 거래 조회용 인덱스입니다. JustVerify는 멤풀 앱을 위해 최초 설정에서 켭니다. 끄면 멤풀 앱의 준비·거래 조회가 제한되며 기존 인덱스 파일은 삭제되지 않습니다.": {
+  "en": "Full transaction lookup index. JustVerify enables it at setup for the Mempool app. Disabling it limits app readiness and transaction lookups; existing index files are retained.",
+  "ja": "全取引の検索用インデックスです。JustVerifyはMempoolアプリのため初回設定で有効にします。無効にするとアプリの準備と取引検索が制限されます。既存のインデックスファイルは保持します。"
+ },
+ "확인된 거래 출력을 소비한 거래를 조회하는 인덱스입니다. Core 31부터 지원하며 추가 디스크 공간과 인덱싱 시간이 필요합니다.": {
+  "en": "Find transactions spending confirmed outputs. Available from Core 31; requires additional disk space and indexing time.",
+  "ja": "確認済み出力を使用した取引を検索します。Core 31以降に対応し、追加のディスク容量とインデックス作成時間が必要です。"
+ },
+ "미확인 거래 저장에 사용할 RAM 상한입니다. 단위는 MB(1,000,000 bytes)이며 UTXO 캐시와 별개입니다.": {
+  "en": "RAM limit for unconfirmed transactions, in MB (1,000,000 bytes). Separate from the UTXO cache.",
+  "ja": "未確認取引を保存するRAMの上限です。単位はMB（1,000,000 bytes）で、UTXOキャッシュとは別です。"
+ },
+ "내 노드가 만드는 블록 템플릿에 포함할 거래의 최소 수수료입니다. 거래 전파 수수료와 별개입니다.": {
+  "en": "Minimum fee for transactions in block templates produced by this node. Separate from the relay fee.",
+  "ja": "このノードが作成するブロックテンプレートに含める取引の最小手数料です。中継手数料とは別です。"
+ },
+ "로컬 mempool 수용·전파의 최소 수수료입니다. 교체 추가 수수료도 함께 검토하세요.": {
+  "en": "Minimum fee for local mempool acceptance and relay. Also review the incremental replacement fee.",
+  "ja": "ローカルmempoolでの受入と中継の最小手数料です。取引置換の追加手数料も合わせて確認してください。"
+ },
+ "거래 교체에 필요한 추가 수수료율입니다. 최소 전파 수수료와 함께 검토하세요.": {
+  "en": "Additional fee rate required for transaction replacement. Review it alongside the minimum relay fee.",
+  "ja": "取引の置換に必要な追加手数料率です。最小中継手数料と合わせて確認してください。"
+ },
+ "확인되지 않은 거래를 mempool에서 보관할 시간입니다.": {
+  "en": "How long unconfirmed transactions remain in the mempool.",
+  "ja": "未確認取引をmempoolに保持する時間です。"
+ },
+ "정상 종료 때 mempool을 저장하고 다음 시작 때 다시 읽습니다. 끄면 재시작 후 피어로부터 다시 수집합니다.": {
+  "en": "Save the mempool on clean shutdown and reload it on startup. When disabled, transactions are collected from peers again after restart.",
+  "ja": "正常終了時にmempoolを保存し、次回起動時に読み込みます。無効の場合は再起動後にピアから再収集します。"
+ },
+ "입력이 아직 확인되지 않은 고아 거래의 저장 개수입니다. Core 30부터 이 옵션은 효력이 없습니다.": {
+  "en": "Number of orphan transactions with missing inputs to keep. This option has no effect from Core 30.",
+  "ja": "入力が見つからない孤立取引を保持する数です。Core 30以降ではこのオプションは無効です。"
+ },
+ "I2P 미지원: 현재 이미지에는 I2P 라우터(SAM)가 포함되어 있지 않아 들어오는 연결과 나가는 연결 모두 사용할 수 없습니다. Clearnet은 일반 인터넷 연결이며, 나가는 연결에서 IPv4와 IPv6를 개별 선택할 수 있습니다.": {
+  "en": "I2P is unavailable: this image does not include an I2P router (SAM) for incoming or outgoing connections. Clearnet means the regular internet; IPv4 and IPv6 can be selected separately for outgoing connections.",
+  "ja": "I2P非対応：このイメージにはI2Pルーター（SAM）が含まれず、受信・送信とも利用できません。Clearnetは通常のインターネット接続です。送信ではIPv4とIPv6を個別に選択できます。"
+ },
+ "오래된 블록 정리 (Pruning)": {
+  "en": "Prune old blocks",
+  "ja": "古いブロックの削除（Pruning）"
+ },
+ "현재 구성: 0 · 전체 블록 보관. 포함된 electrs는 pruned Core에 연결할 수 없으므로 이 구성에서는 켤 수 없습니다. txindex·txospenderindex와도 호환되지 않습니다.": {
+  "en": "Current setting: 0 · Keep all blocks. Bundled electrs cannot connect to pruned Core, so pruning is unavailable in this configuration. It also conflicts with txindex and txospenderindex.",
+  "ja": "現在の設定：0・全ブロックを保持。同梱のelectrsはpruned Coreに接続できないため、この構成では有効にできません。txindex・txospenderindexとも併用できません。"
+ },
+ "electrs와 호환되지 않음": {
+  "en": "Incompatible with electrs",
+  "ja": "electrsと非互換"
+ },
+ "maxorphantx는 Core 30에서 효력이 없어졌고 Core 31에서 제거되었습니다. 이 버전에서는 설정하지 않습니다.": {
+  "en": "maxorphantx became ineffective in Core 30 and was removed in Core 31. It is not configured on this version.",
+  "ja": "maxorphantxはCore 30で無効になり、Core 31で削除されました。このバージョンでは設定しません。"
+ },
+ "○ Core 연결 확인 필요": {
+  "en": "○ Check Core connection",
+  "ja": "○ Core接続を確認"
+ },
+ "○ 상태 갱신 지연": {
+  "en": "○ Status update delayed",
+  "ja": "○ 状態更新が遅延"
+ },
+ "○ 기기 응답 확인 중": {
+  "en": "○ Waiting for device response",
+  "ja": "○ デバイスの応答を確認中"
+ },
+ "Core의 첫 상태 응답을 기다리고 있습니다.": {
+  "en": "Waiting for the first Core status response.",
+  "ja": "Coreの最初の状態応答を待っています。"
+ },
+ "Core RPC에 연결하지 못했습니다. 아래는 마지막 수집 데이터입니다.": {
+  "en": "Cannot connect to Core RPC. The last collected data is shown below.",
+  "ja": "Core RPCに接続できません。以下は最後に取得したデータです。"
+ },
+ "Core 상태 응답이 지연되고 있습니다. 아래는 마지막 수집 데이터이며 자동으로 다시 확인합니다.": {
+  "en": "Core status is delayed. The last collected data is shown below; checking again automatically.",
+  "ja": "Coreの状態応答が遅延しています。以下は最後に取得したデータです。自動で再確認します。"
+ },
+ "블록 목록 갱신 지연 · 이전에 확인한 블록입니다.": {
+  "en": "Block list update delayed · Previously verified blocks.",
+  "ja": "ブロック一覧の更新が遅延・以前に確認したブロックです。"
+ },
+ "초기 동기화 중 · 블록 목록은 15초 간격으로 갱신합니다.": {
+  "en": "Initial sync · Block list sampled every 15 seconds.",
+  "ja": "初期同期中・ブロック一覧は15秒間隔で更新します。"
+ },
+ "새 블록 목록을 갱신하고 있습니다.": {
+  "en": "Updating the block list.",
+  "ja": "ブロック一覧を更新中です。"
+ },
+ "채굴 풀 확인 중": {
+  "en": "Checking mining pool",
+  "ja": "マイニングプールを確認中"
+ },
+ "기기 응답이 지연되고 있습니다. 자동으로 다시 연결합니다.": {
+  "en": "Device response is delayed. Reconnecting automatically.",
+  "ja": "デバイスの応答が遅延しています。自動で再接続します。"
  }
 };
 
@@ -889,7 +1064,7 @@ function text(value){
  const patterns=[[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
  for(const [pattern,replacement] of patterns)if(pattern.test(value))return value.replace(pattern,replacement);
  if(/\d(?:일|시간|분|초)/.test(value))value=value.replace(/(\d+)일/g,language==='en'?'$1d':'$1日').replace(/(\d+)시간/g,language==='en'?'$1h':'$1時間').replace(/(\d+)분/g,language==='en'?'$1m':'$1分').replace(/(\d+)초/g,language==='en'?'$1s':'$1秒').replace(/ 전$/,language==='en'?' ago':'前');
- for(const [source,translations] of Object.entries({"기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);
+ for(const [source,translations] of Object.entries({"Core 기본값: ": ["Core default: ", "Core既定値: "], "기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);
  if(value.includes('기본값 사용'))value=value.replaceAll('기본값 사용',messages['기본값 사용'][language]);
  return value;
 }

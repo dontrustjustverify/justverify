@@ -721,7 +721,7 @@ def production_bundle() -> BackupBundle:
         production_specs(guard.checked[4]),
         pathlib.Path("/var/lib/justverify-backup"),
         pathlib.Path("/boot/firmware/justverify-backup.jvb"),
-        cleanup=(pathlib.Path("/var/lib/justverify/web/setup-token"), pathlib.Path("/var/lib/justverify/web/pending-owner.json")),
+        cleanup=(pathlib.Path("/var/lib/justverify/web/setup-token"), pathlib.Path("/var/lib/justverify/web/pending-owner.json"), pathlib.Path("/var/lib/justverify/web/sessions.json")),
         barriers=(guard.checked[4].with_suffix(".transaction.json"), pathlib.Path("/var/lib/justverify/versions/transition.json")),
         validate_context=guard.validate,
         context=guard.context,

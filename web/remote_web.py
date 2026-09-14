@@ -18,11 +18,13 @@ class RemoteWeb(RemoteRPC):
         if isinstance(result,dict) and 'warning' in result:
             result['warning']='Tor Browser에서 이 노드의 관리 화면에 접속합니다. 관리자 암호가 필요합니다. RPC 연결 설정은 별개입니다.'
         return result
-    async def stop(self):
+    async def stop(self, *, revoke=True):
         # The disabling request may itself arrive over Tor. Revoke sessions and
         # close streams first, then drain this listener outside that request.
         self.enabled=False
-        self.bridge.sessions={k:v for k,v in self.bridge.sessions.items() if not v.get('tor_web')}
+        if revoke:
+            self.bridge.sessions={k:v for k,v in self.bridge.sessions.items() if not v.get('tor_web')}
+            self.bridge.save_sessions()
         for stream in list(getattr(self.bridge,'tor_streams',set())):await stream.close()
         runner,self.runner=self.runner,None
         if runner is not None:

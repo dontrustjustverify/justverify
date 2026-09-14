@@ -26,3 +26,13 @@ header .header-logout span{font:inherit;color:inherit;letter-spacing:0}
 
 /* The complete motto stays readable on narrow screens. */
 .brand{min-width:0;flex:1}.brand-tagline{margin:7px 0 0;font-size:11px;line-height:1.65;letter-spacing:.02em;color:var(--muted);max-width:840px;text-wrap:pretty}.brand-tagline span{font:inherit;letter-spacing:inherit;color:inherit;display:inline}header{align-items:flex-start;gap:12px}.header-logout{flex-shrink:0}.brand h1{line-height:44px}.brand-tagline{margin-top:0}#controls nav>a{text-decoration:none;border-radius:4px;font-weight:600}#controls nav>a:hover,#controls nav>a:focus-visible{color:var(--accent);border-color:var(--accent);outline:1px solid var(--accent);outline-offset:2px}@media(max-width:550px){.brand-tagline{font-size:11px;line-height:1.6}.brand-tagline span{display:block}}
+
+.address-field{position:relative;min-width:0;width:100%}
+.address-field>input{box-sizing:border-box;width:100%;padding-right:3.5rem;margin:0}
+.copy-button{position:absolute;right:.3rem;top:50%;transform:translateY(-50%);width:2.6rem;height:2.6rem;padding:.5rem;border:0;background:transparent;color:var(--accent);display:grid;place-items:center}
+.copy-button:hover,.copy-button:focus-visible{background:var(--surface);outline:1px solid var(--accent)}
+.copy-button svg{width:1.25rem;height:1.25rem;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.copy-feedback{position:absolute;right:0;bottom:100%;font-size:.75rem;max-width:100%;background:var(--page);color:var(--text);z-index:2}
+.copy-feedback:not(:empty){padding:.3rem .5rem;border:1px solid var(--border)}
+.device-summary dd .address-field{margin:.2rem 0}.device-summary dd input{font-size:.85rem}
+.setting-row .setting-warning{color:var(--muted);border-left:2px solid var(--accent);padding-left:.7rem}

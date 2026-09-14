@@ -93,9 +93,9 @@
     "conflicts": [],
     "verification_method": "executed -help/-help-debug and source registration; semantic ranges/behavior NOT RUN",
     "advanced": false,
-    "ignored_or_wallet_only": false,
+    "ignored_or_wallet_only": true,
     "description": "(Removed option, see release notes)",
-    "editable": true,
+    "editable": false,
     "review": "SEMANTIC_REVIEW_REQUIRED",
     "editability_basis": "src/policy.rs version/network/conflict validation; editability is independent of exhaustive behavioral verification"
   },

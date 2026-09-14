@@ -1,7 +1,7 @@
 'use strict';
 const SettingsView=(()=>{
  const el=id=>document.getElementById(id);let generation=0,kind,state,values={},selection,preview,busy=false,poll;
- const labels={listen:'들어오는 연결',onlynet:'나가는 연결',proxy:'Clearnet 연결에 Tor 사용',blocksonly:'블록만 수신',persistmempool:'재시작 후 Mempool 유지',maxmempool:'Mempool 메모리 상한',mempoolexpiry:'거래 보관 시간',minrelaytxfee:'최소 전파 수수료',incrementalrelayfee:'거래 교체 추가 수수료',dustrelayfee:'Dust 기준 수수료',dbcache:'데이터베이스 캐시',maxconnections:'최대 피어 수',maxuploadtarget:'하루 업로드 한도',datacarrier:'데이터 출력 전파',datacarriersize:'데이터 출력 크기',txindex:'전체 거래 인덱스',blockfilterindex:'블록 필터 인덱스',peerblockfilters:'피어에 블록 필터 제공',peerbloomfilters:'피어 Bloom 필터',rest:'로컬 REST API',permitbaremultisig:'Bare multisig 전파',privatebroadcast:'비공개 거래 브로드캐스트',asmap:'내장 ASMAP 사용',bantime:'피어 차단 시간',timeout:'연결 시간 제한',peertimeout:'피어 응답 대기',maxreceivebuffer:'수신 버퍼',maxsendbuffer:'송신 버퍼'};
+ const labels={listen:'들어오는 연결',onlynet:'나가는 연결',proxy:'Clearnet 연결에 Tor 사용',blocksonly:'블록만 수신',persistmempool:'재시작 후 Mempool 유지',maxmempool:'Mempool 메모리 상한',mempoolexpiry:'거래 보관 시간',minrelaytxfee:'최소 전파 수수료',incrementalrelayfee:'거래 교체 추가 수수료',dustrelayfee:'Dust 기준 수수료',dbcache:'데이터베이스 캐시',maxconnections:'최대 피어 수',maxuploadtarget:'하루 업로드 한도',datacarrier:'OP_RETURN 데이터 거래 전파',datacarriersize:'OP_RETURN 허용 크기',txindex:'전체 거래 인덱스',blockfilterindex:'블록 필터 인덱스',peerblockfilters:'피어에 블록 필터 제공',peerbloomfilters:'피어 Bloom 필터',rest:'로컬 REST API',permitbaremultisig:'Bare multisig 전파',privatebroadcast:'비공개 거래 브로드캐스트',asmap:'내장 ASMAP 사용',blockmintxfee:'블록 템플릿 최소 수수료',maxorphantx:'최대 고아 거래 수',txospenderindex:'거래 출력 소비 인덱스',bantime:'피어 차단 시간',timeout:'연결 시간 제한',peertimeout:'피어 응답 대기',maxreceivebuffer:'수신 버퍼',maxsendbuffer:'송신 버퍼'};
  function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
  async function api(path,body){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:JSON.stringify(body)});if(!r.ok){if(r.status===401)showAuth();throw Error(await r.text());}return r.json();}
  function message(text){el('settings-status').textContent=text;}
@@ -18,29 +18,50 @@ const SettingsView=(()=>{
  function policy(){
   const host=el('settings-content');host.append(node('p',`Bitcoin Core ${state.version} · ${state.network} · 저장하면 Core와 관련 서비스를 재시작합니다.`,'hint'));
   const nav=node('div',undefined,'network-switch');const fields=node('div');host.append(nav,fields);
-  const groups={network:'네트워크',mempool:'Mempool · 수수료',resources:'자원 · 인덱스',advanced:'고급'};
+  const groups={network:'네트워크',optimization:'최적화',resources:'인덱스 · 서비스',advanced:'고급'};
+  const optimization=new Set(['dbcache','txindex','txospenderindex','datacarrier','datacarriersize','maxmempool','blockmintxfee','minrelaytxfee','incrementalrelayfee','mempoolexpiry','persistmempool','maxorphantx']);
   const net=new Set(['listen','onlynet','proxy','maxconnections','maxuploadtarget','maxsendbuffer','maxreceivebuffer','timeout','peertimeout','bantime']);
   const resource=new Set(['dbcache','txindex','blockfilterindex','peerblockfilters','peerbloomfilters','rest','txospenderindex','asmap']);
   let tab='network';
   function rows(){fields.replaceChildren();nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
-   const order=['listen','onlynet','proxy'];const priority=key=>order.includes(key)?order.indexOf(key):99;const sorted=[...state.entries].sort((a,b)=>priority(a.key)-priority(b.key));for(const e of sorted){const group=net.has(e.key)?'network':resource.has(e.key)?'resources':e.advanced?'advanced':'mempool';if(group!==tab)continue;
+   const order=['listen','onlynet','proxy','datacarrier','datacarriersize','dbcache','txindex','txospenderindex','maxmempool','blockmintxfee','minrelaytxfee','incrementalrelayfee','mempoolexpiry','persistmempool','maxorphantx'];const priority=key=>order.includes(key)?order.indexOf(key):99;const sorted=[...state.entries].sort((a,b)=>priority(a.key)-priority(b.key));for(const e of sorted){const group=net.has(e.key)?'network':optimization.has(e.key)?'optimization':resource.has(e.key)?'resources':'advanced';if(group!==tab)continue;
     const row=node('section',undefined,'setting-row'),info=node('div'),controls=node('div',undefined,'setting-control');row.append(info,controls);fields.append(row);
-    info.append(node('h4',labels[e.key]||e.key),node('code',e.key));const help={listen:'다른 노드가 이 노드로 연결할 수 있는 경로입니다. RPC 접근 설정과는 별개입니다.',onlynet:'자동으로 연결할 목적지 네트워크를 선택합니다. 들어오는 연결과 수동으로 추가한 피어에는 적용되지 않습니다.',proxy:'켜면 일반 인터넷의 노드에도 Tor를 경유해 연결합니다. onion 연결은 이 토글과 관계없이 Tor를 사용합니다.'};if(help[e.key])info.append(node('p',help[e.key],'hint'));const details=node('details');details.append(node('summary','Core 옵션 설명'),node('p',e.description,'hint'));info.append(details);
+    info.append(node('h4',labels[e.key]||e.key),node('code',e.key));const help={listen:'다른 노드가 이 노드로 연결할 수 있는 경로입니다. RPC 접근 설정과는 별개입니다.',onlynet:'자동으로 연결할 목적지 네트워크를 선택합니다. 들어오는 연결과 수동으로 추가한 피어에는 적용되지 않습니다.',proxy:'켜면 일반 인터넷의 노드에도 Tor를 경유해 연결합니다. onion 연결은 이 토글과 관계없이 Tor를 사용합니다.'};Object.assign(help,{
+     datacarrier:'OP_RETURN 데이터 출력을 포함한 미확인 거래의 로컬 수용·전파를 허용합니다. 끄더라도 유효한 블록은 검증하며, 모든 종류의 임의 데이터를 차단하는 기능은 아닙니다.',
+     datacarriersize:Number(state.version.split('.')[0])>=30?'한 거래에 있는 OP_RETURN 출력 스크립트의 합계 한도입니다. 여러 출력을 허용하며 Core 30부터 기본값은 100,000 bytes입니다.':'OP_RETURN 출력 스크립트의 크기 한도입니다. 이 버전의 기본값은 83 bytes입니다.',
+     dbcache:'UTXO 데이터베이스 캐시의 RAM 상한입니다. 초기 동기화에 도움이 될 수 있으며, 미사용 mempool 메모리가 추가로 공유될 수 있습니다.',
+     txindex:'전체 거래 조회용 인덱스입니다. JustVerify는 멤풀 앱을 위해 최초 설정에서 켭니다. 끄면 멤풀 앱의 준비·거래 조회가 제한되며 기존 인덱스 파일은 삭제되지 않습니다.',
+     txospenderindex:'확인된 거래 출력을 소비한 거래를 조회하는 인덱스입니다. Core 31부터 지원하며 추가 디스크 공간과 인덱싱 시간이 필요합니다.',
+     maxmempool:'미확인 거래 저장에 사용할 RAM 상한입니다. 단위는 MB(1,000,000 bytes)이며 UTXO 캐시와 별개입니다.',
+     blockmintxfee:'내 노드가 만드는 블록 템플릿에 포함할 거래의 최소 수수료입니다. 거래 전파 수수료와 별개입니다.',
+     minrelaytxfee:'로컬 mempool 수용·전파의 최소 수수료입니다. 교체 추가 수수료도 함께 검토하세요.',
+     incrementalrelayfee:'거래 교체에 필요한 추가 수수료율입니다. 최소 전파 수수료와 함께 검토하세요.',
+     mempoolexpiry:'확인되지 않은 거래를 mempool에서 보관할 시간입니다.',
+     persistmempool:'정상 종료 때 mempool을 저장하고 다음 시작 때 다시 읽습니다. 끄면 재시작 후 피어로부터 다시 수집합니다.',
+     maxorphantx:'입력이 아직 확인되지 않은 고아 거래의 저장 개수입니다. Core 30부터 이 옵션은 효력이 없습니다.'
+    });if(help[e.key])info.append(node('p',help[e.key],'hint'));const details=node('details');details.append(node('summary','Core 옵션 설명'),node('p',e.description,'hint'));info.append(details);
     const supported=e.editable!==false&&!e.ignored_or_wallet_only&&e.source_registration_present===true&&!(e.key==='blockversion'&&state.network!=='regtest');
     const current=values[e.key],fallback=defaultValue(e);let display=current??fallback;
-    const note=node('p',`기본값: ${e.default??'N/A'} ${e.type==='decimal'?'BTC/kvB':e.unit||''} · ${current===undefined?'기본값 사용':'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
+    const unit=e.type==='decimal'?'sat/vB':({dbcache:'MiB',datacarriersize:'bytes',maxmempool:'MB',mempoolexpiry:'hours',maxorphantx:'txs'})[e.key]||e.unit||'';
+    const note=node('p',`Core 기본값: ${fallback||'N/A'} ${unit} · ${current===undefined?'기본값 사용':'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
     if(e.range&&e.range.min!==undefined)info.append(node('p',`입력 범위: ${e.range.min} ~ ${e.range.max}`,'hint'));
     const save=v=>{values[e.key]=v;changed();rows();};
-    if(!supported){controls.append(node('span','이 버전·네트워크에서는 변경 불가','hint'));continue;}
+    if(!supported){controls.append(node('span','이 버전·네트워크에서는 변경 불가','hint'));if(current!==undefined)controls.append(button('효력 없는 설정 제거',()=>{delete values[e.key];changed();rows();}));continue;}
+    if(e.key==='datacarriersize'&&String(values.datacarrier??'1')==='0'){const input=node('input');input.value=display;input.disabled=true;input.setAttribute('aria-label',labels[e.key]);controls.append(input,node('span','OP_RETURN 전파를 켜면 크기를 변경할 수 있습니다.','hint'));continue;}
     if(['boolean','tor_proxy'].includes(e.type)){controls.append(toggle(labels[e.key]||e.key,String(display).startsWith('1'),on=>save(on?'1':'0')));}
     else if(['incoming_set','network_set'].includes(e.type)){
      const incoming=e.type==='incoming_set';const options=incoming?[['clearnet','Clearnet'],['tor','Tor']]:[['ipv4','Clearnet IPv4'],['ipv6','Clearnet IPv6'],['onion','Tor']];
      if(current===undefined)display=incoming?(state.network==='regtest'?'tor':'clearnet,tor'):'ipv4,ipv6,onion';
      const selected=new Set(display.split(','));for(const [key,label] of options)controls.append(toggle(label,selected.has(key),on=>{if(on)selected.add(key);else selected.delete(key);if(!incoming&&!selected.size){message('나가는 연결은 하나 이상 선택하세요.');return;}save([...selected].sort().join(',')||'none');}));
     }else{
-     const input=node('input');input.type='text';input.inputMode=e.type==='decimal'?'decimal':'numeric';input.value=current??'';input.placeholder=fallback;input.setAttribute('aria-label',labels[e.key]||e.key);input.autocomplete='off';input.oninput=()=>{if(input.value.trim())values[e.key]=input.value.trim();else delete values[e.key];changed();note.textContent=`기본값: ${e.default} · ${input.value?'지정값: '+input.value:'기본값 사용'}`;};controls.append(input,node('small',e.type==='decimal'?'sat/vB':e.unit||''));
+     const input=node('input');input.type='text';input.inputMode=e.type==='decimal'?'decimal':'numeric';input.value=current??'';input.placeholder=fallback;input.setAttribute('aria-label',labels[e.key]||e.key);input.autocomplete='off';input.oninput=()=>{if(input.value.trim())values[e.key]=input.value.trim();else delete values[e.key];changed();note.textContent=`Core 기본값: ${fallback} ${unit} · ${input.value?'지정값: '+input.value:'기본값 사용'}`;};controls.append(input,node('small',unit));
     }
-    controls.append(button('기본값으로',()=>{delete values[e.key];changed();rows();},'subtle'));
+    controls.append(button('Core 기본값으로',()=>{delete values[e.key];changed();rows();},'subtle'));
+   }
+   if(tab==='network')fields.append(node('p','I2P 미지원: 현재 이미지에는 I2P 라우터(SAM)가 포함되어 있지 않아 들어오는 연결과 나가는 연결 모두 사용할 수 없습니다. Clearnet은 일반 인터넷 연결이며, 나가는 연결에서 IPv4와 IPv6를 개별 선택할 수 있습니다.','hint setting-warning'));
+   if(tab==='optimization'){
+    const prune=node('section',undefined,'setting-row');const explanation=node('div');explanation.append(node('h4','오래된 블록 정리 (Pruning)'),node('code','prune'),node('p','현재 구성: 0 · 전체 블록 보관. 포함된 electrs는 pruned Core에 연결할 수 없으므로 이 구성에서는 켤 수 없습니다. txindex·txospenderindex와도 호환되지 않습니다.','hint'));prune.append(explanation,node('span','electrs와 호환되지 않음','hint'));fields.append(prune);
+    if(!state.entries.some(e=>e.key==='maxorphantx'))fields.append(node('p','maxorphantx는 Core 30에서 효력이 없어졌고 Core 31에서 제거되었습니다. 이 버전에서는 설정하지 않습니다.','hint'));
    }
   }
   for(const [key,label] of Object.entries(groups)){const b=button(label,()=>{tab=key;rows();});b.dataset.tab=key;nav.append(b);}rows();

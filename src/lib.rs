@@ -1,5 +1,6 @@
 pub mod backup_ui;
 pub mod client_ui;
+pub mod collector;
 pub mod connection_ui;
 pub mod dashboard;
 pub mod download;
@@ -109,9 +110,12 @@ pub struct Rpc {
 }
 impl Rpc {
     pub fn new(port: u16, cookie: &Path) -> Result<Self> {
+        Self::with_timeout(port, cookie, Duration::from_secs(3))
+    }
+    pub fn with_timeout(port: u16, cookie: &Path, timeout: Duration) -> Result<Self> {
         Ok(Self {
             client: reqwest::blocking::Client::builder()
-                .timeout(Duration::from_secs(3))
+                .timeout(timeout)
                 .no_proxy()
                 .build()?,
             url: format!("http://127.0.0.1:{port}"),
@@ -127,110 +131,25 @@ impl Rpc {
             .basic_auth(user, Some(pass))
             .json(&json!({"jsonrpc":"1.0","id":"justverify","method":method,"params":params}))
             .send()
-            .context("RPC connection failed")?;
+            .map_err(rpc_transport_error)?;
         // Core legacy RPC uses HTTP 500 for valid JSON-RPC errors.
-        let body: Value = response.json().context("invalid RPC response")?;
+        let body: Value = response.json().map_err(rpc_transport_error)?;
         if !body["error"].is_null() {
             bail!("RPC error code {}", body["error"]["code"]);
         }
         Ok(body["result"].clone())
     }
-    pub fn collect(&self, snapshot: &mut Snapshot) {
-        for (method, params) in [
-            ("getblockchaininfo", json!([])),
-            ("getnetworkinfo", json!([])),
-            ("getnettotals", json!([])),
-            ("getmempoolinfo", json!([])),
-            ("getpeerinfo", json!([])),
-            ("getindexinfo", json!([])),
-            ("estimatesmartfee", json!([6])),
-        ] {
-            let sample = snapshot.rpc.entry(method.to_owned()).or_default();
-            match self.call(method, params) {
-                Ok(value) => {
-                    sample.value = value;
-                    sample.updated = now();
-                    sample.error = None;
-                }
-                Err(e) => sample.error = Some(clean(&e.to_string())),
-            }
-        }
-        // Follow previousblockhash so the list stays on one branch during a reorg.
-        let chain = &snapshot.rpc["getblockchaininfo"];
-        let tip = chain.value["bestblockhash"]
-            .as_str()
-            .unwrap_or("")
-            .to_owned();
-        let healthy = chain.error.is_none() && !tip.is_empty();
-        let mainnet = chain.value["chain"].as_str() == Some("main");
-        let recent = snapshot.rpc.entry("recentblocks".into()).or_default();
-        if !healthy {
-            recent.error = Some("Core unavailable".into());
-        } else if recent.value[0]["hash"].as_str() != Some(&tip)
-            || recent.error.is_some()
-            || recent.value.as_array().into_iter().flatten().any(|b| {
-                b["miner"]["status"] == "unavailable"
-                    && now().saturating_sub(b["miner"]["checked"].as_u64().unwrap_or(0)) >= 30
-            })
-        {
-            let result = (|| -> Result<Value> {
-                let mut hash = tip;
-                let mut blocks = Vec::new();
-                for _ in 0..6 {
-                    let mut block = self.call("getblockheader", json!([hash, true]))?;
-                    let cached = recent
-                        .value
-                        .as_array()
-                        .into_iter()
-                        .flatten()
-                        .find(|b| b["hash"].as_str() == Some(&hash));
-                    block["miner"] = cached
-                        .map(|b| b["miner"].clone())
-                        .filter(|v| {
-                            !v.is_null()
-                                && (v["status"] != "unavailable"
-                                    || now().saturating_sub(v["checked"].as_u64().unwrap_or(0))
-                                        < 30)
-                        })
-                        .unwrap_or_else(|| {
-                            // Explicit block hash works without txindex on Core 22+.
-                            // Never request every decoded transaction in a block.
-                            let result = (|| -> Result<Value> {
-                                if block["height"] == 0 {
-                                    return Ok(json!({"status":"unknown"}));
-                                }
-                                let body = self.call("getblock", json!([hash, 1]))?;
-                                let txid =
-                                    body["tx"][0].as_str().context("coinbase unavailable")?;
-                                let tx =
-                                    self.call("getrawtransaction", json!([txid, true, hash]))?;
-                                Ok(miner::identify(&tx, mainnet))
-                            })();
-                            let mut value =
-                                result.unwrap_or_else(|_| json!({"status":"unavailable"}));
-                            value["checked"] = json!(now());
-                            value
-                        });
-                    let previous = block["previousblockhash"].as_str().unwrap_or("").to_owned();
-                    blocks.push(block);
-                    if previous.is_empty() {
-                        break;
-                    }
-                    hash = previous;
-                }
-                Ok(json!(blocks))
-            })();
-            match result {
-                Ok(value) => {
-                    recent.value = value;
-                    recent.updated = now();
-                    recent.error = None;
-                }
-                Err(e) => recent.error = Some(clean(&e.to_string())),
-            }
-        }
-        snapshot.collected = now();
-    }
+}
+
+fn rpc_transport_error(error: reqwest::Error) -> anyhow::Error {
+    // Do not expose request URLs, authentication headers or response bodies.
+    anyhow::anyhow!(if error.is_timeout() {
+        "RPC request timed out"
+    } else if error.is_connect() {
+        "RPC connection failed"
+    } else {
+        "RPC response failed"
+    })
 }
 
 pub fn field(s: &Snapshot, method: &str, key: &str) -> String {
@@ -245,7 +164,7 @@ pub fn field(s: &Snapshot, method: &str, key: &str) -> String {
     } else {
         clean(&value.to_string())
     };
-    if sample.error.is_some() {
+    if sample.error.is_some() || sample.updated == 0 || now().saturating_sub(sample.updated) > 15 {
         format!("{text} [STALE @{}]", sample.updated)
     } else {
         text
@@ -311,13 +230,13 @@ pub fn main_lines(s: &Snapshot) -> Vec<String> {
             "Core {} | last collection {}",
             if s.rpc
                 .get("getblockchaininfo")
-                .is_some_and(|x| x.error.is_none())
+                .is_some_and(|x| x.error.is_none() && x.updated > 0 && now().saturating_sub(x.updated) <= 15)
             {
                 "ONLINE"
             } else {
                 "UNAVAILABLE / STALE"
             },
-            s.collected
+            s.rpc.get("getblockchaininfo").map_or(0, |x| x.updated)
         ),
         format!(
             "Electrs {} | height {}",
@@ -367,6 +286,36 @@ mod tests {
         );
         assert_eq!(field(&s, "x", "a"), "42 [STALE @7]");
         assert_eq!(field(&s, "missing", "a"), "N/A");
+    }
+    #[test]
+    fn host_heartbeat_cannot_refresh_old_core_or_fee_samples() {
+        let mut s = Snapshot {
+            collected: now(),
+            ..Snapshot::default()
+        };
+        s.rpc.insert(
+            "getblockchaininfo".into(),
+            Sample {
+                value: json!({"blocks":42}),
+                updated: now() - 20,
+                error: None,
+            },
+        );
+        s.rpc.insert(
+            "estimatesmartfee".into(),
+            Sample {
+                value: json!({"feerate":0.00001}),
+                updated: now() - 20,
+                error: None,
+            },
+        );
+        assert!(field(&s, "getblockchaininfo", "blocks").contains("STALE"));
+        assert!(display_fee(&s, "estimatesmartfee", "feerate").contains("STALE"));
+        assert!(
+            main_lines(&s)
+                .iter()
+                .any(|line| line.starts_with("Core UNAVAILABLE / STALE"))
+        );
     }
 }
 
@@ -433,6 +382,8 @@ pub fn probe_electrs(port: u16, core: &Snapshot) -> Value {
         let (height, tip) = electrs_tip(port)?;
         let ready = core.rpc.get("getblockchaininfo").is_some_and(|s| {
             s.error.is_none()
+                && s.updated > 0
+                && now().saturating_sub(s.updated) <= 15
                 && s.value["blocks"].as_u64() == Some(height)
                 && s.value["bestblockhash"].as_str() == Some(tip.as_str())
                 && s.value["initialblockdownload"] == false
@@ -473,7 +424,7 @@ fn display_fee(s: &Snapshot, m: &str, k: &str) -> String {
                 .as_f64()
                 .map(|f| format!("{:.3}", f * 100000.0))
                 .unwrap_or("N/A".into());
-            if v.error.is_some() {
+            if v.error.is_some() || v.updated == 0 || now().saturating_sub(v.updated) > 15 {
                 format!("{text} STALE")
             } else {
                 text

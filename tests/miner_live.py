@@ -17,7 +17,7 @@ with tempfile.TemporaryDirectory(prefix='jv-miner-') as tmp:
   for _ in range(150):
    try:
     s=snapshot();b=s['rpc']['recentblocks']['value']
-    if b and b[0]['hash']==tip and not s['rpc']['recentblocks']['error']:return b
+    if b and b[0]['hash']==tip and not s['rpc']['recentblocks']['error'] and b[0].get('miner',{}).get('status') not in (None,'pending'):return b
    except (OSError,KeyError,TypeError):pass
    time.sleep(.1)
   raise AssertionError('collector did not publish submitted block')

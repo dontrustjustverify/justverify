@@ -56,7 +56,7 @@ class DeviceSettings:
             self.verify_password(request,body['current_password'])
             salt=secrets.token_hex(16)
             self.atomic(self.bridge.state/'admin.json',json.dumps({'salt':salt,'hash':self.password_hash(password,salt)}))
-            self.bridge.sessions.clear()
+            self.bridge.sessions.clear();self.bridge.save_sessions()
             for ws in list(self.bridge.active): await ws.close()
             return {'reauthenticate':True}
         if set(body)=={'action','enabled'} and body['action']=='tor_preview' and type(body['enabled']) is bool:

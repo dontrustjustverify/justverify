@@ -55,7 +55,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
             field(s, m, k)
         }
     };
-    let age = now().saturating_sub(s.collected);
+    let age = now().saturating_sub(s.rpc.get("getblockchaininfo").map_or(0, |x| x.updated));
     let online = age <= 15
         && s.rpc
             .get("getblockchaininfo")
@@ -131,7 +131,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
     ];
     let mut blocks = Vec::new();
     if let Some(recent) = s.rpc.get("recentblocks") {
-        if recent.error.is_some() || age > 15 {
+        if recent.error.is_some() || now().saturating_sub(recent.updated) > 15 {
             blocks.push("STALE: 현재 블록 상태를 확인할 수 없습니다".into());
         }
         for b in recent.value.as_array().into_iter().flatten() {
@@ -158,7 +158,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
     }
     let mut peers = vec!["방향  연결 주소 / 클라이언트".into()];
     if let Some(p) = s.rpc.get("getpeerinfo") {
-        if p.error.is_some() || age > 15 {
+        if p.error.is_some() || now().saturating_sub(p.updated) > 15 {
             peers.push("STALE: 이전 피어 정보".into());
         }
         for p in p.value.as_array().into_iter().flatten().take(5) {

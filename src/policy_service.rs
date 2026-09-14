@@ -52,7 +52,7 @@ fn restart(profile: &Profile, policy: &Policy) -> Result<()> {
             if v["chain"] != profile.network {
                 bail!("restarted Core network mismatch");
             }
-            let values = policy.validate(&policy.current(&profile.managed_config)?)?;
+            let values = policy.current_effective(&profile.managed_config)?;
             crate::policy::verify_observable(&values, &rpc.call("getmempoolinfo", json!([]))?)?;
             crate::policy::verify_network_observable(
                 &values,

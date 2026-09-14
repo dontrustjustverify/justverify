@@ -4,6 +4,8 @@ import argparse, ipaddress, asyncio, base64, contextlib, fcntl, hashlib, hmac, j
 from aiohttp import web, WSMsgType
 from rpc_gateway import Clients, Gateway
 ROOT=pathlib.Path(__file__).resolve().parents[1]
+SESSION_SECONDS=7*24*60*60
+SESSION_RENEW_AFTER=60*60
 
 def atomic(path, data):
     temp=path.with_name(path.name+'.'+secrets.token_hex(8))
@@ -18,7 +20,7 @@ def password_hash(password,salt):
 class Bridge:
     def __init__(self,state,binary,socket,origin):
         self.state=state;self.binary=str(binary.resolve());self.socket=str(socket.resolve());self.origin=origin
-        self.sessions={};self.attempts={};self.active=set()
+        self.sessions={};self.attempts={};self.active=set();self.load_sessions()
         self.clients=Clients(state/'rpc-clients.json',atomic);self.gateway=Gateway(self.clients,origin=self.origin)
         from node_admin import Startup
         self.startup=Startup()
@@ -28,11 +30,47 @@ class Bridge:
         self.remote_web=RemoteWeb(self,atomic)
         self.device_settings=DeviceSettings(self,atomic,password_hash)
     def cookie_name(self,r):return 'jv_tor_session' if r.get('tor_web') else 'jv_lan_session' if r.scheme=='http' else 'jv_session'
+    @staticmethod
+    def session_key(token):return hashlib.sha256(token.encode()).hexdigest()
+    def admin_digest(self):
+        try:return hashlib.sha256((self.state/'admin.json').read_bytes()).hexdigest()
+        except OSError:return None
+    def load_sessions(self):
+        path=self.state/'sessions.json'
+        try:
+            info=path.lstat()
+            if not stat.S_ISREG(info.st_mode) or info.st_mode&0o077 or info.st_uid!=os.geteuid() or info.st_size>131072:return
+            saved=json.loads(path.read_text());now=time.time()
+            if saved.get('schema')!=1 or saved.get('admin_digest')!=self.admin_digest() or not self.admin_digest():return
+            rows=saved['sessions']
+            if not isinstance(rows,dict) or len(rows)>16:return
+            for key,value in rows.items():
+                if not isinstance(key,str) or len(key)!=64 or any(c not in '0123456789abcdef' for c in key):continue
+                if not isinstance(value,dict) or set(value)!={'expires','renewed','csrf','audience','tor_web'}:continue
+                if not isinstance(value['expires'],(int,float)) or not now<value['expires']<=now+SESSION_SECONDS+300:continue
+                if not isinstance(value['renewed'],(int,float)) or not now-SESSION_SECONDS<=value['renewed']<=now+300:continue
+                if not isinstance(value['csrf'],str) or not 32<=len(value['csrf'])<=128:continue
+                if value['audience'] not in ('jv_session','jv_lan_session','jv_tor_session') or value['tor_web']!=(value['audience']=='jv_tor_session'):continue
+                self.sessions[key]=value
+        except (OSError,ValueError,TypeError,KeyError):self.sessions={}
+    def save_sessions(self):
+        self.sessions={k:v for k,v in self.sessions.items() if v['expires']>time.time()}
+        atomic(self.state/'sessions.json',json.dumps({'schema':1,'admin_digest':self.admin_digest(),'sessions':self.sessions}))
     def session(self,r):
-        token=r.cookies.get(self.cookie_name(r),'');s=self.sessions.get(token)
-        if not s or s['expires']<time.monotonic():
-            self.sessions.pop(token,None);raise web.HTTPUnauthorized(text='인증이 필요합니다.')
+        token=r.cookies.get(self.cookie_name(r),'');key=self.session_key(token);s=self.sessions.get(key)
+        if not s or s['expires']<=time.time() or s['audience']!=self.cookie_name(r):
+            if s and s['expires']<=time.time():self.sessions.pop(key,None)
+            raise web.HTTPUnauthorized(text='인증이 필요합니다.')
+        r['authenticated_bridge']=self;r['authenticated_session']=s;r['session_token']=token
         return s
+    def set_session_cookie(self,response,r,token):
+        response.set_cookie(self.cookie_name(r),token,secure=r.scheme=='https',httponly=True,samesite='Strict',max_age=SESSION_SECONDS,path='/')
+    def renew_session(self,r,response):
+        s=r.get('authenticated_session');token=r.get('session_token','')
+        if response.prepared or response.status>=400 or not s or self.sessions.get(self.session_key(token)) is not s:return
+        now=time.time()
+        if now-s['renewed']>=SESSION_RENEW_AFTER and s['expires']>now:
+            s['expires']=now+SESSION_SECONDS;s['renewed']=now;self.save_sessions();self.set_session_cookie(response,r,token)
     def same_origin(self,r):
         origin=r.headers.get('Origin')
         if r.get('tor_web'):
@@ -111,16 +149,16 @@ class Bridge:
             p=json.loads(record.read_text())
             if not hmac.compare_digest(password_hash(password,p['salt']),p['hash']):raise web.HTTPUnauthorized(text='관리자 암호가 맞지 않습니다.')
         self.attempts[r.remote].pop()  # Successful authentication is not a failed attempt.
-        self.sessions={k:v for k,v in self.sessions.items() if v['expires']>time.monotonic()}
+        self.sessions={k:v for k,v in self.sessions.items() if v['expires']>time.time()}
         if len(self.sessions)>=16:raise web.HTTPTooManyRequests()
         token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32)
-        self.sessions[token]={'expires':time.monotonic()+3600,'csrf':csrf,'tor_web':bool(r.get('tor_web'))}
-        response=web.json_response({'csrf':csrf});response.set_cookie(self.cookie_name(r),token,secure=r.scheme=='https',httponly=True,samesite='Strict',max_age=3600,path='/')
+        self.sessions[self.session_key(token)]={'expires':time.time()+SESSION_SECONDS,'renewed':time.time(),'csrf':csrf,'audience':self.cookie_name(r),'tor_web':bool(r.get('tor_web'))};self.save_sessions()
+        response=web.json_response({'csrf':csrf});self.set_session_cookie(response,r,token)
         return response
     async def logout(self,r):
         self.same_origin(r);s=self.session(r)
         if not hmac.compare_digest(r.headers.get('X-CSRF-Token',''),s['csrf']):raise web.HTTPForbidden()
-        self.sessions.pop(r.cookies.get(self.cookie_name(r)),None)
+        self.sessions.pop(self.session_key(r.cookies.get(self.cookie_name(r),'')),None);self.save_sessions()
         response=web.json_response({'ok':True});response.del_cookie(self.cookie_name(r));return response
     async def remote_rpc(self,r):
         self.same_origin(r);session=self.session(r)
@@ -276,6 +314,7 @@ class Bridge:
 async def headers(request,handler):
     try:response=await handler(request)
     except web.HTTPException as exc:response=exc
+    if request.get('authenticated_bridge'):request['authenticated_bridge'].renew_session(request,response)
     response.headers.update({'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"})
     return response
 
@@ -305,7 +344,7 @@ def app_for(bridge,tor_rpc=False,lan_http=False,remote_web=False):
                 except Exception:await bridge.remote_web.stop()
                 yield
             finally:
-                await bridge.remote_web.stop()
+                await bridge.remote_web.stop(revoke=False)
                 if bridge.remote_cleanups:await asyncio.gather(*bridge.remote_cleanups,return_exceptions=True)
         app.cleanup_ctx.append(persistent_web)
         from remote_rpc import RemoteRPC
@@ -352,7 +391,7 @@ def app_for(bridge,tor_rpc=False,lan_http=False,remote_web=False):
     if not lan_http:
         app.router.add_post('/rpc',bridge.gateway.rpc);app.router.add_post('/',bridge.gateway.rpc);app.router.add_post('/wallet/{wallet}',bridge.gateway.rpc)
     # Explicit static allowlist; state files cannot be routed.
-    for name in ['xterm.js','xterm.css','app.js','app.css','dashboard.js','settings.js','device.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
+    for name in ['xterm.js','xterm.css','app.js','app.css','copy.js','dashboard.js','settings.js','device.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
         async def serve(r,name=name):return web.FileResponse(ROOT/'web/static'/name)
         app.router.add_get('/'+name,serve)
     return app

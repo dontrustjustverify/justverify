@@ -25,7 +25,7 @@ for directory in sorted((R/'docs/evidence/core-matrix').iterdir()):
                 description=' '.join(description)
                 if key in extra or category in ['Node relay options:','Block creation options:']:
                     default=re.search(r'default: ([^),]+)',description)
-                    ignored=any(t in description.lower() for t in ['has no effect','only used by wallet','ignored'])
+                    ignored=any(t in description.lower() for t in ['has no effect','no longer has any effect','removed option','only used by wallet','ignored'])
                     rows.append({'core_version':version,'key':key,'source':f'https://github.com/bitcoin/bitcoin/blob/v{version}/src/init.cpp','help_sha256':hashlib.sha256(help.encode()).hexdigest(),'source_sha256':hashlib.sha256(init.encode()).hexdigest(),'source_registration_present':f'"-{key}' in init,'type':'boolean' if key in boolean else 'decimal' if key in fee else 'integer','unit':'BTC/kvB (input sat/vB)' if key in fee else 'MB (1000000 bytes)' if key=='maxmempool' else 'hours' if key=='mempoolexpiry' else 'see upstream description','default':default.group(1) if default else None,'range':None,'network_scope':release_networks[version],'introduced_removed_changed':'see adjacent-version diff','restart_required':True,'dependencies':[],'conflicts':[],'verification_method':'executed -help/-help-debug and source registration; semantic ranges/behavior NOT RUN','advanced':f'  -{key}' not in basic,'ignored_or_wallet_only':ignored,'description':description,'editable':False,'review':'SEMANTIC_REVIEW_REQUIRED'})
             current=[match.group(1),section,[]]
         elif current and line.strip():current[2].append(line.strip())

@@ -25,6 +25,7 @@ test ! -e "$work/root/var/lib/justverify-tor/electrum/hs_ed25519_secret_key"
 test ! -e "$work/root/var/lib/justverify-tor/rpc/hs_ed25519_secret_key"
 test ! -e "$work/root/var/lib/justverify-tor/web/hs_ed25519_secret_key"
 test ! -e "$work/root/var/lib/justverify/web/admin.json"
+test ! -e "$work/root/var/lib/justverify/web/sessions.json"
 test ! -e "$work/root/var/lib/mysql"
 chroot "$work/root" /opt/justverify/bin/electrs --version
 chroot "$work/root" /usr/bin/tor --version

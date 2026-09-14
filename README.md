@@ -16,6 +16,8 @@ Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electr
 - Korean, English and Japanese; Teal, Amber, Green and Ice themes.
 - Reviewed settings changes, encrypted configuration backups and recovery tools.
 
+Current source settings, OP_RETURN controls, network support and session behavior are explained in the [node settings guide](docs/SETTINGS.md). The published beta1 installer predates these latest source updates.
+
 ## See JustVerify
 
 A **30-second tour**: ten views, three seconds each, with real menu clicks and scrolling.

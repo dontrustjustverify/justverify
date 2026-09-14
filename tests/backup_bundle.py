@@ -106,7 +106,7 @@ def fixture(folder, device=False):
         elif spec.required:
             raise AssertionError(spec.key)
     shutil.rmtree(tls)
-    cleanup = (folder / "state/web/setup-token", folder / "state/web/pending-owner.json")
+    cleanup = (folder / "state/web/setup-token", folder / "state/web/pending-owner.json", folder / "state/web/sessions.json")
     barriers = (folder / "state/config/managed.transaction.json", folder / "state/versions/transition.json")
     write(barriers[0], b'{"phase":"committed"}\n', 0o600)
     write(barriers[1], b'{"phase":"committed"}\n', 0o600)
@@ -177,11 +177,11 @@ def main():
         # Recreate a coherent but different state by restoring once, then alter a single optional file.
         bundle.restore(passphrase, review["sha256"])
         assert bundle.snapshot() == original
-        write(cleanup[0], b"must be removed", 0o600)
+        for path in cleanup: write(path, b"must be removed", 0o600)
         write(specs[11].path, b'{"schema":1,"clients":[{"changed":true}]}\n', specs[11].mode)
         restored = bundle.restore(passphrase, review["sha256"])
         assert restored["phase"] == "committed" and restored["chain_data_included"] is False
-        assert bundle.snapshot() == original and not cleanup[0].exists()
+        assert bundle.snapshot() == original and all(not path.exists() for path in cleanup)
 
         before = bundle.snapshot(current=True)
         cleanup_before = bundle._read_cleanup()

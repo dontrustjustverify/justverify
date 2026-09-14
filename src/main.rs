@@ -1,7 +1,6 @@
 use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
-use justverify::{Rpc, Snapshot, clean, probe_electrs, probe_tor};
-use serde_json::json;
+use justverify::Snapshot;
 use std::{
     fs,
     io::{Read, Write},
@@ -11,7 +10,6 @@ use std::{
     },
     path::PathBuf,
     sync::{Arc, RwLock},
-    thread,
     time::Duration,
 };
 
@@ -135,30 +133,7 @@ fn main() -> Result<()> {
             let listener = UnixListener::bind(&socket)?;
             fs::set_permissions(&socket, fs::Permissions::from_mode(0o600))?;
             let cache = Arc::new(RwLock::new(Snapshot::default()));
-            let writer = cache.clone();
-            let rpc = Rpc::new(rpc_port, &cookie)?;
-            thread::spawn(move || {
-                let mut state = Snapshot::default();
-                let mut host = sysinfo::System::new_all();
-                let mut disks = sysinfo::Disks::new_with_refreshed_list();
-                let mut last_disk_refresh = 0;
-                loop {
-                    rpc.collect(&mut state);
-                    host.refresh_memory();
-                    host.refresh_cpu_usage();
-                    state.host = json!({"hostname":clean(&sysinfo::System::host_name().unwrap_or_default()),"uptime":sysinfo::System::uptime(),"used_memory_mib":host.used_memory()/1048576,"total_memory_mib":host.total_memory()/1048576,"cpu_percent":format!("{:.1}",host.global_cpu_usage())});
-                    if justverify::now().saturating_sub(last_disk_refresh) >= 10 {
-                        disks.refresh(true);
-                        last_disk_refresh = justverify::now();
-                    }
-                    state.host["disks"]=json!(disks.iter().map(|d|json!({"mount":clean(&d.mount_point().display().to_string()),"total":d.total_space(),"available":d.available_space()})).collect::<Vec<_>>());
-                    state.host["swap_mib"] = json!(host.used_swap() / 1048576);
-                    state.host["electrs"] = probe_electrs(electrs_port, &state);
-                    state.host["tor"] = probe_tor(tor_port);
-                    *writer.write().unwrap() = state.clone();
-                    thread::sleep(Duration::from_secs(2));
-                }
-            });
+            justverify::collector::start(cache.clone(), rpc_port, &cookie, electrs_port, tor_port)?;
             for stream in listener.incoming() {
                 let mut stream = stream?;
                 stream.set_read_timeout(Some(Duration::from_secs(1)))?;

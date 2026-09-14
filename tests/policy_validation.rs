@@ -181,3 +181,35 @@ fn private_broadcast_rejects_known_leak_and_incompatible_network_setup() {
             .is_ok()
     );
 }
+
+#[test]
+fn op_return_and_removed_orphan_option_are_version_scoped() {
+    for version in ["22.0", "29.4", "30.3", "31.1"] {
+        let p = policy(version, "regtest");
+        assert!(p.validate(&value("op_return", "0")).is_err());
+        assert!(p.validate(&value("datacarrier", "0")).is_ok());
+        assert!(p.validate(&value("datacarrier", "1")).is_ok());
+        assert!(p.validate(&value("datacarrier", "2")).is_err());
+        assert_eq!(
+            p.validate(&value("maxorphantx", "100")).is_ok(),
+            version == "22.0" || version == "29.4"
+        );
+    }
+    let temp = std::env::temp_dir().join(format!("jv-orphan-migration-{}", std::process::id()));
+    std::fs::create_dir(&temp).unwrap();
+    let file = temp.join("managed.conf");
+    std::fs::write(&file, "maxorphantx=100\n").unwrap();
+    let p = policy("30.3", "regtest");
+    let saved = p.current(&file).unwrap();
+    assert_eq!(saved["maxorphantx"], "100");
+    assert!(p.current_effective(&file).unwrap().is_empty());
+    assert!(p.preview(&file, saved).is_err());
+    let plan = p.preview(&file, Values::new()).unwrap();
+    assert!(
+        plan.changes
+            .iter()
+            .any(|v| v.contains("maxorphantx: 100 ->"))
+    );
+    assert_eq!(std::fs::read_to_string(&file).unwrap(), "maxorphantx=100\n");
+    std::fs::remove_dir_all(temp).unwrap();
+}
