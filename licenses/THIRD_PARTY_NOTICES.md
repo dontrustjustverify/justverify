@@ -5,6 +5,7 @@ JustVerify's original code is MIT-licensed. Each separately bundled component an
 | Component | Version/source | Notices and corresponding source |
 |---|---|---|
 | Bitcoin Core | Official, signature-verified releases; default 31.1 | MIT; pinned artifacts/signers in `catalog/` |
+| i2pd | 2.61.0, `635b013a612ff47278ef02acf8580a28e10e26c5` | BSD-3-Clause; `licenses/i2pd/LICENSE`; exact source/SHA256 in `catalog/i2pd.json`. The image bundle also includes its source archive and public reseed certificates. |
 | electrs | 0.11.1, `35216c6d30148be8e6763d913d437330f431fc03` | MIT; exact source URL/hash in `catalog/electrs.json` |
 | mempool | 3.3.1, `9332d9db97bcc7beed079acc8f79aa21c9b12a3b` | Upstream AGPL; full source, patches, locks, build instructions, LICENSE and COPYING.md in the companion source archive and the app's **Source · AGPL** link |
 | Mining-pool data | `f678a4a620537ad7997a475ad0f14bfab1de3c8b` | MIT; `licenses/mining-pools/LICENSE` and `image/mempool/POOLS-LICENSE` |

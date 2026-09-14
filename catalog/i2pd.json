@@ -1,0 +1,12 @@
+{
+  "version": "2.61.0",
+  "commit": "635b013a612ff47278ef02acf8580a28e10e26c5",
+  "tag_object": "4fef5596f366be4b174a4d090d118e7679707a38",
+  "source_url": "https://codeload.github.com/PurpleI2P/i2pd/tar.gz/635b013a612ff47278ef02acf8580a28e10e26c5",
+  "source_sha256": "58e6e6d40fe14e5f192ab09788b4e33c594e766ddb6f09505384f563438222e8",
+  "source_bytes": 779861,
+  "tag_github_verification": true,
+  "license": "BSD-3-Clause",
+  "sam": "127.0.0.1:7656",
+  "reference": "https://github.com/bitcoin/bitcoin/blob/v31.1/doc/i2p.md"
+}

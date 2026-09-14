@@ -29,6 +29,7 @@ SERVICES = (
     "justverify-policy",
     "justverify-versions",
     "justverify-tor",
+    "justverify-i2p",
 )
 
 
@@ -49,6 +50,7 @@ def resume():
     system("daemon-reload")
     system("reset-failed", *SERVICES, check=False)
     system("start", "justverify-tor")
+    system("start", "justverify-i2p")
     # Conditions and registration guards decide which node services may start.
     for unit in ("justverify-versions", "justverify-core", "justverify-electrs", "justverify-manager", "justverify-policy", "justverify-electrum-tls"):
         system("start", unit)

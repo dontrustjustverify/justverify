@@ -244,6 +244,7 @@ pub fn main_lines(s: &Snapshot) -> Vec<String> {
             s.host["electrs"]["height"]
         ),
         format!("Tor {}", s.host["tor"]["state"].as_str().unwrap_or("N/A")),
+        format!("I2P {}", s.host["i2p"]["state"].as_str().unwrap_or("N/A")),
         format!(
             "FEE estimate {} sat/vB | floor {} sat/vB | relay {} sat/vB",
             display_fee(s, "estimatesmartfee", "feerate"),
@@ -413,6 +414,79 @@ pub fn probe_tor(port: u16) -> Value {
         Ok(())
     })();
     json!({"state":if result.is_ok(){"SOCKS LISTENING; circuit unverified"}else{"UNAVAILABLE"},"port":port})
+}
+
+pub fn probe_i2p(core: &Snapshot) -> Value {
+    use std::io::{BufRead, BufReader, Read, Write};
+    let fresh = |key: &str| {
+        core.rpc
+            .get(key)
+            .filter(|s| s.error.is_none() && s.updated > 0 && now().saturating_sub(s.updated) <= 15)
+    };
+    let Some(info) = fresh("getnetworkinfo") else {
+        return json!({"state":"STALE","port":7656});
+    };
+    let network = info.value["networks"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|r| r["name"] == "i2p"));
+    if !network.is_some_and(|r| r["proxy"].as_str().is_some_and(|p| !p.is_empty())) {
+        return json!({"state":"OFF","port":7656});
+    }
+    let sam = (|| -> Result<()> {
+        let mut socket = std::net::TcpStream::connect_timeout(
+            &"127.0.0.1:7656".parse()?,
+            Duration::from_millis(300),
+        )?;
+        socket.set_read_timeout(Some(Duration::from_millis(500)))?;
+        socket.set_write_timeout(Some(Duration::from_millis(500)))?;
+        socket.write_all(b"HELLO VERSION MIN=3.1 MAX=3.1\n")?;
+        let mut line = String::new();
+        BufReader::new(socket).take(512).read_line(&mut line)?;
+        if !line.starts_with("HELLO REPLY ")
+            || !line.split_whitespace().any(|s| s == "RESULT=OK")
+            || !line.split_whitespace().any(|s| s == "VERSION=3.1")
+        {
+            bail!("SAM negotiation failed");
+        }
+        Ok(())
+    })();
+    let peers = fresh("getpeerinfo").and_then(|s| s.value.as_array());
+    let inbound = peers.map(|rows| {
+        rows.iter()
+            .filter(|r| {
+                r["network"] == "i2p"
+                    && r["inbound"] == true
+                    && r["version"].as_u64().unwrap_or(0) > 0
+            })
+            .count()
+    });
+    let outbound = peers.map(|rows| {
+        rows.iter()
+            .filter(|r| {
+                r["network"] == "i2p"
+                    && r["inbound"] == false
+                    && r["version"].as_u64().unwrap_or(0) > 0
+            })
+            .count()
+    });
+    let state = if sam.is_err() {
+        "ROUTER UNAVAILABLE"
+    } else if inbound.unwrap_or(0) + outbound.unwrap_or(0) > 0 {
+        "CONNECTED"
+    } else {
+        "SAM READY; waiting for peers"
+    };
+    let address = info.value["localaddresses"]
+        .as_array()
+        .and_then(|rows| {
+            rows.iter().find(|r| {
+                r["address"]
+                    .as_str()
+                    .is_some_and(|s| s.ends_with(".b32.i2p"))
+            })
+        })
+        .map(|r| r["address"].clone());
+    json!({"state":state,"port":7656,"incoming_peers":inbound,"outgoing_peers":outbound,"address":address,"p2p_port":0})
 }
 
 // Display rounding only; all submitted configuration fees use integer fee_to_core.

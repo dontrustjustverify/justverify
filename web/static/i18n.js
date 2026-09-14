@@ -1,6 +1,8 @@
 'use strict';
 const I18n=(()=>{
 const messages={
+ "Core 22에서는 I2P 수신만 켤 수 없습니다. I2P 송신도 켜거나 Core 23 이상을 선택하세요.": {"en":"Core 22 cannot enforce incoming-only I2P. Enable outgoing I2P too, or select Core 23 or newer.","ja":"Core 22ではI2P受信のみの設定を適用できません。I2P送信もオンにするか、Core 23以降を選択してください。"},
+ "I2P 들어옴 / 나감": {"en":"I2P in / out","ja":"I2P 受信 / 送信"},
  "설정": {
   "en": "Settings",
   "ja": "設定"
@@ -989,9 +991,9 @@ const messages={
   "en": "Number of orphan transactions with missing inputs to keep. This option has no effect from Core 30.",
   "ja": "入力が見つからない孤立取引を保持する数です。Core 30以降ではこのオプションは無効です。"
  },
- "I2P 미지원: 현재 이미지에는 I2P 라우터(SAM)가 포함되어 있지 않아 들어오는 연결과 나가는 연결 모두 사용할 수 없습니다. Clearnet은 일반 인터넷 연결이며, 나가는 연결에서 IPv4와 IPv6를 개별 선택할 수 있습니다.": {
-  "en": "I2P is unavailable: this image does not include an I2P router (SAM) for incoming or outgoing connections. Clearnet means the regular internet; IPv4 and IPv6 can be selected separately for outgoing connections.",
-  "ja": "I2P非対応：このイメージにはI2Pルーター（SAM）が含まれず、受信・送信とも利用できません。Clearnetは通常のインターネット接続です。送信ではIPv4とIPv6を個別に選択できます。"
+ "I2P는 별도의 익명 네트워크입니다. 들어오는 연결과 나가는 연결을 각각 선택할 수 있으며, 둘 다 끄면 I2P 라우터도 정지합니다. 시작 후 터널과 피어 연결까지 수 분 걸릴 수 있습니다. Clearnet의 Tor 경유 설정은 I2P에 적용되지 않습니다.": {
+  "en": "I2P is a separate anonymity network. Select incoming and outgoing independently; disabling both stops the router. Tunnels and peers may take several minutes to become ready. Clearnet-over-Tor does not apply to I2P.",
+  "ja": "I2Pは独立した匿名ネットワークです。受信と送信を個別に選択でき、両方をオフにするとルーターも停止します。トンネルとピア接続には数分かかる場合があります。ClearnetのTor経由設定はI2Pには適用されません。"
  },
  "오래된 블록 정리 (Pruning)": {
   "en": "Prune old blocks",

@@ -22,7 +22,7 @@ Enter the **SSH password** at the prompt; the result is `root`. Administrator co
 
 Beta1 allowed only the three fixed helpers. A denial from `sudo whoami` on that image is a permission limitation, not an incorrect password. Downloading new source does not change an installed OS.
 
-An existing authorized administrator can install the policy from the verified beta2 source checkout:
+An existing authorized administrator can install the policy from the verified release source checkout:
 
 ```sh
 sudo install -o root -g root -m 0440 image/justverify-admin.sudoers /etc/sudoers.d/00-justverify-admin

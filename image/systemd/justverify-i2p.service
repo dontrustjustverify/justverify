@@ -1,0 +1,31 @@
+[Unit]
+Description=JustVerify I2P router for Bitcoin peers
+After=network-online.target justverify-backup.service
+Wants=network-online.target
+Requires=justverify-backup.service
+RequiresMountsFor=/srv/justverify/data
+ConditionPathExists=/etc/justverify/node-ready.json
+StartLimitIntervalSec=120
+StartLimitBurst=6
+
+[Service]
+DynamicUser=yes
+User=justverify-i2p
+StateDirectory=justverify-i2p
+StateDirectoryMode=0700
+# Only this fixed read-only condition needs access to the private node policy.
+ExecCondition=+/usr/bin/python3 /opt/justverify/scripts/i2p_service.py --enabled
+ExecStart=/opt/justverify/i2pd/i2pd --conf=/etc/justverify/i2pd.conf --datadir=/var/lib/justverify-i2p
+ExecStartPost=/usr/bin/python3 /opt/justverify/scripts/i2p_service.py --ready
+Restart=on-failure
+RestartSec=15
+TimeoutStopSec=45
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

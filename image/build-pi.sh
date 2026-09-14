@@ -7,8 +7,15 @@ base=${1:?verified base .img.xz required}
 core=${2:?verified extracted ARM Core directory required}
 binary=${3:?ARM Linux JustVerify executable required}
 electrs=${4:?verified ARM electrs executable required}
-build_tag=${5:-0.1.0-beta2}
+build_tag=${5:-0.1.0-beta3}
 mempool=${6:?verified native mempool bundle directory required}
+i2pd=${7:?pinned native i2pd bundle directory required}
+(cd "$i2pd" && sha256sum -c SHA256SUMS > /dev/null)
+python3 - "$i2pd/manifest.json" <<'I2P_CHECK'
+import json,sys
+actual=json.load(open(sys.argv[1]));expected=json.load(open('catalog/i2pd.json'))
+assert all(actual.get(k)==v for k,v in expected.items()),'I2P bundle provenance differs from pinned catalog'
+I2P_CHECK
 (cd "$mempool" && sha256sum -c SHA256SUMS > /dev/null)
 [[ "$build_tag" =~ ^[A-Za-z0-9.-]+$ ]] || exit 1
 out="$PWD/dist/justverify-${build_tag}.img"
@@ -46,6 +53,7 @@ mount "${loop}p1" "$mountdir/boot/firmware"
 install -d "$mountdir/opt/justverify/bin" "$mountdir/opt/justverify/scripts" "$mountdir/etc/justverify" "$mountdir/srv/justverify/data"
 install -m 0755 "$electrs" "$mountdir/opt/justverify/bin/electrs"
 install -m 0755 "$binary" "$mountdir/opt/justverify/bin/justverify"
+cp -a "$i2pd" "$mountdir/opt/justverify/i2pd"
 install -d -m 0755 "$mountdir/opt/justverify/versions/31.1"
 cp -a "$core" "$mountdir/opt/justverify/versions/31.1/bitcoin-31.1"
 # Headless appliance: keep official CLI/daemon/utilities and notices byte-identical.
@@ -76,6 +84,8 @@ install -m 0644 image/versions.json "$mountdir/etc/justverify/versions.json"
 install -m 0644 image/profile.json "$mountdir/etc/justverify/profile.json"
 install -m 0440 image/justverify-core.sudoers "$mountdir/etc/sudoers.d/justverify-core"
 install -m 0644 image/electrs.toml image/torrc "$mountdir/etc/justverify/"
+install -m 0644 image/i2pd.conf "$mountdir/etc/justverify/"
+install -m 0755 scripts/i2p_service.py "$mountdir/opt/justverify/scripts/"
 install -m 0644 image/bitcoin.conf "$mountdir/etc/justverify/bitcoin.conf"
 install -m 0755 image/ssh-firstboot.sh "$mountdir/opt/justverify/scripts/ssh-firstboot.sh"
 install -d "$mountdir/etc/ssh/sshd_config.d" "$mountdir/etc/systemd/system/ssh.service.d"
@@ -94,7 +104,7 @@ cp -L /etc/resolv.conf "$mountdir/etc/resolv.conf"
 chroot "$mountdir" /bin/bash -ec '
   export DEBIAN_FRONTEND=noninteractive
   apt-get update
-  apt-get install --no-install-recommends -y python3-venv openssl avahi-daemon tor sudo gpg ca-certificates e2fsprogs util-linux nodejs=20.19.2+dfsg-1+deb13u2 mariadb-server=1:11.8.6-0+deb13u1
+  apt-get install --no-install-recommends -y python3-venv openssl avahi-daemon tor sudo gpg ca-certificates e2fsprogs util-linux libboost-program-options1.83.0=1.83.0-4.2 nodejs=20.19.2+dfsg-1+deb13u2 mariadb-server=1:11.8.6-0+deb13u1
   id justverify >/dev/null 2>&1 || useradd --system --home-dir /var/lib/justverify --create-home --shell /usr/sbin/nologin justverify
   visudo -cf /etc/sudoers.d/justverify-core
   visudo -cf /etc/sudoers.d/justverify-profile
@@ -104,6 +114,7 @@ chroot "$mountdir" /bin/bash -ec '
   /opt/justverify/venv/bin/pip install --require-hashes --only-binary=:all: -r /opt/justverify/web/requirements.arm64.lock
   systemctl enable justverify-firstboot justverify-core justverify-manager justverify-web justverify-console justverify-storage justverify-device justverify-backup justverify-versions justverify-policy justverify-electrs justverify-tor avahi-daemon
   systemctl enable justverify-electrum-tls justverify-mempool justverify-mempool-web
+  systemctl enable justverify-i2p
   systemctl disable mariadb.service
   systemctl disable tor.service tor@default.service
   systemctl disable getty@tty1.service

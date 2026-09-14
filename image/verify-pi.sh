@@ -29,6 +29,8 @@ test ! -e "$work/root/var/lib/justverify/web/sessions.json"
 test ! -e "$work/root/var/lib/mysql"
 chroot "$work/root" /opt/justverify/bin/electrs --version
 chroot "$work/root" /usr/bin/tor --version
+chroot "$work/root" /opt/justverify/i2pd/i2pd --version
+(cd "$work/root/opt/justverify/i2pd" && sha256sum -c SHA256SUMS > /dev/null)
 chroot "$work/root" /usr/bin/node --version
 chroot "$work/root" /usr/sbin/mariadbd --version
 (cd "$work/root/opt/justverify/mempool" && sha256sum -c SHA256SUMS > /dev/null)
@@ -42,6 +44,14 @@ python3 - "$work/root" "$source_root" <<'VERIFY_HASH'
 import hashlib,json,pathlib,sys
 root=pathlib.Path(sys.argv[1]);catalog=root/'opt/justverify/catalog'
 source=pathlib.Path(sys.argv[2])
+assert (root/'opt/justverify/scripts/i2p_service.py').read_bytes()==(source/'scripts/i2p_service.py').read_bytes()
+assert (root/'etc/justverify/i2pd.conf').read_bytes()==(source/'image/i2pd.conf').read_bytes()
+assert (root/'etc/systemd/system/justverify-i2p.service').read_bytes()==(source/'image/systemd/justverify-i2p.service').read_bytes()
+assert (root/'etc/systemd/system/multi-user.target.wants/justverify-i2p.service').is_symlink()
+assert not (root/'var/lib/justverify-i2p/router.keys').exists()
+assert not list((root/'srv/justverify/data').rglob('i2p_private_key'))
+router=json.loads((root/'opt/justverify/i2pd/manifest.json').read_text())
+assert all(router.get(k)==v for k,v in json.loads((source/'catalog/i2pd.json').read_text()).items())
 admin=root/'etc/sudoers.d/00-justverify-admin'
 assert admin.read_bytes()==(source/'image/justverify-admin.sudoers').read_bytes()
 assert admin.stat().st_uid==0 and admin.stat().st_mode&0o777==0o440

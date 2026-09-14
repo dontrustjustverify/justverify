@@ -5,9 +5,12 @@
 
 Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
 
-**0.1.0-beta2 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+**0.1.0-beta3 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
-Beta2 improves dashboard responsiveness and session persistence, adds address copy buttons, clarifies OP_RETURN settings and enables password-authenticated SSH administration. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2).
+Beta3 adds I2P peers and retains the dashboard, session, address-copy, OP_RETURN and SSH administration improvements from beta2. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3).
+
+
+**I2P peers:** beta3 includes i2pd. In Bitcoin Core → Mempool · Network settings, select I2P separately for incoming and outgoing peers. Both start off. Core 22 requires both directions for incoming; Core 23+ permits incoming-only. See [network settings](docs/SETTINGS.md).
 
 ## What is included
 
@@ -46,8 +49,8 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz), [justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2). Use only an artifact listed in that release's manifest.
-2. Check the download against [justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta2.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Get [justverify-0.1.0-beta3.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3.img.xz), [justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3). Use only an artifact listed in that release's manifest.
+2. Check the download against [justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta3.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. Extract the `.img.xz` with an XZ-capable archive tool, then select the resulting `.img` and your intended NVMe in **balenaEtcher**. Our macOS/Etcher 2.1.6 test failed validation with direct XZ input; the extracted IMG passed. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.

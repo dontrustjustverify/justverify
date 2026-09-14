@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta2.
+This guide applies to JustVerify 0.1.0-beta3.
 
 ## OP_RETURN and transaction policy
 
@@ -34,7 +34,21 @@ For a Core 30 configuration containing an old `maxorphantx` value, use **Remove 
 
 Incoming and outgoing controls are separate. Outgoing clearnet is split into IPv4 and IPv6; Umbrel's single clearnet choice enables both. Tor outgoing uses Core's onion network. **Route clearnet through Tor** controls the proxy for ordinary internet destinations; onion connections always use Tor.
 
-I2P is not included in this image. Core supports I2P through a separately running SAM-compatible router, but JustVerify does not yet package or verify that router. Incoming and outgoing I2P are therefore unavailable. Enabling an unsupported checkbox would not provide working I2P connectivity.
+**I2P incoming and outgoing** are available in beta3. The image bundles i2pd 2.61.0 and starts it when either I2P selector is enabled. Both are off by default. Saving both off stops the router; ordinary policy changes preserve a running router and its tunnels.
+
+| Selection | Generated Core settings |
+|---|---|
+| I2P outgoing | `onlynet=i2p` alongside other selected outgoing networks; `i2psam=127.0.0.1:7656` |
+| I2P incoming on/off | `i2pacceptincoming=1/0` while either I2P direction is selected |
+| I2P both off | No SAM or I2P accept setting; router stopped |
+
+Core 22.0/22.1 override `onlynet` reachability when a SAM endpoint is configured. Therefore, **Core 22 requires outgoing I2P when incoming I2P is enabled**. Choose Core 23 or later for incoming-only I2P. The interface and backend reject the unsupported combination rather than silently allowing outgoing I2P.
+
+SAM is bound to loopback and cannot be used from the LAN. Bitcoin I2P peer addresses use `.b32.i2p:0`; this is not an Electrs, RPC or browser endpoint. Routing clearnet through Tor does not route I2P through Tor. No router console, SOCKS/HTTP proxy or UPnP service is exposed. The bundled router uses a 256 KB/s bandwidth class, 50% sharing and a maximum of 20 transit tunnels. Actual traffic and startup times depend on the I2P network.
+
+The dashboard shows **OFF**, **ROUTER UNAVAILABLE**, **SAM READY; waiting for peers**, or **CONNECTED** with actual incoming/outgoing counts. SAM READY means only that the local API answers; it does not prove a usable tunnel. Old Core data is marked STALE. Initial tunnel creation can take several minutes.
+
+Incoming I2P uses Core's persistent `i2p_private_key`. Encrypted configuration backups include that identity; old backups without it remain restorable. Turning incoming off retains the key. Core 22/23 also reuse this persistent identity for outgoing connections; Core 24+ use transient outgoing identities. Core 24.0/24.0.1 can create excessive transient tunnels: use incoming and outgoing together, or choose Core 24.1 or newer with the upstream session limit. Router transport keys are generated locally and are not copied into the image or configuration backup.
 
 The incoming selector preserves a private loopback P2P connection for electrs. P2P selection does not expose Core RPC. RPC wallet access uses separately authenticated and restricted endpoints.
 
@@ -55,3 +69,5 @@ An RPC timeout during heavy disk activity is shown as a delayed update. A failed
 ## Source references
 
 Behavior was compared with [umbrel-bitcoin at 2fe07948](https://github.com/getumbrel/umbrel-bitcoin/tree/2fe07948f99e101dbee95ce34e5947a69c441ee4), [Umbrel authentication at bfa79ed2](https://github.com/getumbrel/umbrel/blob/bfa79ed24031b0065dd2f810411d58b82af1b95e/packages/umbreld/source/modules/auth/auth.ts), [Bitcoin Core 31.1](https://github.com/bitcoin/bitcoin/tree/9be056a8a72b624dae9623b2f7bded92c2a21c91) and [electrs 0.11.1](https://github.com/romanz/electrs/tree/35216c6d30148be8e6763d913d437330f431fc03). Product implementation is independently written. Version-specific catalogs are under `catalog/`.
+
+I2P references: [Core 22 network implementation](https://github.com/bitcoin/bitcoin/blob/v22.0/src/net.cpp), [Core 24 transient sessions](https://github.com/bitcoin/bitcoin/blob/v24.0/src/net.cpp), [Core 24.1 I2P fixes](https://bitcoincore.org/en/releases/24.1/), [Core 31.1 I2P guide](https://github.com/bitcoin/bitcoin/blob/v31.1/doc/i2p.md), [i2pd pinned source](https://github.com/PurpleI2P/i2pd/tree/635b013a612ff47278ef02acf8580a28e10e26c5).

@@ -41,7 +41,9 @@ async def main():
    p=await request('/versions',{'method':'preview','version':active['instance']['core_version'],'network':'regtest','watch_only':False})
    assert (await request('/versions',{'method':'apply','token':p['token']}))['phase']=='committed'
    s=await request('/policy',{'method':'state'});original=s['requested'];values={**original,'persistmempool':'0','maxconnections':'42','maxuploadtarget':'10'}
-   await request('/policy',{'method':'preview','values':{**values,'onlynet':'i2p'}},409)
+   await request('/policy',{'method':'preview','values':{**values,'onlynet':'unknown-network'}},409)
+   i2p=await request('/policy',{'method':'preview','values':{**values,'onlynet':'i2p'}})
+   assert i2p['plan']['requested']['onlynet']=='i2p'
    await request('/policy',{'method':'preview','values':{'maxconnections':42}},409)
    p=await request('/policy',{'method':'preview','values':values});assert p['plan']['requested']==values
    await request('/policy',{'method':'apply','token':p['token']})

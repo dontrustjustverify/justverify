@@ -12,6 +12,14 @@ use std::{
 };
 
 pub type Values = BTreeMap<String, String>;
+fn selects(values: &Values, key: &str, network: &str) -> bool {
+    values
+        .get(key)
+        .is_some_and(|v| v.split(',').any(|n| n == network))
+}
+pub fn i2p_enabled(values: &Values) -> bool {
+    selects(values, "listen", "i2p") || selects(values, "onlynet", "i2p")
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Plan {
     pub version: String,
@@ -101,6 +109,11 @@ impl Policy {
         }
         let runtime: Value =
             serde_json::from_slice(&fs::read(catalog.join("runtime-options.json"))?)?;
+        let supports_i2p = ["i2psam", "i2pacceptincoming"].iter().all(|key| {
+            runtime[version]["options"]
+                .as_array()
+                .is_some_and(|options| options.iter().any(|v| v == key))
+        });
         for (key, kind, default, description) in [
             (
                 "listen",
@@ -110,13 +123,13 @@ impl Policy {
                 } else {
                     "clearnet,tor"
                 },
-                "Incoming peers: none, clearnet, tor, or clearnet,tor. Internal loopback P2P remains available for electrs. Tor uses its separate tagged listener; RPC exposure is unchanged.",
+                "Incoming peers: none or a selection of clearnet,tor,i2p. Internal loopback P2P remains available for electrs. I2P uses the local SAM router; RPC exposure is unchanged.",
             ),
             (
                 "onlynet",
                 "network_set",
-                "all available networks",
-                "Automatic outgoing destinations: comma-separated ipv4,ipv6,onion. Does not restrict incoming or manually added peers. I2P is not installed.",
+                "ipv4,ipv6,onion",
+                "Automatic outgoing destinations: comma-separated ipv4,ipv6,onion,i2p. Does not restrict incoming or manually added peers. I2P requires the bundled local SAM router; it is initially off.",
             ),
             (
                 "proxy",
@@ -130,6 +143,9 @@ impl Policy {
                 .is_some_and(|options| options.iter().any(|option| option == key))
             {
                 entries.insert(key.into(), serde_json::json!({"key":key,"type":kind,"default":default,"description":description,"unit":"network selection","source":format!("https://github.com/bitcoin/bitcoin/blob/v{version}/src/init.cpp"),"source_registration_present":true,"ignored_or_wallet_only":false,"restart_required":true,"editable":true}));
+                entries.get_mut(key).unwrap()["supports_i2p"] = serde_json::json!(supports_i2p);
+                entries.get_mut(key).unwrap()["i2p_incoming_requires_outgoing"] =
+                    serde_json::json!(version.starts_with("22."));
             }
         }
         Ok(Self {
@@ -183,9 +199,9 @@ impl Policy {
                             || choices.len() != value.split(',').count()
                             || choices
                                 .iter()
-                                .any(|n| !matches!(*n, "ipv4" | "ipv6" | "onion"))
+                                .any(|n| !matches!(*n, "ipv4" | "ipv6" | "onion" | "i2p"))
                         {
-                            bail!("onlynet: choose unique comma-separated ipv4,ipv6,onion");
+                            bail!("onlynet: choose unique comma-separated ipv4,ipv6,onion,i2p");
                         }
                         choices.into_iter().collect::<Vec<_>>().join(",")
                     }
@@ -278,6 +294,27 @@ impl Policy {
             };
             out.insert(key.clone(), canonical);
         }
+        // Starting SAM for incoming alone must not silently add I2P outgoing.
+        // Save the appliance's existing outgoing defaults explicitly in that case.
+        if selects(&out, "listen", "i2p") && !out.contains_key("onlynet") {
+            out.insert("onlynet".into(), "ipv4,ipv6,onion".into());
+        }
+        if self.version.starts_with("22.")
+            && selects(&out, "listen", "i2p")
+            && !selects(&out, "onlynet", "i2p")
+        {
+            bail!(
+                "Core22 overrides onlynet for I2P when SAM is set. Incoming-only I2P cannot be enforced: enable I2P outgoing too, or select Core23 or newer."
+            )
+        }
+        if i2p_enabled(&out)
+            && self
+                .entries
+                .get("onlynet")
+                .is_none_or(|e| e["supports_i2p"] != true)
+        {
+            bail!("I2P options are not supported by the selected Core release")
+        }
         if self.entries.contains_key("blockreservedweight") {
             let reserved = out
                 .get("blockreservedweight")
@@ -306,7 +343,9 @@ impl Policy {
                 .get("onlynet")
                 .is_some_and(|v| !v.split(',').any(|n| n == "onion"))
             {
-                bail!("privatebroadcast requires onion outgoing in this Tor-only privacy stack")
+                bail!(
+                    "privatebroadcast currently requires verified onion outgoing; I2P private-broadcast transport is not yet verified"
+                )
             }
         }
         if out.get("peerblockfilters").is_some_and(|v| v == "1")
@@ -372,6 +411,14 @@ impl Policy {
         }
         if let Some(incoming) = core_values.get("listen") {
             warning.push(format!("Incoming selection {incoming}: Core keeps listen=1 for electrs. Derived nobind=1 replaces base bindings with {}. RPC settings do not change.",incoming_bindings(&self.network,incoming,None)?.join(", ")));
+        }
+        if i2p_enabled(&core_values) {
+            warning.push("I2P uses local SAM 127.0.0.1:7656. Router/tunnel startup may take several minutes; accepting a setting does not establish peer connectivity. Core keeps its I2P key in this data profile. Core22/23 reuse that identity even with incoming disabled; Core24+ use transient outgoing identities when incoming is disabled, while retaining the saved key.".into());
+            if matches!(self.version.as_str(), "24.0" | "24.0.1")
+                && !selects(&core_values, "listen", "i2p")
+            {
+                warning.push("Core24.0/24.0.1 can create excessive transient I2P tunnels. Enable I2P incoming as well or use Core24.1/newer, which includes the upstream transient-session limit.".into());
+            }
         }
         if core_values
             .get("privatebroadcast")
@@ -502,9 +549,11 @@ fn incoming_bindings(
     let selected: std::collections::BTreeSet<_> = selection.split(',').collect();
     if selection != "none"
         && (selected.len() != selection.split(',').count()
-            || selected.iter().any(|n| !matches!(*n, "clearnet" | "tor")))
+            || selected
+                .iter()
+                .any(|n| !matches!(*n, "clearnet" | "tor" | "i2p")))
     {
-        bail!("listen: choose none, clearnet, tor, or clearnet,tor");
+        bail!("listen: choose none or unique comma-separated clearnet,tor,i2p");
     }
     let port = isolated_port.unwrap_or(match network {
         "main" => 8333,
@@ -694,6 +743,22 @@ fn parse_config(text: &str, network: &str) -> Result<Values> {
             bail!("unexpected derived onion setting");
         }
     }
+    let sam = out.remove("i2psam");
+    let incoming = out.remove("i2pacceptincoming");
+    if i2p_enabled(&out) {
+        if sam.as_deref() != Some("127.0.0.1:7656")
+            || incoming.as_deref()
+                != Some(if selects(&out, "listen", "i2p") {
+                    "1"
+                } else {
+                    "0"
+                })
+        {
+            bail!("derived I2P settings differ from reviewed selection");
+        }
+    } else if sam.is_some() || incoming.is_some() {
+        bail!("unrequested I2P settings refused");
+    }
     Ok(out)
 }
 fn render(values: &Values, network: &str, isolated_port: Option<u16>) -> Result<String> {
@@ -719,6 +784,12 @@ fn render(values: &Values, network: &str, isolated_port: Option<u16>) -> Result<
         .is_some_and(|selected| !selected.split(',').any(|network| network == "onion"))
     {
         out.push_str("noonion=1\n");
+    }
+    if i2p_enabled(values) {
+        out.push_str(&format!(
+            "i2psam=127.0.0.1:7656\ni2pacceptincoming={}\n",
+            u8::from(selects(values, "listen", "i2p"))
+        ));
     }
     if let Some(incoming) = values.get("listen") {
         out.push_str(&format!(
@@ -841,10 +912,11 @@ impl Policy {
                     "-listen={}",
                     u8::from(plan.core_values.contains_key("listen"))
                 ),
-                if plan
-                    .core_values
-                    .get("privatebroadcast")
-                    .is_some_and(|v| v == "1")
+                if i2p_enabled(&plan.core_values)
+                    || plan
+                        .core_values
+                        .get("privatebroadcast")
+                        .is_some_and(|v| v == "1")
                 {
                     "-networkactive=0".into()
                 } else {
@@ -913,6 +985,9 @@ impl Policy {
                 && info["networkactive"] != false
             {
                 bail!("private broadcast preflight must have networking disabled")
+            }
+            if i2p_enabled(&plan.core_values) && info["networkactive"] != false {
+                bail!("I2P preflight must have networking disabled")
             }
             let observed = rpc.call("getmempoolinfo", serde_json::json!([]))?;
             verify_observable(&plan.core_values, &observed)?;
@@ -1067,7 +1142,7 @@ fn native_fee_to_input(value: &str) -> Result<String> {
 }
 
 pub fn verify_network_observable(values: &Values, info: &Value) -> Result<()> {
-    for network in ["ipv4", "ipv6", "onion"] {
+    for network in ["ipv4", "ipv6", "onion", "i2p"] {
         let row = info["networks"]
             .as_array()
             .context("missing Core networks")?
@@ -1083,12 +1158,22 @@ pub fn verify_network_observable(values: &Values, info: &Value) -> Result<()> {
                 );
             }
         }
-        if network != "onion" {
+        if matches!(network, "ipv4" | "ipv6") {
             if let Some(proxy) = values.get("proxy") {
                 let expected = if proxy == "0" { "" } else { "127.0.0.1:9050" };
                 if row["proxy"].as_str() != Some(expected) {
                     bail!("Core effective proxy mismatch");
                 }
+            }
+        }
+        if network == "i2p" {
+            let expected = if i2p_enabled(values) {
+                "127.0.0.1:7656"
+            } else {
+                ""
+            };
+            if row["proxy"].as_str() != Some(expected) {
+                bail!("Core effective I2P SAM proxy mismatch")
             }
         }
     }

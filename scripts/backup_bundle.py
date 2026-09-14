@@ -37,7 +37,7 @@ class FileSpec:
     required: bool = True
 
 
-def production_specs(policy_path: pathlib.Path) -> tuple[FileSpec, ...]:
+def production_specs(policy_path: pathlib.Path, i2p_key_path: pathlib.Path | None = None) -> tuple[FileSpec, ...]:
     root = pwd.getpwnam("root")
     node = pwd.getpwnam("justverify")
     tor = pwd.getpwnam("debian-tor")
@@ -62,6 +62,8 @@ def production_specs(policy_path: pathlib.Path) -> tuple[FileSpec, ...]:
         item("web/remote-web.json", "/var/lib/justverify/web/remote-web.json", 0o600, node, False),
         item("web/remote-rpc.json", "/var/lib/justverify/web/remote-rpc.json", 0o600, node, False),
     ]
+    if i2p_key_path is not None:
+        values.append(item('core/i2p_private_key', i2p_key_path, 0o600, node, False))
     for service in ("p2p", "electrum", "rpc", "web"):
         for name in ("hostname", "hs_ed25519_public_key", "hs_ed25519_secret_key"):
             values.append(item(f"tor/{service}/{name}", f"/var/lib/justverify-tor/{service}/{name}", 0o600, tor, service != "web"))
@@ -490,6 +492,7 @@ class BackupBundle:
             # Only the newly introduced optional device settings may be absent
             # from legacy v1 manifests; reject every other catalog mismatch.
             added = {"web/preferences.json", "web/remote-web.json", "tor/web/hostname", "tor/web/hs_ed25519_public_key", "tor/web/hs_ed25519_secret_key"}
+            added.add('core/i2p_private_key')
             missing = set(self.by_key) - set(records)
             if len(records) != len(entries) or set(records) - set(self.by_key) or missing - added:
                 raise ValueError("backup catalog differs from installed version")
@@ -717,8 +720,10 @@ class BackupBundle:
 def production_bundle() -> BackupBundle:
     from backup_guard import Guard
     guard = Guard.load()
+    network_dir = guard.helper.NETWORKS[guard.checked[1]][1]
+    i2p_key = guard.checked[3] / 'core' / network_dir / 'i2p_private_key'
     return BackupBundle(
-        production_specs(guard.checked[4]),
+        production_specs(guard.checked[4], i2p_key),
         pathlib.Path("/var/lib/justverify-backup"),
         pathlib.Path("/boot/firmware/justverify-backup.jvb"),
         cleanup=(pathlib.Path("/var/lib/justverify/web/setup-token"), pathlib.Path("/var/lib/justverify/web/pending-owner.json"), pathlib.Path("/var/lib/justverify/web/sessions.json")),

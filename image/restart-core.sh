@@ -4,6 +4,7 @@ set -eu
 # Stop dependants deliberately: electrs0.11 exits when its P2P connection drops.
 # Repeated owner-reviewed changes must not consume its crash restart budget.
 /usr/bin/systemctl stop justverify-electrum-tls.service justverify-electrs.service
+/usr/bin/python3 /opt/justverify/scripts/i2p_service.py --sync
 /usr/bin/systemctl reset-failed justverify-core.service justverify-electrs.service justverify-electrum-tls.service
 /usr/bin/systemctl restart justverify-core.service
 # Type=simple restart returning does not prove Core completed startup. Fail

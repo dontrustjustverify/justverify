@@ -50,15 +50,15 @@ const SettingsView=(()=>{
     if(e.key==='datacarriersize'&&String(values.datacarrier??'1')==='0'){const input=node('input');input.value=display;input.disabled=true;input.setAttribute('aria-label',labels[e.key]);controls.append(input,node('span','OP_RETURN 전파를 켜면 크기를 변경할 수 있습니다.','hint'));continue;}
     if(['boolean','tor_proxy'].includes(e.type)){controls.append(toggle(labels[e.key]||e.key,String(display).startsWith('1'),on=>save(on?'1':'0')));}
     else if(['incoming_set','network_set'].includes(e.type)){
-     const incoming=e.type==='incoming_set';const options=incoming?[['clearnet','Clearnet'],['tor','Tor']]:[['ipv4','Clearnet IPv4'],['ipv6','Clearnet IPv6'],['onion','Tor']];
+     const incoming=e.type==='incoming_set';const options=incoming?[['clearnet','Clearnet'],['tor','Tor']]:[['ipv4','Clearnet IPv4'],['ipv6','Clearnet IPv6'],['onion','Tor']];if(e.supports_i2p)options.push(['i2p','I2P']);
      if(current===undefined)display=incoming?(state.network==='regtest'?'tor':'clearnet,tor'):'ipv4,ipv6,onion';
-     const selected=new Set(display.split(','));for(const [key,label] of options)controls.append(toggle(label,selected.has(key),on=>{if(on)selected.add(key);else selected.delete(key);if(!incoming&&!selected.size){message('나가는 연결은 하나 이상 선택하세요.');return;}save([...selected].sort().join(',')||'none');}));
+     const selected=new Set(display.split(','));for(const [key,label] of options)controls.append(toggle(label,selected.has(key),on=>{if(key==='i2p'&&e.i2p_incoming_requires_outgoing){const inI2p=(values.listen||'').split(',').includes('i2p');const outI2p=(values.onlynet||'ipv4,ipv6,onion').split(',').includes('i2p');if((incoming&&on&&!outI2p)||(!incoming&&!on&&inI2p)){message('Core 22에서는 I2P 수신만 켤 수 없습니다. I2P 송신도 켜거나 Core 23 이상을 선택하세요.');return;}}if(on)selected.add(key);else selected.delete(key);if(!incoming&&!selected.size){message('나가는 연결은 하나 이상 선택하세요.');return;}save([...selected].sort().join(',')||'none');}));
     }else{
      const input=node('input');input.type='text';input.inputMode=e.type==='decimal'?'decimal':'numeric';input.value=current??'';input.placeholder=fallback;input.setAttribute('aria-label',labels[e.key]||e.key);input.autocomplete='off';input.oninput=()=>{if(input.value.trim())values[e.key]=input.value.trim();else delete values[e.key];changed();note.textContent=`Core 기본값: ${fallback} ${unit} · ${input.value?'지정값: '+input.value:'기본값 사용'}`;};controls.append(input,node('small',unit));
     }
     controls.append(button('Core 기본값으로',()=>{delete values[e.key];changed();rows();},'subtle'));
    }
-   if(tab==='network')fields.append(node('p','I2P 미지원: 현재 이미지에는 I2P 라우터(SAM)가 포함되어 있지 않아 들어오는 연결과 나가는 연결 모두 사용할 수 없습니다. Clearnet은 일반 인터넷 연결이며, 나가는 연결에서 IPv4와 IPv6를 개별 선택할 수 있습니다.','hint setting-warning'));
+   if(tab==='network')fields.append(node('p','I2P는 별도의 익명 네트워크입니다. 들어오는 연결과 나가는 연결을 각각 선택할 수 있으며, 둘 다 끄면 I2P 라우터도 정지합니다. 시작 후 터널과 피어 연결까지 수 분 걸릴 수 있습니다. Clearnet의 Tor 경유 설정은 I2P에 적용되지 않습니다.','hint setting-warning'));
    if(tab==='optimization'){
     const prune=node('section',undefined,'setting-row');const explanation=node('div');explanation.append(node('h4','오래된 블록 정리 (Pruning)'),node('code','prune'),node('p','현재 구성: 0 · 전체 블록 보관. 포함된 electrs는 pruned Core에 연결할 수 없으므로 이 구성에서는 켤 수 없습니다. txindex·txospenderindex와도 호환되지 않습니다.','hint'));prune.append(explanation,node('span','electrs와 호환되지 않음','hint'));fields.append(prune);
     if(!state.entries.some(e=>e.key==='maxorphantx'))fields.append(node('p','maxorphantx는 Core 30에서 효력이 없어졌고 Core 31에서 제거되었습니다. 이 버전에서는 설정하지 않습니다.','hint'));

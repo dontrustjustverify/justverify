@@ -61,7 +61,18 @@ fn outgoing_destinations_are_finite_and_proxy_cannot_inject_an_endpoint() {
             p.validate(&value("onlynet", "onion,ipv4")).unwrap()["onlynet"],
             "ipv4,onion"
         );
-        for bad in ["", "i2p", "ipv4,ipv4", "ipv4\nrpcbind=0.0.0.0", "onion,"] {
+        assert_eq!(
+            p.validate(&value("onlynet", "i2p")).unwrap()["onlynet"],
+            "i2p"
+        );
+        for bad in [
+            "",
+            "i2p,i2p",
+            "i2p\ni2psam=192.0.2.1:7656",
+            "ipv4,ipv4",
+            "ipv4\nrpcbind=0.0.0.0",
+            "onion,",
+        ] {
             assert!(p.validate(&value("onlynet", bad)).is_err());
         }
         assert_eq!(
@@ -76,7 +87,25 @@ fn outgoing_destinations_are_finite_and_proxy_cannot_inject_an_endpoint() {
 fn incoming_selector_cannot_expose_arbitrary_bindings() {
     for version in ["22.0", "31.1"] {
         let p = policy(version, "regtest");
-        for allowed in ["none", "clearnet", "tor", "clearnet,tor"] {
+        for allowed in [
+            "none",
+            "clearnet",
+            "tor",
+            "clearnet,tor",
+            "i2p",
+            "clearnet,i2p",
+            "i2p,tor",
+            "clearnet,i2p,tor",
+        ] {
+            if version.starts_with("22.") && allowed.split(',').any(|n| n == "i2p") {
+                assert!(p.validate(&value("listen", allowed)).is_err());
+                let both = Values::from([
+                    ("listen".into(), allowed.into()),
+                    ("onlynet".into(), "i2p".into()),
+                ]);
+                assert_eq!(p.validate(&both).unwrap()["listen"], allowed);
+                continue;
+            }
             assert_eq!(
                 p.validate(&value("listen", allowed)).unwrap()["listen"],
                 allowed
@@ -87,7 +116,8 @@ fn incoming_selector_cannot_expose_arbitrary_bindings() {
             "0",
             "none,tor",
             "tor,tor",
-            "i2p",
+            "i2p,i2p",
+            "i2p\ni2pacceptincoming=1",
             "0.0.0.0:8333",
             "tor\nbind=0.0.0.0",
         ] {
@@ -116,7 +146,14 @@ fn resources_use_version_defaults_and_reject_clamping_or_overflow() {
         let default = entries.iter().find(|r| r["key"] == "dbcache").unwrap()["default"]
             .as_str()
             .unwrap();
-        assert_eq!(default, if version == "22.0" { "450" } else { "1024" });
+        let mut host = sysinfo::System::new();
+        host.refresh_memory();
+        let expected = if version == "22.0" || host.total_memory() < 4_294_967_296 {
+            "450"
+        } else {
+            "1024"
+        };
+        assert_eq!(default, expected);
     }
     assert!(
         policy("22.0", "regtest")

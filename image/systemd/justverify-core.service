@@ -5,7 +5,8 @@ StartLimitIntervalSec=60
 StartLimitBurst=3
 Description=JustVerify Bitcoin Core
 After=network-online.target justverify-firstboot.service
-Wants=network-online.target
+Wants=network-online.target justverify-i2p.service
+After=justverify-i2p.service
 RequiresMountsFor=/srv/justverify/data
 ConditionPathIsMountPoint=/srv/justverify/data
 

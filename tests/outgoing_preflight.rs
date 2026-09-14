@@ -30,7 +30,14 @@ fn real_outgoing_options_preflight_and_roundtrip() -> Result<()> {
             release["arm64_binary_sha256"].as_str().unwrap()
         );
         let file = state.join(format!("{version}.conf"));
-        for (networks, proxy) in [("ipv4,ipv6", "0"), ("onion", "0"), ("ipv4,ipv6,onion", "1")] {
+        for (networks, proxy) in [
+            ("ipv4,ipv6", "0"),
+            ("onion", "0"),
+            ("ipv4,ipv6,onion", "1"),
+            ("i2p", "0"),
+            ("i2p,onion", "0"),
+            ("i2p,ipv4,ipv6,onion", "1"),
+        ] {
             let values = Values::from([
                 ("onlynet".into(), networks.into()),
                 ("proxy".into(), proxy.into()),

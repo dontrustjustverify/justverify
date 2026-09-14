@@ -30,8 +30,24 @@ fn real_incoming_options_preflight_and_roundtrip() -> Result<()> {
             release["arm64_binary_sha256"].as_str().unwrap()
         );
         let file = state.join(format!("{version}.conf"));
-        for incoming in ["none", "clearnet", "tor", "clearnet,tor"] {
-            let values = Values::from([("listen".into(), incoming.into())]);
+        for incoming in [
+            "none",
+            "clearnet",
+            "tor",
+            "clearnet,tor",
+            "i2p",
+            "clearnet,i2p",
+            "i2p,tor",
+            "clearnet,i2p,tor",
+        ] {
+            let mut values = Values::from([("listen".into(), incoming.into())]);
+            if version.starts_with("22.") && incoming.split(',').any(|n| n == "i2p") {
+                assert!(
+                    policy.validate(&values).is_err(),
+                    "Core22 incoming-only must be rejected, not silently enabled for outbound"
+                );
+                values.insert("onlynet".into(), "i2p,ipv4,ipv6,onion".into());
+            }
             let plan = policy.preview(&file, values)?;
             let receipt = policy.preflight(&binary, &state, &plan)?;
             policy.apply(&file, &plan, &receipt, || Ok(()))?;

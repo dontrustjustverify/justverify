@@ -197,6 +197,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
             value(&s.host["electrs"]["height"])
         ),
         format!("Tor {}", value(&s.host["tor"]["state"])),
+        format!("I2P {}", value(&s.host["i2p"]["state"])),
     ];
     let rows = Layout::default()
         .direction(Direction::Vertical)

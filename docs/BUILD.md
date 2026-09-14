@@ -4,7 +4,7 @@
 
 This guide compiles JustVerify, electrs and mempool, downloads their locked libraries, and assembles a Raspberry Pi 5 ARM64 image. Bitcoin Core comes from its official **signature-verified binary archive**; Pi OS and Debian packages are prebuilt upstream inputs. This is not a source build of every OS package or Bitcoin Core.
 
-Use the `v0.1.0-beta2` tag for the release source, or record the commit of `main` when building newer changes. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
+Use the `v0.1.0-beta3` tag for the release source, or record the commit of `main` when building newer changes. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
 
 ## 1. Prepare an isolated builder
 
@@ -25,7 +25,7 @@ df -h . /var/tmp
 sudo apt-get update
 sudo apt-get install --no-install-recommends -y \
   git curl ca-certificates gnupg build-essential clang libclang-dev \
-  cmake pkg-config libssl-dev python3 python3-venv xz-utils tar gzip patch \
+  cmake pkg-config libssl-dev libboost-program-options-dev libboost-filesystem-dev zlib1g-dev python3 python3-venv xz-utils tar gzip patch \
   file jq parted fdisk e2fsprogs dosfstools zerofree util-linux udev kmod systemd \
   openssl npm nodejs=20.19.2+dfsg-1+deb13u2 \
   mariadb-server=1:11.8.6-0+deb13u1
@@ -45,7 +45,7 @@ git clone --branch main --single-branch \
   https://github.com/dontrustjustverify/justverify.git "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0-beta2-local1
+export JV_TAG=0.1.0-beta3-local1
 mkdir -p .state/build-guide docs/evidence
 git rev-parse HEAD > .state/build-guide/source-commit.txt
 git switch --detach "$(git rev-parse HEAD)"
@@ -67,6 +67,7 @@ rustc +1.84.1 --version
 | Bitcoin Core | 31.1 in image; 22.0 for compatibility tests; `catalog/trusted-builders.json`, GPG signature and SHA256 |
 | electrs | `catalog/electrs.json`: 0.11.1, commit `35216c6d30148be8e6763d913d437330f431fc03`, source/Cargo.lock hashes |
 | mempool | `catalog/mempool.json`: 3.3.1, commit `9332d9db97bcc7beed079acc8f79aa21c9b12a3b`, npm 11.8.0, NAPI CLI 2.18.0 and dependency locks |
+| i2pd | 2.61.0; `catalog/i2pd.json`, SHA256-verified source, BSD-3-Clause; native CMake build, local SAM 3.1 |
 | Python/browser | Hashed Python wheels in `web/requirements.arm64.lock`; vendored browser assets in `web/static` |
 | OS libraries | apt packages; actual image inventory in `dist/os-packages.tsv`; the entire apt graph is not snapshot-locked |
 
@@ -100,7 +101,13 @@ RUSTUP_TOOLCHAIN=1.84.1 bash scripts/build_mempool.sh "$JV_WORK/mempool" \
   2>&1 | tee .state/build-guide/mempool-build.log
 export JV_MEMPOOL="$JV_WORK/mempool/bundle"
 (cd "$JV_MEMPOOL" && sha256sum -c SHA256SUMS > /dev/null)
+bash scripts/build_i2pd.sh "$JV_WORK/i2pd" \
+  2>&1 | tee .state/build-guide/i2pd-build.log
+export JV_I2PD="$JV_WORK/i2pd/bundle"
+(cd "$JV_I2PD" && sha256sum -c SHA256SUMS > /dev/null)
 ```
+
+i2pd is built from the pinned source in `catalog/i2pd.json`. Its bundle includes the source archive, BSD license and public reseed certificates. Assembly requires this seventh argument and installs the pinned Boost program-options runtime. No router identity is included.
 
 Core's script rejects checksum/signature failures and writes signer evidence under `docs/evidence/`. Electrs checks its source and Cargo lock before compilation. Mempool verifies its commit, applies tracked patches, builds the Korean/English/Japanese frontends and packages corresponding source, locks and licenses. No Docker daemon is needed.
 
@@ -136,6 +143,17 @@ sha256sum -c .state/build-guide/electrs-before-tests.sha256
 ```
 
 Both tests must exit zero and report `PASS`: actual transaction creation/signing/broadcast, mempool entry, mining, two confirmations, Core/electrs/mempool height **107** and tip agreement, address lookup, WebSocket updates and service/Core interruption/recovery. They use private regtest funds with discovery disabled. Ports 19643/19644/19601/19624/13006/18999 are fixed: run one test at a time. Private test folders contain disposable wallets and credentials; do not publish or package them.
+
+### I2P peer transport
+
+In a separate builder with SAM ports 7656/8656 free, run the bundled-router test as the normal user. It owns two independent i2pd routers on the public I2P network and uses only fresh regtest wallets/funds. Allow several minutes for tunnels. Output folders contain private test identities and must not be published.
+
+```bash
+python3 tests/run_i2p_live.py --bundle "$JV_I2PD" \
+  --core "$JV_CORE/bin/bitcoind" --root "$JV_WORK/i2p-live"
+```
+
+The test requires actual I2P Bitcoin handshakes, signed transaction propagation, two confirmations, matching tips, restart identity preservation and outgoing-only block propagation. `tests/image_i2p_probe.py` separately tests installed services and reboot in a disposable factory-image VM; it must never run on an existing physical node.
 
 ### Qualify the newly compiled electrs
 
@@ -176,7 +194,7 @@ git diff -- catalog/electrs.json > .state/build-guide/local-catalog.patch
 cd "$JV_REPO"
 sudo bash image/build-pi.sh \
   "$JV_BASE" "$JV_CORE" "$JV_REPO/target/release/justverify" \
-  "$JV_ELECTRS" "$JV_TAG" "$JV_MEMPOOL" \
+  "$JV_ELECTRS" "$JV_TAG" "$JV_MEMPOOL" "$JV_I2PD" \
   2>&1 | tee .state/build-guide/image-build.log
 sudo bash image/verify-pi.sh "dist/justverify-$JV_TAG.img.xz" \
   2>&1 | tee .state/build-guide/image-verify.log
@@ -206,14 +224,14 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | Output | Purpose |
 |---|---|
-| `dist/justverify-0.1.0-beta2-local1.img` | Extracted image to select in balenaEtcher |
-| `dist/justverify-0.1.0-beta2-local1.img.xz` | Compressed image for download/storage |
-| `dist/justverify-0.1.0-beta2-local1-SHA256SUMS` | Both file hashes; check from `dist/` |
-| `dist/justverify-0.1.0-beta2-local1.layout.json` / `.size-audit.json` | Partition layout and size audit |
+| `dist/justverify-0.1.0-beta3-local1.img` | Extracted image to select in balenaEtcher |
+| `dist/justverify-0.1.0-beta3-local1.img.xz` | Compressed image for download/storage |
+| `dist/justverify-0.1.0-beta3-local1-SHA256SUMS` | Both file hashes; check from `dist/` |
+| `dist/justverify-0.1.0-beta3-local1.layout.json` / `.size-audit.json` | Partition layout and size audit |
 | `dist/os-packages.tsv` | Actual image package inventory |
 | `.state/build-guide/` | Source commit/patch, logs, local component/test evidence |
 
-A different `JV_TAG` changes the filenames. SHA256 is an integrity check, not a publisher signature. This example creates an unsigned local build. Redistribution also requires your exact source/patches, corresponding component sources/licenses, support/test report and your own signing process. See [third-party notices](../licenses/THIRD_PARTY_NOTICES.md) and the [release source assets](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2). Do not reuse the official signature for a changed file.
+A different `JV_TAG` changes the filenames. SHA256 is an integrity check, not a publisher signature. This example creates an unsigned local build. Redistribution also requires your exact source/patches, corresponding component sources/licenses, support/test report and your own signing process. See [third-party notices](../licenses/THIRD_PARTY_NOTICES.md) and the [release source assets](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3). Do not reuse the official signature for a changed file.
 
 Follow [installation](INSTALL.md) with Etcher validation enabled. Direct XZ input failed checksum validation on the tested macOS/Etcher 2.1.6 setup; the **extracted IMG** passed. Then test initial setup, Core/electrs/Tor, mempool port 3006, LAN/onion wallets, reboot and recovery on a physical Pi 5. Mark unexecuted tests `NOT RUN`/`BLOCKED`. [TESTING.md](TESTING.md) lists the remaining release gates.
 

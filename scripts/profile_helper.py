@@ -6,7 +6,7 @@ DATA=pathlib.Path('/srv/justverify/data')
 BINARIES=pathlib.Path('/opt/justverify/versions')
 CATALOG=pathlib.Path('/opt/justverify/catalog')
 EXPLORER_UNITS=('justverify-mempool',) if pathlib.Path('/etc/systemd/system/justverify-mempool.service').is_file() else ()
-UNITS=EXPLORER_UNITS+('justverify-policy','justverify-electrum-tls','justverify-electrs','justverify-core','justverify-manager')
+UNITS=EXPLORER_UNITS+('justverify-policy','justverify-electrum-tls','justverify-electrs','justverify-core','justverify-manager','justverify-i2p')
 NETWORKS={'main':('bitcoin','',8332,8333),'test':('testnet','testnet3',18332,18333),'testnet4':('testnet4','testnet4',48332,48333),'signet':('signet','signet',38332,38333),'regtest':('regtest','regtest',18443,18444)}
 def system(*args):
     subprocess.run(['/usr/bin/systemctl',*args],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -127,6 +127,7 @@ def activate(checked):
     if not uuid:raise ValueError('selected volume has no UUID')
     ready={'schema':1,'uuid':uuid,'instance':json.loads((folder/'instance.json').read_text()),'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'configs':{name:hashlib.sha256((ETC/name).read_bytes()).hexdigest() for name in ('bitcoin.conf','electrs.toml','profile.json')}}
     atomic(ETC/'node-ready.json',json.dumps(ready)+'\n')
+    system('start','justverify-i2p')
     system('start','justverify-core','justverify-electrs','justverify-manager','justverify-policy','justverify-electrum-tls',*EXPLORER_UNITS)
     if tor!=old_tor:system('reload-or-restart','justverify-tor')
 

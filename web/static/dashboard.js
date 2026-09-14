@@ -34,7 +34,7 @@ const NodeView=(()=>{
   if(!peersList.length)peers.append(element('p',ok?'현재 연결된 피어가 없습니다.':'Core 연결 후 피어가 표시됩니다.','empty'));
   find('system-meters').replaceChildren(meter('CPU',host.cpu_percent==null?null:Number(host.cpu_percent),100),meter('RAM',host.used_memory_mib,host.total_memory_mib));
   const disk=(host.disks||[]).find(d=>d.mount==='/srv/justverify/data');
-  rows('system-data',[['메모리',fmt(host.used_memory_mib)+' / '+fmt(host.total_memory_mib)+' MiB'],['데이터 여유 공간',disk?bytes(disk.available):'—'],['electrs',host.electrs?.state==='UNAVAILABLE'&&v('getblockchaininfo','initialblockdownload')===true?'연결 대기 · Core 초기 동기화 중':host.electrs?.state],['인덱스 높이',fmt(host.electrs?.height)],['Tor',host.tor?.state]]);
+  rows('system-data',[['메모리',fmt(host.used_memory_mib)+' / '+fmt(host.total_memory_mib)+' MiB'],['데이터 여유 공간',disk?bytes(disk.available):'—'],['electrs',host.electrs?.state==='UNAVAILABLE'&&v('getblockchaininfo','initialblockdownload')===true?'연결 대기 · Core 초기 동기화 중':host.electrs?.state],['인덱스 높이',fmt(host.electrs?.height)],['Tor',host.tor?.state],['I2P',host.i2p?.state],['I2P 들어옴 / 나감',fmt(host.i2p?.incoming_peers)+' / '+fmt(host.i2p?.outgoing_peers)]]);
  }
  async function refresh(current){
   const request=new AbortController();controller=request;const timeout=setTimeout(()=>request.abort(),10000);

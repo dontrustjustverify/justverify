@@ -30,4 +30,4 @@ For PSBT fees, `fee_rate` is sat/vB and `feeRate` is BTC/kvB; do not specify bot
 
 ## Current validation limits
 
-The RPC/Electrum protocols, digital QR contents, watch-only restrictions, PSBT and actual regtest transactions have software-level validation. Physical Nunchuk/Fully Noded installations, camera scans, mobile certificate setup and each application's full call sequence are still unverified for beta2. Check [TESTING.md](TESTING.md) before relying on a specific phone workflow.
+The RPC/Electrum protocols, digital QR contents, watch-only restrictions, PSBT and actual regtest transactions have software-level validation. Physical Nunchuk/Fully Noded installations, camera scans, mobile certificate setup and each application's full call sequence are still unverified for beta3. Check [TESTING.md](TESTING.md) before relying on a specific phone workflow.
