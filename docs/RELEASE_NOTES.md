@@ -1,11 +1,13 @@
-# Unreleased
+# JustVerify 0.1.0-beta5
 
 - Show Electrs indexing percentage and processed/Core heights in the Bitcoin Core overview, with a live progress bar in the Electrs menu.
 - Collect index progress independently of wallet requests, preserving the last height and observation time during delays or outages.
 - Confirm matching Core/Electrum tips and usable index queries before reporting wallet readiness. A full progress bar alone does not mean the wallet index is ready.
 - Refresh progress and connection guidance while the Electrs menu stays open; support desktop/mobile layouts and all interface themes and languages.
 
-These changes are on `main`; the downloadable beta4 image predates them.
+Includes the Tor Mempool routing, I2P and earlier node-management improvements. Bundled versions remain Bitcoin Core31.1, electrs0.11.1, mempool3.3.1 and i2pd2.61.0.
+
+Download the image, checksums and signature from [beta5 Releases](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta5). See [validation](TESTING.md) for tested and pending requirements. Physical beta5 Pi installation and reboot remain pending.
 
 # JustVerify 0.1.0-beta4
 

@@ -19,8 +19,8 @@ async def main():
     REPORT['boot']='second' if previous else 'first'
     password=previous['password'] if previous else secrets.token_urlsafe(32)
     boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta4'
-    assert '0.1.0-beta4' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
+    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta5'
+    assert '0.1.0-beta5' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
     assert 'HiddenServicePort 3006 127.0.0.1:28445' in Path('/etc/justverify/torrc').read_text()
     async def wait(check,seconds=120):
         deadline=time.monotonic()+seconds
@@ -62,6 +62,18 @@ async def main():
             header=json.loads(await asyncio.wait_for(reader.readline(),5))['result'];writer.close();await writer.wait_closed()
             return header['height']==height and hashlib.sha256(hashlib.sha256(bytes.fromhex(header['hex'])).digest()).digest()[::-1].hex()==tip
         await wait(indexed)
+        async def dashboard():
+            async with c.get('http://127.0.0.1/dashboard',headers={'X-CSRF-Token':csrf}) as r:
+                assert r.status==200
+                return await r.json()
+        async def status_ready():
+            value=await dashboard();index=value.get('host',{}).get('electrs',{})
+            return index if index.get('wallet_ready') and index.get('height')==height and index.get('target_height')==height and index.get('tip')==tip else None
+        current=await wait(status_ready)
+        assert not current['height_stale'] and not current['target_stale']
+        async with c.get('http://127.0.0.1/electrs_status.js') as r:
+            assert r.status==200 and 'progress' in await r.text()
+        REPORT['checks'].append('packaged live Electrs metrics, exact progress heights, fresh matching tip and wallet readiness')
         async def address():return (await post('/device-settings',{'action':'state'}))['remote_web']['onion_host']
         host=await wait(address,60)
         async def toggle(enabled):
@@ -103,6 +115,24 @@ async def main():
                 json.dump({'password':password,'token':token,'onion':host,'tip':tip,'boot_id':boot_id},f)
         else:
             REPORT['checks'].append('real reboot preserves Tor identity/login, opt-in setting and three matching node tips')
+            import signal
+            pid=int(subprocess.check_output(['systemctl','show','justverify-electrs','--property=MainPID','--value'],text=True))
+            assert pid>1
+            os.kill(pid,signal.SIGSTOP)
+            try:
+                async def stale_index():
+                    value=await dashboard();index=value.get('host',{}).get('electrs',{})
+                    return index if index.get('height_stale') and not index.get('wallet_ready') and index.get('height_updated',time.time())<=time.time()-15 else None
+                stale=await wait(stale_index,45)
+                assert stale['height']==height and stale['target_height']==height
+                assert stale['height_updated']<=time.time()-15
+                await asyncio.sleep(3)
+                retained=(await dashboard())['host']['electrs']
+                assert retained['height_updated']==stale['height_updated'] and retained['height']==height
+                assert retained['height_stale'] and not retained['wallet_ready']
+            finally:os.kill(pid,signal.SIGCONT)
+            await wait(status_ready,60)
+            REPORT['checks'].append('actual packaged electrs pause preserves timestamped height; resume restores readiness')
             # Fresh client confirms the authenticated boundary without any cookie.
             async with aiohttp.ClientSession() as anonymous:
                 async with anonymous.get('http://127.0.0.1:28445/api/mempool',headers={'Host':host+':3006'}) as r:assert r.status==401
@@ -134,12 +164,19 @@ async def main():
             try:assert bundle.restore(passphrase,reviewed['sha256'],health_check=recovered)['phase']=='committed'
             finally:resume()
             assert Path('/etc/justverify/torrc').read_bytes()==canonical
-            async with c.post('http://127.0.0.1/login',headers={'Origin':'http://127.0.0.1'},json={'password':password}) as r:
-                assert r.status==200;csrf=(await r.json())['csrf']
+            # The restore restarts the web process. A pooled connection can
+            # close while synchronous restore work has paused this event loop.
+            # Require a successful authenticated response after restart.
+            async def login_restored():
+                async with c.post('http://127.0.0.1/login',headers={'Origin':'http://127.0.0.1'},json={'password':password}) as r:
+                    assert r.status==200
+                    return (await r.json())['csrf']
+            csrf=await wait(login_restored,30)
             assert await wait(address,60)==host
             assert (await toggle(True))['running']
             headers['Cookie']='jv_tor_session='+await tor_login()
             await wait(lan_ready,120)
+            await wait(status_ready,120)
             assert await explorer('/api/blocks/tip/hash')==tip
             REPORT['checks'].append('actual GPG legacy backup passes installed data-volume guard; restore upgrades fixed Tor route and preserves identity/tip; explorer recovers')
         REPORT.update(status='PASS',height=height,tip=tip)

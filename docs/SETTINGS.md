@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta4.
+This guide applies to JustVerify 0.1.0-beta5.
 
 ## OP_RETURN and transaction policy
 
@@ -72,7 +72,7 @@ The Bitcoin Core overview shows Electrs progress as a percentage followed by **p
 
 **100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. During a delayed response, the last observed height and its timestamp stay visible. A connection failure or index error is shown separately instead of clearing progress to a dash.
 
-These displays are included in source builds after beta4.
+These displays are included in beta5.
 
 ## Source references
 
