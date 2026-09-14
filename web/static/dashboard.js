@@ -1,7 +1,7 @@
 'use strict';
 // Read-only presentation of the same snapshot used by the native TUI.
 const NodeView=(()=>{
- const find=id=>document.getElementById(id);let timer,mode='lan',generation=0,controller;
+ const find=id=>document.getElementById(id);let timer,mode='lan',generation=0,controller,endpointInfo,electrsSnapshot,coreIbd;
  const text=v=>v===null||v===undefined?'—':String(v).replace(/[\x00-\x1f\x7f\u202a-\u202e\u2066-\u2069]/g,'');
  const fmt=v=>v===null||v===undefined?'—':Number(v).toLocaleString('ko-KR');
  const bytes=v=>v==null?'—':Number(v)>=1073741824?(v/1073741824).toFixed(1)+' GiB':Number(v)>=1048576?(v/1048576).toFixed(1)+' MiB':fmt(v)+' B';
@@ -34,7 +34,7 @@ const NodeView=(()=>{
   if(!peersList.length)peers.append(element('p',ok?'현재 연결된 피어가 없습니다.':'Core 연결 후 피어가 표시됩니다.','empty'));
   find('system-meters').replaceChildren(meter('CPU',host.cpu_percent==null?null:Number(host.cpu_percent),100),meter('RAM',host.used_memory_mib,host.total_memory_mib));
   const disk=(host.disks||[]).find(d=>d.mount==='/srv/justverify/data');
-  rows('system-data',[['메모리',fmt(host.used_memory_mib)+' / '+fmt(host.total_memory_mib)+' MiB'],['데이터 여유 공간',disk?bytes(disk.available):'—'],['electrs',host.electrs?.state==='UNAVAILABLE'&&v('getblockchaininfo','initialblockdownload')===true?'연결 대기 · Core 초기 동기화 중':host.electrs?.state],['인덱스 높이',fmt(host.electrs?.height)],['Tor',host.tor?.state],['I2P',host.i2p?.state],['I2P 들어옴 / 나감',fmt(host.i2p?.incoming_peers)+' / '+fmt(host.i2p?.outgoing_peers)]]);
+  rows('system-data',[['메모리',fmt(host.used_memory_mib)+' / '+fmt(host.total_memory_mib)+' MiB'],['데이터 여유 공간',disk?bytes(disk.available):'—'],...ElectrsStatus.rows(host.electrs,now),['Tor',host.tor?.state],['I2P',host.i2p?.state],['I2P 들어옴 / 나감',fmt(host.i2p?.incoming_peers)+' / '+fmt(host.i2p?.outgoing_peers)]]);
  }
  async function refresh(current){
   const request=new AbortController();controller=request;const timeout=setTimeout(()=>request.abort(),10000);
@@ -44,8 +44,28 @@ const NodeView=(()=>{
  }
  function start(){stop();refresh(generation);}
  function stop(){clearTimeout(timer);generation++;controller?.abort();controller=null;}
+ function updateElectrumNotice(){
+  if(!endpointInfo)return;
+  find('electrum-state').textContent=coreIbd===true?'Core 초기 동기화 중 · electrs와 지갑 연결 준비는 동기화가 끝난 뒤 확인하세요.':ElectrsStatus.progress(electrsSnapshot).state!=='준비 완료'?'electrs 인덱싱·연결 대기 · 아래 주소는 설정된 주소이며, 아직 지갑 연결 준비가 확인되지 않았습니다.':endpointInfo.service_active&&endpointInfo.backend_active?'연결 서비스 실행 중 · 주소 또는 QR 이미지를 사용하세요. 지갑에서 동기화 상태를 확인하세요.':'연결 대기 · 아래는 기기에 설정된 주소입니다. 연결 서비스를 시작해야 사용할 수 있습니다.';
+ }
+ function renderElectrumProgress(status,ibd){
+  electrsSnapshot=status;coreIbd=ibd;
+  const p=ElectrsStatus.progress(status),bar=find('electrum-progress');
+  if(p.percent===null)bar.removeAttribute('value');else bar.value=p.percent;
+  bar.setAttribute('aria-valuetext',p.text);find('electrum-progress-value').textContent=p.text;
+  find('electrum-progress-state').textContent=p.state;
+  const detail=ElectrsStatus.rows(status);
+  find('electrum-progress-note').textContent=I18n.text(detail[2][1])+' · '+I18n.text(detail[3][1]);
+  updateElectrumNotice();
+ }
+ async function refreshElectrum(current){
+  const request=new AbortController();controller=request;const timeout=setTimeout(()=>request.abort(),8000);
+  try{const s=await api('/dashboard',request.signal);if(current===generation)renderElectrumProgress(s.host?.electrs,s.rpc?.getblockchaininfo?.value?.initialblockdownload);}
+  catch(e){if(current===generation){electrsSnapshot={...electrsSnapshot,state:'STALE',wallet_ready:false};find('electrum-progress-state').textContent='상태 갱신 지연';find('electrum-progress-note').textContent='이전에 확인한 진행률 · 자동 재확인';updateElectrumNotice();}}
+  finally{clearTimeout(timeout);if(controller===request)controller=null;if(current===generation)timer=setTimeout(()=>refreshElectrum(current),2000);}
+ }
  async function connection(selected='lan'){
-  mode=selected;const current=++generation;find('electrum-details').hidden=true;find('electrum-state').textContent='연결 정보를 확인하는 중…';find('qr-save').removeAttribute('href');
+  stop();mode=selected;endpointInfo=null;const current=generation;refreshElectrum(current);find('electrum-details').hidden=true;find('electrum-state').textContent='연결 정보를 확인하는 중…';find('qr-save').removeAttribute('href');
   document.querySelectorAll('[data-network]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.network===mode)));
   try{const d=await api('/electrum?network='+mode);if(current!==generation)return;
    const matrix=d.matrix,n=matrix?.length;if(!Array.isArray(matrix)||n<21||n>185||!matrix.every(row=>Array.isArray(row)&&row.length===n&&row.every(x=>typeof x==='boolean')))throw Error('QR 데이터를 확인할 수 없습니다.');
@@ -53,7 +73,7 @@ const NodeView=(()=>{
    find('electrum-address').value=d.payload;CopyAddress.enhance(find('electrum-address'));find('electrum-help').textContent=mode==='lan'?'같은 LAN의 지갑에서 SSL/TLS를 선택하고 기기 인증서를 확인하세요.':'지갑에서 Tor를 활성화하거나 Tor SOCKS 프록시를 설정하세요.';
    find('electrum-fingerprint').textContent=d.certificate_sha256?'인증서 SHA256: '+d.certificate_sha256:'';
    const canvas=find('electrum-qr'),scale=8;canvas.width=canvas.height=n*scale;const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#000';matrix.forEach((row,y)=>row.forEach((on,x)=>{if(on)ctx.fillRect(x*scale,y*scale,scale,scale);}));
-   find('qr-save').href=canvas.toDataURL('image/png');find('electrum-state').textContent=d.ibd===true?'Core 초기 동기화 중 · electrs와 지갑 연결 준비는 동기화가 끝난 뒤 확인하세요.':d.index_state!=='READY'?'electrs 인덱싱·연결 대기 · 아래 주소는 설정된 주소이며, 아직 지갑 연결 준비가 확인되지 않았습니다.':d.service_active&&d.backend_active?'연결 서비스 실행 중 · 주소 또는 QR 이미지를 사용하세요. 지갑에서 동기화 상태를 확인하세요.':'연결 대기 · 아래는 기기에 설정된 주소입니다. 연결 서비스를 시작해야 사용할 수 있습니다.';find('electrum-details').hidden=false;
+   find('qr-save').href=canvas.toDataURL('image/png');endpointInfo=d;updateElectrumNotice();find('electrum-details').hidden=false;
   }catch(e){if(current===generation)find('electrum-state').textContent=e.message;}
  }
  return {start,stop,connection};

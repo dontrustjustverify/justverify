@@ -36,3 +36,5 @@ header .header-logout span{font:inherit;color:inherit;letter-spacing:0}
 .copy-feedback:not(:empty){padding:.3rem .5rem;border:1px solid var(--border)}
 .device-summary dd .address-field{margin:.2rem 0}.device-summary dd input{font-size:.85rem}
 .setting-row .setting-warning{color:var(--muted);border-left:2px solid var(--accent);padding-left:.7rem}
+
+.electrum-progress{margin:1.5rem 0}.electrum-progress-heading{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem}.electrum-progress progress{display:block;width:100%;height:10px;accent-color:var(--accent);border:0;background:var(--surface);border-radius:5px;overflow:hidden}.electrum-progress progress::-webkit-progress-bar{background:var(--surface)}.electrum-progress progress::-webkit-progress-value{background:var(--accent)}.electrum-progress progress::-moz-progress-bar{background:var(--accent)}

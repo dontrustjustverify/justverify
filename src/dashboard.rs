@@ -194,7 +194,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
         format!(
             "electrs {} / 높이 {}",
             value(&s.host["electrs"]["state"]),
-            value(&s.host["electrs"]["height"])
+            crate::electrs_status::progress_text(&s.host["electrs"])
         ),
         format!("Tor {}", value(&s.host["tor"]["state"])),
         format!("I2P {}", value(&s.host["i2p"]["state"])),

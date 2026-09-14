@@ -22,3 +22,15 @@ The release test-report JSON contains exact transaction IDs, block hashes and im
 Unchanged policy, I2P, backup and earlier component results are in [beta3](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3) and [beta2](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2). They are not new beta4 physical-installation results. Core22 I2P incoming-only remains unsupported; Core22/23 outgoing identity behavior differs from Core24+. Pruning is incompatible with bundled electrs.
 
 Physical beta4 installation/reboot, full public-network synchronization/indexing, physical mobile-wallet/camera use, long-duration operation, restore onto a new data UUID, OS update failure recovery and whole-image byte reproducibility remain pending. Earlier generic ARM onion-RPC timing failures have not been proven to be VM-only; the successful explorer test does not close those separate timing checks.
+# Electrs progress and readiness regression checks
+
+```sh
+cargo test --locked --lib --test electrs_status
+node tests/electrs_status_view.cjs
+python3 tests/electrs_status_live.py \
+  --core /path/to/bitcoin/bin \
+  --electrs /path/to/electrs \
+  --binary target/release/justverify
+```
+
+The live test creates an isolated regtest chain. It checks real wallet queries and tip agreement, delayed forwarded responses, preserved stale values, process pause/resume, service restart and chain changes. Manual invalidation to a shorter chain is tested separately using electrs' explicit `--reindex-last-blocks` recovery option; the application does not automatically reindex user data.

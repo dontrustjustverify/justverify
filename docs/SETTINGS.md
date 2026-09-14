@@ -66,6 +66,14 @@ Core status, network data, block headers, mining-pool identification and host me
 
 An RPC timeout during heavy disk activity is shown as a delayed update. A failed RPC connection is shown separately. Previously collected values retain their timestamps and stale indication; a host update does not make old Core data current. This improves responsiveness but does not eliminate Core or disk latency during initial synchronization.
 
+## Electrs progress
+
+The Bitcoin Core overview shows Electrs progress as a percentage followed by **processed height / Core height**. The Electrs menu shows the same numbers and a progress bar, updated automatically while the menu is open. Progress is based on block heights, not elapsed time or estimated work remaining; larger blocks can take longer to index.
+
+**100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. During a delayed response, the last observed height and its timestamp stay visible. A connection failure or index error is shown separately instead of clearing progress to a dash.
+
+These displays are included in source builds after beta4.
+
 ## Source references
 
 Behavior was compared with [umbrel-bitcoin at 2fe07948](https://github.com/getumbrel/umbrel-bitcoin/tree/2fe07948f99e101dbee95ce34e5947a69c441ee4), [Umbrel authentication at bfa79ed2](https://github.com/getumbrel/umbrel/blob/bfa79ed24031b0065dd2f810411d58b82af1b95e/packages/umbreld/source/modules/auth/auth.ts), [Bitcoin Core 31.1](https://github.com/bitcoin/bitcoin/tree/9be056a8a72b624dae9623b2f7bded92c2a21c91) and [electrs 0.11.1](https://github.com/romanz/electrs/tree/35216c6d30148be8e6763d913d437330f431fc03). Product implementation is independently written. Version-specific catalogs are under `catalog/`.

@@ -1,6 +1,6 @@
 //! Independent read-only collection lanes. Slow block/coinbase reads never hold up
 //! current chain status, network samples or the socket serving the shared cache.
-use crate::{Rpc, Snapshot, clean, miner, now, probe_electrs, probe_tor};
+use crate::{Rpc, Snapshot, clean, miner, now, probe_tor};
 use anyhow::{Context, Result, bail};
 use serde_json::{Value, json};
 use std::{
@@ -31,8 +31,10 @@ pub fn start(
     port: u16,
     cookie: &Path,
     electrs_port: u16,
+    electrs_metrics_port: u16,
     tor_port: u16,
 ) -> Result<()> {
+    let electrs = crate::electrs_status::start(electrs_port, electrs_metrics_port)?;
     let chain_rpc = Rpc::with_timeout(port, cookie, Duration::from_secs(10))?;
     let network_rpc = Rpc::new(port, cookie)?;
     let block_rpc = Rpc::with_timeout(port, cookie, Duration::from_secs(10))?;
@@ -202,7 +204,7 @@ pub fn start(
                 "uptime":sysinfo::System::uptime(), "used_memory_mib":host.used_memory()/1048576,
                 "total_memory_mib":host.total_memory()/1048576, "cpu_percent":format!("{:.1}",host.global_cpu_usage()),
                 "disks":disks.iter().map(|d|json!({"mount":clean(&d.mount_point().display().to_string()),"total":d.total_space(),"available":d.available_space()})).collect::<Vec<_>>(),
-                "swap_mib":host.used_swap()/1048576, "electrs":probe_electrs(electrs_port,&core), "tor":probe_tor(tor_port), "i2p":crate::probe_i2p(&core)
+                "swap_mib":host.used_swap()/1048576, "electrs":electrs.read().unwrap().view(&core,electrs_port,now()), "tor":probe_tor(tor_port), "i2p":crate::probe_i2p(&core)
             });
             let mut shared = cache.write().unwrap();
             shared.host = value;

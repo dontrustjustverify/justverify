@@ -60,6 +60,8 @@ enum Command {
         rpc_port: u16,
         #[arg(long, default_value_t = 50001)]
         electrs_port: u16,
+        #[arg(long, default_value_t = 4224)]
+        electrs_metrics_port: u16,
         #[arg(long, default_value_t = 9050)]
         tor_port: u16,
         #[arg(long)]
@@ -118,6 +120,7 @@ fn main() -> Result<()> {
             cookie,
             rpc_port,
             electrs_port,
+            electrs_metrics_port,
             tor_port,
             socket,
         } => {
@@ -133,7 +136,14 @@ fn main() -> Result<()> {
             let listener = UnixListener::bind(&socket)?;
             fs::set_permissions(&socket, fs::Permissions::from_mode(0o600))?;
             let cache = Arc::new(RwLock::new(Snapshot::default()));
-            justverify::collector::start(cache.clone(), rpc_port, &cookie, electrs_port, tor_port)?;
+            justverify::collector::start(
+                cache.clone(),
+                rpc_port,
+                &cookie,
+                electrs_port,
+                electrs_metrics_port,
+                tor_port,
+            )?;
             for stream in listener.incoming() {
                 let mut stream = stream?;
                 stream.set_read_timeout(Some(Duration::from_secs(1)))?;

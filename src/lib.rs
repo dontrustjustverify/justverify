@@ -4,6 +4,7 @@ pub mod collector;
 pub mod connection_ui;
 pub mod dashboard;
 pub mod download;
+pub mod electrs_status;
 pub mod miner;
 pub mod policy;
 pub mod policy_service;
@@ -241,7 +242,7 @@ pub fn main_lines(s: &Snapshot) -> Vec<String> {
         format!(
             "Electrs {} | height {}",
             s.host["electrs"]["state"].as_str().unwrap_or("N/A"),
-            s.host["electrs"]["height"]
+            electrs_status::progress_text(&s.host["electrs"])
         ),
         format!("Tor {}", s.host["tor"]["state"].as_str().unwrap_or("N/A")),
         format!("I2P {}", s.host["i2p"]["state"].as_str().unwrap_or("N/A")),
@@ -377,23 +378,6 @@ fn block_header_hash_uses_bitcoin_byte_order() {
 
 pub fn electrs_height(port: u16) -> Result<u64> {
     Ok(electrs_tip(port)?.0)
-}
-pub fn probe_electrs(port: u16, core: &Snapshot) -> Value {
-    let result = (|| -> Result<Value> {
-        let (height, tip) = electrs_tip(port)?;
-        let ready = core.rpc.get("getblockchaininfo").is_some_and(|s| {
-            s.error.is_none()
-                && s.updated > 0
-                && now().saturating_sub(s.updated) <= 15
-                && s.value["blocks"].as_u64() == Some(height)
-                && s.value["bestblockhash"].as_str() == Some(tip.as_str())
-                && s.value["initialblockdownload"] == false
-        });
-        Ok(
-            json!({"state":if ready {"READY"} else {"INDEXING / CORE NOT READY"},"height":height,"tip":tip,"port":port}),
-        )
-    })();
-    result.unwrap_or_else(|_| json!({"state":"UNAVAILABLE","height":null,"port":port}))
 }
 
 pub fn probe_tor(port: u16) -> Value {

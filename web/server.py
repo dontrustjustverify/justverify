@@ -391,7 +391,7 @@ def app_for(bridge,tor_rpc=False,lan_http=False,remote_web=False):
     if not lan_http:
         app.router.add_post('/rpc',bridge.gateway.rpc);app.router.add_post('/',bridge.gateway.rpc);app.router.add_post('/wallet/{wallet}',bridge.gateway.rpc)
     # Explicit static allowlist; state files cannot be routed.
-    for name in ['xterm.js','xterm.css','app.js','app.css','copy.js','dashboard.js','settings.js','device.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
+    for name in ['xterm.js','xterm.css','app.js','app.css','copy.js','electrs_status.js','dashboard.js','settings.js','device.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
         async def serve(r,name=name):return web.FileResponse(ROOT/'web/static'/name)
         app.router.add_get('/'+name,serve)
     return app

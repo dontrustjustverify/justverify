@@ -1,6 +1,25 @@
 'use strict';
 const I18n=(()=>{
 const messages={
+ "인덱싱 상태":{"en":"Indexing status","ja":"インデックスの状態"},
+ "Core 높이 갱신 지연":{"en":"Core height update delayed","ja":"Coreの高さ更新が遅延"},
+ "이전에 확인한 진행률 · 자동 재확인":{"en":"Last observed progress · retrying automatically","ja":"前回取得した進捗・自動再確認中"},
+ "Electrs 인덱싱 진행률":{"en":"Electrs indexing progress","ja":"Electrsインデックス作成の進捗"},
+ "준비 완료":{"en":"Ready","ja":"準備完了"},
+ "인덱싱 중":{"en":"Indexing","ja":"インデックス作成中"},
+ "인덱스 오류 · 점검 필요":{"en":"Index error · inspection needed","ja":"インデックスエラー・確認が必要"},
+ "Core 동기화 대기":{"en":"Waiting for Core sync","ja":"Core同期を待機中"},
+ "인덱스·지갑 응답 확인 중":{"en":"Checking index and wallet readiness","ja":"インデックスとウォレット応答を確認中"},
+ "연결 확인 필요":{"en":"Connection needs checking","ja":"接続の確認が必要"},
+ "상태 갱신 지연":{"en":"Status update delayed","ja":"状態の更新が遅延"},
+ "첫 응답 대기":{"en":"Waiting for first response","ja":"最初の応答を待機中"},
+ "아직 확인하지 못함":{"en":"Not yet observed","ja":"未確認"},
+ "응답 지연 · 자동 재확인":{"en":"Response delayed · retrying automatically","ja":"応答が遅延・自動再確認中"},
+ "인덱싱 완료 대기":{"en":"Waiting for indexing to finish","ja":"インデックス作成の完了を待機中"},
+ "확인 중":{"en":"Checking","ja":"確認中"},
+ "인덱싱 높이":{"en":"Indexing height","ja":"インデックス作成の高さ"},
+ "높이 조회":{"en":"Height observed","ja":"高さの取得時刻"},
+ "지갑 응답":{"en":"Wallet response","ja":"ウォレット応答"},
  "Core 22에서는 I2P 수신만 켤 수 없습니다. I2P 송신도 켜거나 Core 23 이상을 선택하세요.": {"en":"Core 22 cannot enforce incoming-only I2P. Enable outgoing I2P too, or select Core 23 or newer.","ja":"Core 22ではI2P受信のみの設定を適用できません。I2P送信もオンにするか、Core 23以降を選択してください。"},
  "I2P 들어옴 / 나감": {"en":"I2P in / out","ja":"I2P 受信 / 送信"},
  "설정": {
@@ -1063,7 +1082,7 @@ function text(value){
  const trimmed=value.trim(),entry=messages[trimmed];
  if(entry)return value.replace(trimmed,entry[language]);
  // Dynamic dashboard labels preserve numeric values and data; never translate hashes or addresses.
- const patterns=[[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
+ const patterns=[[/^마지막 확인 · (\d+)초 전$/,language==='en'?'Last observed · $1s ago':'最終取得・$1秒前'],[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
  for(const [pattern,replacement] of patterns)if(pattern.test(value))return value.replace(pattern,replacement);
  if(/\d(?:일|시간|분|초)/.test(value))value=value.replace(/(\d+)일/g,language==='en'?'$1d':'$1日').replace(/(\d+)시간/g,language==='en'?'$1h':'$1時間').replace(/(\d+)분/g,language==='en'?'$1m':'$1分').replace(/(\d+)초/g,language==='en'?'$1s':'$1秒').replace(/ 전$/,language==='en'?' ago':'前');
  for(const [source,translations] of Object.entries({"Core 기본값: ": ["Core default: ", "Core既定値: "], "기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);

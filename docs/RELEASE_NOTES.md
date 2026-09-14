@@ -1,3 +1,12 @@
+# Unreleased
+
+- Show Electrs indexing percentage and processed/Core heights in the Bitcoin Core overview, with a live progress bar in the Electrs menu.
+- Collect index progress independently of wallet requests, preserving the last height and observation time during delays or outages.
+- Confirm matching Core/Electrum tips and usable index queries before reporting wallet readiness. A full progress bar alone does not mean the wallet index is ready.
+- Refresh progress and connection guidance while the Electrs menu stays open; support desktop/mobile layouts and all interface themes and languages.
+
+These changes are on `main`; the downloadable beta4 image predates them.
+
 # JustVerify 0.1.0-beta4
 
 Fix Mempool navigation when JustVerify is opened through Tor. The menu now keeps the web onion hostname and opens port3006 with the selected language, instead of sending the browser to justverify.local.
