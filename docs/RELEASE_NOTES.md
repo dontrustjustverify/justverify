@@ -1,15 +1,15 @@
-# JustVerify 0.1.0-beta3
+# JustVerify 0.1.0-beta4
 
-Add I2P peers to Bitcoin Core's incoming and outgoing network controls. The image includes source-pinned i2pd 2.61.0, starts it only when selected and keeps its SAM interface on loopback. Both directions default off.
+Fix Mempool navigation when JustVerify is opened through Tor. The menu now keeps the web onion hostname and opens port3006 with the selected language, instead of sending the browser to justverify.local.
 
-- Separate incoming/outgoing choices, validated configuration preview, atomic save, service restart and effective Core RPC checks.
-- Core 22 requires I2P outgoing when incoming is enabled because of its upstream reachability behavior; Core 23+ permits incoming-only.
-- Display local SAM readiness separately from completed Bitcoin peer handshakes.
-- Preserve the Core I2P identity in encrypted backups; accept existing backups without the new optional identity.
-- Retain beta2's session, dashboard freshness, address copying, OP_RETURN controls and SSH administration changes.
+- Serve the explorer through the same onion identity, using a separate authenticated loopback listener.
+- Share the existing Tor login across the dashboard and explorer. Reject unauthenticated API/WebSocket requests and foreign origins.
+- Close live explorer connections on logout, session expiry or disabling Remote Tor access. Preserve login through a graceful web-service restart.
+- Restore existing encrypted backups with the current fixed Tor routes, preserving device identities and rejecting noncanonical destinations.
+- Keep trusted-LAN access and the I2P, Core and Electrs configuration unchanged.
 
-Bundled: Bitcoin Core 31.1, electrs 0.11.1, mempool 3.3.1 and i2pd 2.61.0. I2P provides Bitcoin P2P transport, not a new browser or wallet endpoint. Pruning remains incompatible with bundled electrs.
+Bundled versions remain Bitcoin Core31.1, electrs0.11.1, mempool3.3.1 and i2pd2.61.0.
 
-Download the matching image and checksum from [Releases](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3). Extract the IMG before using balenaEtcher and keep validation enabled. Reflashing erases the selected drive.
+Download the matching image, checksum and signature from [Releases](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4). Extract the IMG before using balenaEtcher and keep validation enabled. Reflashing erases the selected drive; preserve your configuration backup and existing node data before choosing a reinstall.
 
-Physical beta3 Pi installation/reboot and long-duration operation remain pending. Earlier generic VM Tor timeouts are not established to be VM-only. See [validation](TESTING.md), [settings](SETTINGS.md) and [installation](INSTALL.md).
+Physical beta4 Pi installation/reboot and the remaining hardware, wallet and long-duration checks are pending. See [validation](TESTING.md), [settings](SETTINGS.md) and [installation](INSTALL.md).

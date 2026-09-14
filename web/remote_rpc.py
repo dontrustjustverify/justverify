@@ -6,6 +6,7 @@ class RemoteRPC:
  def __init__(self,state,atomic,application,*,service='rpc',port=28443):
   self.service=service;self.port=port;self.path=state/('remote-'+service+'.json');self.state=state;self.atomic=atomic;self.application=application
   self.runner=None;self.enabled=False;self.plans={};self.lock=asyncio.Lock()
+  self.hostname_directory=pathlib.Path('/run/justverify-tor')
  def saved(self):
   raw=self.path.read_bytes() if self.path.exists() else b''
   if len(raw)>4096:raise ValueError('Remote configuration too large')
@@ -15,7 +16,7 @@ class RemoteRPC:
  def status(self):
   value,revision=self.saved()
   try:
-   onion=(pathlib.Path('/run/justverify-tor')/(self.service+'.hostname')).read_text().strip()
+   onion=(self.hostname_directory/(self.service+'.hostname')).read_text().strip()
    if not re.fullmatch(r'[a-z2-7]{56}\.onion',onion):onion=None
   except (OSError,UnicodeError):onion=None
   return {'stored_enabled':value['enabled'],'running':self.enabled,'needs_recovery':value['phase']!='committed' or value['enabled']!=self.enabled,'revision':revision,'onion_host':onion,'onion_port':8332 if self.service=='rpc' else 80,'transport':'HTTP inside Tor to a restricted loopback RPC gateway; HTTPS administration stays separate'}

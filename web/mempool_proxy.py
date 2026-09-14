@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LAN-only static site and fixed upstream proxy for the bundled mempool app."""
+"""Bundled explorer with fixed upstreams and separate LAN/Tor boundaries."""
 import argparse
 import asyncio
 import contextlib
@@ -25,8 +25,8 @@ async def boundary(request, handler):
     return await handler(request)
 
 
-def make_app(bundle, runtime, profile, backend):
-    app = web.Application(middlewares=[boundary], client_max_size=10*1024*1024)
+def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authorize=None, streams=None):
+    app = web.Application(middlewares=[middleware], client_max_size=10*1024*1024)
     async def lifecycle(app):
         async with ClientSession(timeout=ClientTimeout(total=30), trust_env=False) as client:
             app['client'] = client
@@ -52,17 +52,26 @@ def make_app(bundle, runtime, profile, backend):
         async with app['client'].ws_connect(backend+'/', heartbeat=30, max_msg_size=16*1024*1024) as upstream:
             downstream=web.WebSocketResponse(heartbeat=30, max_msg_size=1024*1024)
             await downstream.prepare(request)
+            if streams is not None: streams.add(downstream)
             async def copy(source,target):
                 async for message in source:
                     if message.type==WSMsgType.TEXT: await target.send_str(message.data)
                     elif message.type==WSMsgType.BINARY: await target.send_bytes(message.data)
                     else: break
             tasks=[asyncio.create_task(copy(upstream,downstream)),asyncio.create_task(copy(downstream,upstream))]
+            if authorize is not None:
+                async def session_lifetime():
+                    while not downstream.closed:
+                        await asyncio.sleep(1)
+                        try: authorize(request)
+                        except web.HTTPException: return
+                tasks.append(asyncio.create_task(session_lifetime()))
             try: await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
             finally:
                 for task in tasks: task.cancel()
                 await asyncio.gather(*tasks,return_exceptions=True)
                 await downstream.close()
+                if streams is not None: streams.discard(downstream)
             return downstream
     async def api(request):
         if state().get('state') != 'running':

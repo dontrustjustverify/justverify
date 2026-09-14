@@ -15,3 +15,4 @@ HiddenServicePort 8332 127.0.0.1:28443
 HiddenServiceDir /var/lib/justverify-tor/web
 HiddenServiceVersion 3
 HiddenServicePort 80 127.0.0.1:28444
+HiddenServicePort 3006 127.0.0.1:28445

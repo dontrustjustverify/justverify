@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta3.
+This guide applies to JustVerify 0.1.0-beta4.
 
 ## OP_RETURN and transaction policy
 
@@ -71,3 +71,13 @@ An RPC timeout during heavy disk activity is shown as a delayed update. A failed
 Behavior was compared with [umbrel-bitcoin at 2fe07948](https://github.com/getumbrel/umbrel-bitcoin/tree/2fe07948f99e101dbee95ce34e5947a69c441ee4), [Umbrel authentication at bfa79ed2](https://github.com/getumbrel/umbrel/blob/bfa79ed24031b0065dd2f810411d58b82af1b95e/packages/umbreld/source/modules/auth/auth.ts), [Bitcoin Core 31.1](https://github.com/bitcoin/bitcoin/tree/9be056a8a72b624dae9623b2f7bded92c2a21c91) and [electrs 0.11.1](https://github.com/romanz/electrs/tree/35216c6d30148be8e6763d913d437330f431fc03). Product implementation is independently written. Version-specific catalogs are under `catalog/`.
 
 I2P references: [Core 22 network implementation](https://github.com/bitcoin/bitcoin/blob/v22.0/src/net.cpp), [Core 24 transient sessions](https://github.com/bitcoin/bitcoin/blob/v24.0/src/net.cpp), [Core 24.1 I2P fixes](https://bitcoincore.org/en/releases/24.1/), [Core 31.1 I2P guide](https://github.com/bitcoin/bitcoin/blob/v31.1/doc/i2p.md), [i2pd pinned source](https://github.com/PurpleI2P/i2pd/tree/635b013a612ff47278ef02acf8580a28e10e26c5).
+
+## Mempool over LAN and Tor
+
+The Mempool menu keeps the hostname used to open JustVerify and selects port3006. A LAN visit opens `http://justverify.local:3006/ko/` (or the IP used to connect). A Tor visit opens `http://<your-web-onion>:3006/ko/`. English uses `/en-US/`; Japanese uses `/ja/`. The explorer’s JustVerify link returns to the same host on port80.
+
+Enable **Settings → Remote Tor access**, open the displayed onion address and log in before choosing Mempool. The explorer shares that Tor login. Opening it without a session redirects its HTML page to the onion login; unauthenticated API and WebSocket requests are rejected. Logout, session expiry and disabling Remote Tor access also end its live connections. The LAN explorer remains available on the trusted LAN. Do not forward port3006 from your router.
+
+On the device, Tor forwards onion port3006 to a separate authenticated loopback listener at28445. It does not forward to the anonymous LAN explorer. Core RPC and wallet credentials remain separate.
+
+Restoring a supported older encrypted backup preserves its onion identities and uses the installed fixed Tor routing template, including the explorer route. Unrecognized listener destinations are rejected.

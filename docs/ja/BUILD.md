@@ -4,7 +4,7 @@
 
 JustVerify・electrs・mempool と固定したライブラリを取得してコンパイルし、Raspberry Pi 5 ARM64 用イメージを作ります。Bitcoin Core は**公式署名とチェックサムを検証したバイナリ**、Pi OS と Debian パッケージも upstream の配布物を使用します。OS 全体や Bitcoin Core までソースからコンパイルする手順ではありません。
 
-リリースのソースには `v0.1.0-beta3` タグを使用してください。最新の変更をビルドする場合は `main` の commit を記録してください。自作イメージには独自のチェックサムがあり、プロジェクトの署名は引き継ぎません。OS 全体のバイト単位の再現性は未確認です。
+リリースのソースには `v0.1.0-beta4` タグを使用してください。最新の変更をビルドする場合は `main` の commit を記録してください。自作イメージには独自のチェックサムがあり、プロジェクトの署名は引き継ぎません。OS 全体のバイト単位の再現性は未確認です。
 
 ## 1. 隔離した Linux 環境を準備する
 
@@ -45,7 +45,7 @@ git clone --branch main --single-branch \
   https://github.com/dontrustjustverify/justverify.git "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0-beta3-local1
+export JV_TAG=0.1.0-beta4-local1
 mkdir -p .state/build-guide docs/evidence
 git rev-parse HEAD > .state/build-guide/source-commit.txt
 git switch --detach "$(git rev-parse HEAD)"
@@ -212,14 +212,14 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | 成果物 | 用途 |
 |---|---|
-| `dist/justverify-0.1.0-beta3-local1.img` | balenaEtcher で選択する展開済みイメージ |
-| `dist/justverify-0.1.0-beta3-local1.img.xz` | 保管・ダウンロード用 |
-| `dist/justverify-0.1.0-beta3-local1-SHA256SUMS` | 両ファイルのハッシュ、`dist/` から検証 |
-| `dist/justverify-0.1.0-beta3-local1.layout.json` / `.size-audit.json` | パーティション・容量の記録 |
+| `dist/justverify-0.1.0-beta4-local1.img` | balenaEtcher で選択する展開済みイメージ |
+| `dist/justverify-0.1.0-beta4-local1.img.xz` | 保管・ダウンロード用 |
+| `dist/justverify-0.1.0-beta4-local1-SHA256SUMS` | 両ファイルのハッシュ、`dist/` から検証 |
+| `dist/justverify-0.1.0-beta4-local1.layout.json` / `.size-audit.json` | パーティション・容量の記録 |
 | `dist/os-packages.tsv` | イメージに実際に導入された OS パッケージ |
 | `.state/build-guide/` | ソース commit・差分・ログ・ローカル検証の証拠 |
 
-`JV_TAG` を変えるとファイル名も変わります。SHA256 は完全性確認であり発行者の署名ではありません。この例で生成するのは署名のないローカルイメージです。再配布には正確なソース・変更、各構成要素の対応ソース・ライセンス、対応範囲・テスト報告、自分の署名手順が必要です。[第三者の権利表示](../../licenses/THIRD_PARTY_NOTICES.md)と[リリースの対応ソース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3)を参照してください。変更したファイルに公式署名を流用できません。
+`JV_TAG` を変えるとファイル名も変わります。SHA256 は完全性確認であり発行者の署名ではありません。この例で生成するのは署名のないローカルイメージです。再配布には正確なソース・変更、各構成要素の対応ソース・ライセンス、対応範囲・テスト報告、自分の署名手順が必要です。[第三者の権利表示](../../licenses/THIRD_PARTY_NOTICES.md)と[リリースの対応ソース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4)を参照してください。変更したファイルに公式署名を流用できません。
 
 [インストール案内](../INSTALL.md)に従い、Etcher の検証を有効にしてください。実際の macOS/Etcher 2.1.6 では XZ 直接入力がチェックサム検証に失敗し、**展開済み IMG** の記録は合格しました。その後、実機 Pi 5 で初期設定、Core・electrs・Tor、ポート 3006 の mempool、LAN・onion ウォレット、再起動・復旧を確認します。未実行は `NOT RUN`/`BLOCKED` と記録してください。残るリリース条件は [TESTING.md](../TESTING.md) にあります。
 

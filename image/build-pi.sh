@@ -7,7 +7,7 @@ base=${1:?verified base .img.xz required}
 core=${2:?verified extracted ARM Core directory required}
 binary=${3:?ARM Linux JustVerify executable required}
 electrs=${4:?verified ARM electrs executable required}
-build_tag=${5:-0.1.0-beta3}
+build_tag=${5:-0.1.0-beta4}
 mempool=${6:?verified native mempool bundle directory required}
 i2pd=${7:?pinned native i2pd bundle directory required}
 (cd "$i2pd" && sha256sum -c SHA256SUMS > /dev/null)

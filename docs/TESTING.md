@@ -1,20 +1,24 @@
-# Release validation - 0.1.0-beta3
+# Release validation — 0.1.0-beta4
 
-Beta3 is a testing release. Physical Pi installation of this image remains pending.
+Beta4 is a testing release. Physical Pi installation of this image remains pending.
 
 | Check | Scope and result |
 |---|---|
-| Core policy compatibility | PASS: 32 real ARM64 Core binaries, 256 incoming and 192 outgoing combinations, startup/preflight, saved-file roundtrip, effective RPC proxy/limited flags and listeners |
-| Core 31.1 over I2P | PASS: two independent i2pd routers on the public I2P network, including the documented source-build test runner; private regtest blocks, signed transaction propagation, two confirmations, equal tip, restart/reconnection and outgoing-only propagation to height104 |
-| Core 22.0 over I2P | PASS: signed transaction and two confirmations over I2P; restart, outgoing-only propagation to height104; persistent outgoing identity verified against the selected upstream version |
-| Browser | PASS: actual booted image UI, saved I2P switches, refreshed session, desktop rendering and390px mobile layout without horizontal overflow; matching test port behind QEMU forwarding |
-| Encrypted I2P backup | PASS: real Core-generated key, GPG encryption/restoration, original bytes and0600 restored; older complete backups without this optional entry accepted |
-| ARM64 build and Rust suite | PASS; Core31.1's actual help confirms the450MiB cache default on the smaller VM, while the larger development host uses1024MiB |
-| Packaged systemd, policy API and reboot | PASS: booted generic ARM factory image; HTTP registration and policy preview/save, incoming-only/outgoing-only/both off, nonroot router and loopback SAM, forced router crash recovery and actual reboot with unchanged Core identity, settings and Core/electrs tip |
-| Pristine beta3 image | PASS: filesystem, full packaged source/binary hashes, identity absence, enabled systemd units, ARM runtime and cross-host full decompression/SHA256 |
+| Menu links | PASS: shipped JavaScript transformations for LAN hostname, IPv4, IPv6 and onion; Korean, English and Japanese; return link retains the hostname |
+| LAN explorer regression | PASS: actual Core31.1/electrs0.11.1/mempool3.3.1/SQL, signed regtest transaction, two confirmations, matching height107/tip, backend restart and Core outage/recovery |
+| Tor explorer | PASS: two independent Tor instances; descriptor publication observed before connection; three localized HTML pages, configuration, source links, authenticated API and actual WebSocket block data |
+| Tor transaction | PASS: signed regtest transaction broadcast through onion port3006, one confirmation at height108, equal Core/electrs/mempool tip |
+| Access and session lifecycle | PASS: shared Tor login, anonymous API rejection, HTML redirect to onion login, Host/Origin/unsafe-POST guards, logout and disable revocation, graceful restart, timestamp-boundary expiry/renewal and real occupied-port failure |
+| Tor backup compatibility | PASS: actual GPG restore of three historical/current layouts into the installed fixed template; three altered destination/listener configurations rejected before writes |
+| Packaged boot and reboot | PASS: disposable generic ARM image with external Debian kernel; actual Core/electrs/mempool, Tor-specific loopback HTTP/WebSocket, saved identity/login and opt-in setting, web-service restart, remote disable, production guarded GPG restore of previous Tor layout and explorer recovery |
+| ARM64 application | PASS: locked release build with version0.1.0-beta4 |
 
-Previous component evidence is available in [beta2](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2): physical Pi5 isolated regtest Core/electrs/mempool transactions and recovery, collector delays/reorgs, OP_RETURN and mempool behavior, desktop/mobile viewport and session tests, and isolated SSH/password-sudo checks. These are not new beta3 physical-installation results.
+Run `node tests/mempool_links.js` from a source checkout. For the live tests, use the dedicated `justverify` test account and separate regtest described in [BUILD.md](BUILD.md), keep `tests/mempool_live.py` running with `--hold`, then run `tests/mempool_tor_live.py` against that fixture. The Tor test requires test-only aiohttp3.13.3, aiohttp-socks0.10.1, python-socks2.8.2 and a Tor executable. Its `--state` must be a fresh private directory. It never opens another node dataset. Bootstrap100% alone does not establish onion descriptor publication; the test also observes `HS_DESC UPLOADED`. Session timestamp-boundary checks are distinct from a seven-day duration test.
 
-I2P differences follow the selected Core version. Core22 does not enforce incoming-only I2P. Core22/23 reuse a persistent outgoing identity even with incoming off; Core24+ use transient identities. Core24.0/24.0.1 lack the later transient-session limit, so prefer24.1+ for outgoing-only operation. Public I2P transport tests use private regtest funds; they are not public Bitcoin testnet transactions or mainnet synchronization.
+The image probe checks installed services through loopback; the independent Tor test above checks network transport separately.
 
-Physical beta3 installation/reboot, full public-network synchronization/indexing, physical mobile-wallet/camera use, long-duration operation, restore onto a new data UUID, OS update failure recovery and whole-image byte reproducibility remain pending. Earlier generic VM Tor timeouts remain open and have not been proven to be VM-only. Pruning is incompatible with bundled electrs.
+The release test-report JSON contains exact transaction IDs, block hashes and image checks. Tests use private regtest funds transported through the public Tor network; they are not public Bitcoin testnet transactions.
+
+Unchanged policy, I2P, backup and earlier component results are in [beta3](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3) and [beta2](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2). They are not new beta4 physical-installation results. Core22 I2P incoming-only remains unsupported; Core22/23 outgoing identity behavior differs from Core24+. Pruning is incompatible with bundled electrs.
+
+Physical beta4 installation/reboot, full public-network synchronization/indexing, physical mobile-wallet/camera use, long-duration operation, restore onto a new data UUID, OS update failure recovery and whole-image byte reproducibility remain pending. Earlier generic ARM onion-RPC timing failures have not been proven to be VM-only; the successful explorer test does not close those separate timing checks.

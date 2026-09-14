@@ -10,6 +10,13 @@ def trusted_json(path):
         raise ValueError('untrusted restore context')
     return json.loads(path.read_bytes())
 
+def canonical_tor_config(value,template,p2p):
+    tor=re.sub(rb'(?m)^HiddenServicePort 8333 127\.0\.0\.1:[0-9]+$',f'HiddenServicePort 8333 127.0.0.1:{p2p+1}'.encode(),template)
+    before_explorer=tor.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n')
+    before_web=before_explorer.removesuffix(b'HiddenServiceDir /var/lib/justverify-tor/web\nHiddenServiceVersion 3\nHiddenServicePort 80 127.0.0.1:28444\n')
+    if value not in (tor,before_explorer,before_web):raise ValueError('backup Tor config is not canonical')
+    return tor
+
 class Guard:
     def __init__(self,helper,checked,context,template,validator):
         self.helper,self.checked,self.context,self.template,self.validator=helper,checked,context,template,validator
@@ -53,9 +60,7 @@ class Guard:
         for key,expected in self.helper.render_profile(self.checked).items():
             if values.get(key)!=expected:raise ValueError('backup privileged configuration is not canonical')
         p2p=self.helper.NETWORKS[self.checked[1]][3]
-        tor=re.sub(rb'(?m)^HiddenServicePort 8333 127\.0\.0\.1:[0-9]+$',f'HiddenServicePort 8333 127.0.0.1:{p2p+1}'.encode(),self.template)
-        legacy=tor.removesuffix(b'HiddenServiceDir /var/lib/justverify-tor/web\nHiddenServiceVersion 3\nHiddenServicePort 80 127.0.0.1:28444\n')
-        if values['etc/torrc'] not in (tor,legacy):raise ValueError('backup Tor config is not canonical')
+        tor=canonical_tor_config(values['etc/torrc'],self.template,p2p)
         versions={'catalog':str(self.helper.CATALOG),'binaries':str(self.helper.BINARIES),'data':str(self.helper.DATA/'instances'),'state':'/var/lib/justverify/versions'}
         if json.loads(values['etc/versions.json'])!=versions:raise ValueError('backup cannot change version API roots')
         active=json.loads(values['versions/active.json'])
@@ -65,3 +70,7 @@ class Guard:
             path=pathlib.Path(folder)/'managed.conf';path.write_bytes(values['config/managed.conf']);path.chmod(0o600)
             result=subprocess.run([str(self.validator),'validate-policy','--catalog',str(self.helper.CATALOG),'--version',self.checked[0],'--network',self.checked[1],'--config',str(path)],capture_output=True,timeout=15)
             if result.returncode or result.stdout.strip()!=b'VALID':raise ValueError('backup policy is not an accepted version-specific configuration')
+        # Archive hashes are checked before this upgrade. Only exact historical
+        # layouts are accepted; listener destinations come from the installed
+        # template. Rollback snapshots bypass normalization and preserve bytes.
+        values['etc/torrc']=tor

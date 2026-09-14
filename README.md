@@ -5,9 +5,9 @@
 
 Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
 
-**0.1.0-beta3 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+**0.1.0-beta4 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
-Beta3 adds I2P peers and retains the dashboard, session, address-copy, OP_RETURN and SSH administration improvements from beta2. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3).
+Beta4 fixes Mempool access from Tor: the menu keeps the current onion hostname and uses port3006 with your existing login. It includes beta3’s I2P and earlier node-management improvements. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4).
 
 
 **I2P peers:** beta3 includes i2pd. In Bitcoin Core → Mempool · Network settings, select I2P separately for incoming and outgoing peers. Both start off. Core 22 requires both directions for incoming; Core 23+ permits incoming-only. See [network settings](docs/SETTINGS.md).
@@ -17,7 +17,7 @@ Beta3 adds I2P peers and retains the dashboard, session, address-copy, OP_RETURN
 - Official, signature-verified Bitcoin Core binaries. Select a supported release from Core 22 onward; incompatible versions use separate data directories.
 - A real non-root TUI and a responsive browser dashboard with live blocks, peers, fees and system information.
 - Tor and electrs, with distinct LAN/Tor connection details and QR codes.
-- The **mempool 3.3.1** explorer already installed at **http://justverify.local:3006**. Open **Mempool** beside Electrs in the top menu.
+- The **mempool 3.3.1** explorer already installed at **http://justverify.local:3006**. Open **Mempool** beside Electrs in the top menu. When connected through Tor, it opens the same onion hostname on port3006.
 - Korean, English and Japanese; Teal, Amber, Green and Ice themes.
 - Reviewed settings changes, encrypted configuration backups and recovery tools.
 
@@ -49,8 +49,8 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get [justverify-0.1.0-beta3.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3.img.xz), [justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3). Use only an artifact listed in that release's manifest.
-2. Check the download against [justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta3.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Get [justverify-0.1.0-beta4.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4.img.xz), [justverify-0.1.0-beta4-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4). Use only an artifact listed in that release's manifest.
+2. Check the download against [justverify-0.1.0-beta4-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta4.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. Extract the `.img.xz` with an XZ-capable archive tool, then select the resulting `.img` and your intended NVMe in **balenaEtcher**. Our macOS/Etcher 2.1.6 test failed validation with direct XZ input; the extracted IMG passed. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
@@ -72,7 +72,7 @@ Fresh profiles enable `txindex=1` for mempool transaction lookups. Existing prof
 
 The browser administrator password and SSH password are separate. As requested for this appliance, initial SSH access is **`justverify` / `justverify`**; change it with `passwd` after your first SSH login. In beta2, `sudo` grants OS administrator access after authentication with the SSH password. See [SSH administration](docs/SSH.md). Public images do not include the developer's root SSH key or any pre-generated device private keys.
 
-Management HTTP and the explorer are intended for a trusted LAN. Do not forward these ports from the internet. Core RPC remains local; wallet RPC access uses the separately authenticated protected gateway. Remote Tor access is an explicit setting, and each service has its own address. Read [wallet connection details](docs/MOBILE_CONNECTIONS.md) before importing a QR.
+Management HTTP and the explorer are intended for a trusted LAN. Do not forward these ports from the internet. Core RPC remains local; wallet RPC access uses the separately authenticated protected gateway. Remote Tor access is an explicit setting. The dashboard and explorer share the web onion hostname on ports80 and3006; Electrs and wallet RPC use their separate addresses. Read [wallet connection details](docs/MOBILE_CONNECTIONS.md) before importing a QR.
 
 ## Backup, shutdown and recovery
 

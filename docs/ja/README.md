@@ -5,9 +5,9 @@
 
 自分で検証するBitcoin Coreノードです。NVMeにイメージを書き込み、Raspberry Pi 5を起動して **http://justverify.local** を開きます。端末風ダッシュボード、Tor、electrs、ローカルmempoolエクスプローラーを同梱しています。
 
-**0.1.0-beta3はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
+**0.1.0-beta4はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
 
-beta3はI2Pピア接続を追加しました。beta2のダッシュボード、ログイン維持、アドレスコピー、OP_RETURN設定、SSH管理者権限の改善も含みます。[変更点とダウンロード](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3)。
+beta4ではTorからMempoolを開くと、同じonionアドレスのポート3006に移動し、ログインを引き継ぎます。beta3のI2Pと既存のノード管理機能も含みます。[変更点とダウンロード](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4)。
 
 
 **I2Pピア:** beta3はi2pdを内蔵します。Bitcoin Core → Mempool・ネットワーク設定でI2Pの受信・送信を選択できます。初期値は両方オフです。Core 22の受信には送信も必要です。Core 23以降は受信だけを有効にできます。[ネットワーク設定](../SETTINGS.md)をご覧ください。
@@ -17,7 +17,7 @@ beta3はI2Pピア接続を追加しました。beta2のダッシュボード、�
 - 公式署名を検証したBitcoin Core。Core 22以降の対応カタログから選択し、互換性を検証していないバージョンには別のデータ領域を使用します。
 - 非rootで動作する実際のTUIと、画面幅に合わせて配置が変わるWebダッシュボード。ブロック、ピア、手数料、システム情報を表示します。
 - Torとelectrs。LAN/Tor別の接続先、ポート、TLS情報とQRコード。
-- **mempool 3.3.1を同梱。** Electrsの隣の **メンプール** から **http://justverify.local:3006** を開けます。
+- **mempool 3.3.1を同梱。** Electrsの隣の **メンプール** から、LANでは **http://justverify.local:3006**、Torでは現在のonionアドレスのポート3006を開けます。
 - 韓国語、英語、日本語とTeal、Amber、Green、Iceの文字色テーマ。
 - 変更内容を確認して設定を適用し、暗号化した設定のバックアップと復元ができます。
 
@@ -49,8 +49,8 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 
 ## ダウンロードとインストール
 
-1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta3) に公開された [justverify-0.1.0-beta3.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3.img.xz)、[justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta3.img.xz` を実行し、[justverify-0.1.0-beta3-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta3/justverify-0.1.0-beta3-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
+1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4) に公開された [justverify-0.1.0-beta4.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4.img.xz)、[justverify-0.1.0-beta4-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
+2. macOSでは `shasum -a 256 justverify-0.1.0-beta4.img.xz` を実行し、[justverify-0.1.0-beta4-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta4/justverify-0.1.0-beta4-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
 3. XZ対応の展開ツールで`.img.xz`を解凍し、**balenaEtcher**で展開した`.img`と対象NVMeを選択して書き込みます。macOS/Etcher 2.1.6の実測ではXZの直接書き込みは検証に失敗し、展開したIMGは成功しました。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
@@ -72,7 +72,7 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 
 Web管理者パスワードとSSHパスワードは別です。指定された初期SSHアカウントは **`justverify` / `justverify`** です。初回SSH接続後に`passwd`で変更してください。beta2ではSSHパスワードを入力すると`sudo`でOSを管理できます。[SSH管理ガイド](../SSH.md)をご覧ください。公開イメージには開発者のroot SSH鍵や事前生成された機器秘密鍵を含めません。
 
-管理HTTPとエクスプローラーは信頼できるLANで使用し、インターネットからポート転送しないでください。Core RPCはローカルに限定し、ウォレット用リモートRPCには別の認証・保護された経路を使用します。Remote Tor accessは明示的に有効化し、サービスごとに別のアドレスを使用します。[ウォレット接続ガイド](../MOBILE_CONNECTIONS.md)もご確認ください。
+管理HTTPとエクスプローラーは信頼できるLANで使用し、インターネットからポート転送しないでください。Core RPCはローカルに限定し、ウォレット用リモートRPCには別の認証・保護された経路を使用します。Remote Tor accessを有効にすると、管理画面とMempoolは同じweb onionアドレスのポート80・3006を使用します。ElectrsとウォレットRPCは別のアドレスです。[ウォレット接続ガイド](../MOBILE_CONNECTIONS.md)もご確認ください。
 
 ## バックアップと復旧
 

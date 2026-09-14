@@ -20,7 +20,11 @@ The policy and version tools retain a change journal. Review the recovery operat
 
 A missing or changed data UUID blocks node startup. Reconnect the original volume and preserve its journal and contents. Do not reformat or adopt a different UUID merely to dismiss an error. The node must not write a replacement chain onto the OS partition.
 
-Reflashing is a fresh installation and erases the selected NVMe. Use [the installation guide](INSTALL.md), keep backups off that NVMe, and use Settings to shut down before moving it. Restoring onto a newly created data UUID after OS reinstallation is still unverified in beta3. Do not rely on that procedure as a proven migration path.
+Reflashing is a fresh installation and erases the selected NVMe. Use [the installation guide](INSTALL.md), keep backups off that NVMe, and use Settings to shut down before moving it. Restoring onto a newly created data UUID after OS reinstallation is still unverified for this release. Do not rely on that procedure as a proven migration path.
+
+## Tor explorer after restore
+
+Supported older backups are validated against their exact historical Tor layout, then restored with the installed fixed routing template. The web onion identity is preserved, including Mempool on port3006. Arbitrary listener or destination changes are rejected. This does not bypass the existing same-volume and same-profile restore checks.
 
 ## Explorer database
 

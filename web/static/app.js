@@ -45,8 +45,8 @@ document.querySelectorAll('[data-fkey]').forEach(b=>b.onclick=()=>{
 document.querySelectorAll('[data-network]').forEach(b=>b.onclick=()=>NodeView.connection(b.dataset.network));
 $('#logout').onclick=async()=>{await fetch('/logout',{method:'POST',headers:{'X-CSRF-Token':csrf}});NodeView.stop();SettingsView.stop();ws?.close();csrf=null;showAuth();};addEventListener('resize',size);resume();
 
-// The explorer is a separate LAN service, including when opened by IP.
-{const url=new URL(location.href);url.protocol='http:';url.port='3006';url.pathname='/';url.search='';url.hash='';if(url.hostname.endsWith('.onion'))url.hostname='justverify.local';$('#mempool-link').href=url.href;}
+// Keep the node's hostname for LAN, IP and authenticated Tor access.
+{const url=new URL(location.href);url.protocol='http:';url.port='3006';url.pathname='/';url.search='';url.hash='';$('#mempool-link').href=url.href;}
 
 // Renew an authenticated visible session without reopening the current menu.
 async function keepSession(){if(!csrf||document.hidden)return;try{const r=await fetch('/session');if(r.status===401){csrf=null;ws?.close();await showAuth();}else if(r.ok)csrf=(await r.json()).csrf;}catch{}}

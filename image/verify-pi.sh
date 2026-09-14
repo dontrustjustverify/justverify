@@ -91,7 +91,8 @@ for item in (source/'web/static').iterdir():
 assert (root/'opt/justverify/licenses/mining-pools/LICENSE').read_bytes()==(source/'licenses/mining-pools/LICENSE').read_bytes()
 assert not (root/'opt/justverify/core/bin/bitcoin-qt').exists()
 assert not (root/'opt/justverify/core/libexec').exists()
-assert json.loads((root/'etc/justverify/os-release.json').read_text())['version']
+import tomllib
+assert json.loads((root/'etc/justverify/os-release.json').read_text())['version']==tomllib.loads((source/'Cargo.toml').read_text())['package']['version']
 for name in ('policy','electrs','tor','versions','storage','device','backup','console','mempool','mempool-web'):
     assert (root/f'etc/systemd/system/multi-user.target.wants/justverify-{name}.service').is_symlink()
 assert (root/'etc/systemd/system/justverify-electrs.service.wants/justverify-electrum-tls.service').is_symlink()
