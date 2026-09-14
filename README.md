@@ -7,6 +7,8 @@ Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electr
 
 **0.1.0-beta2 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
+Beta2 improves dashboard responsiveness and session persistence, adds address copy buttons, clarifies OP_RETURN settings and enables password-authenticated SSH administration. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2).
+
 ## What is included
 
 - Official, signature-verified Bitcoin Core binaries. Select a supported release from Core 22 onward; incompatible versions use separate data directories.
@@ -16,7 +18,7 @@ Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electr
 - Korean, English and Japanese; Teal, Amber, Green and Ice themes.
 - Reviewed settings changes, encrypted configuration backups and recovery tools.
 
-Current source settings, OP_RETURN controls, network support and session behavior are explained in the [node settings guide](docs/SETTINGS.md). The published beta1 installer predates these latest source updates.
+See the [node settings guide](docs/SETTINGS.md) for OP_RETURN, network settings and login persistence.
 
 ## See JustVerify
 

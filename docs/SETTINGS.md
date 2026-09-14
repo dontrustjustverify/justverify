@@ -1,6 +1,6 @@
 # Node settings
 
-These controls are in the current source. The published `v0.1.0-beta1` installer predates the address-copy, session and dashboard updates described here.
+This guide applies to JustVerify 0.1.0-beta2.
 
 ## OP_RETURN and transaction policy
 

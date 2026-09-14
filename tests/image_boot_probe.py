@@ -12,6 +12,15 @@ async def probe():
  result['boot']='second' if previous else 'first'
  data_test=pathlib.Path('/opt/jv-image-data-probe.py').exists();data_result=None
  try:
+  os_version=json.loads(pathlib.Path('/etc/justverify/os-release.json').read_text())['version']
+  assert subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True).strip()=='justverify '+os_version
+  checks['application_os_version_match']=True
+  denied=subprocess.run(['runuser','-u','justverify','--','sudo','-n','/usr/bin/whoami'],capture_output=True)
+  assert denied.returncode!=0
+  admin=subprocess.run(['runuser','-u','justverify','--','sudo','-S','-p','','/usr/bin/whoami'],input=b'justverify\n',capture_output=True)
+  assert admin.returncode==0 and admin.stdout.strip()==b'root'
+  assert subprocess.run(['runuser','-u','justverify','--','sudo','-n','/usr/bin/whoami'],capture_output=True).returncode!=0
+  checks['packaged_password_sudo_without_cached_grant']=True
   assert subprocess.run(['systemctl','is-enabled','userconfig'],capture_output=True,text=True).stdout.strip()=='masked'
   assert subprocess.check_output(['systemctl','show','userconfig','-p','MainPID','--value']).strip()==b'0'
   checks['os_user_dialog_masked']=True

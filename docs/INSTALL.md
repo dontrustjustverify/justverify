@@ -6,12 +6,12 @@ This image targets Raspberry Pi 5 with wired Ethernet and NVMe. The validation t
 
 ## Artifact and verification
 
-Download the **pristine** [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz), not a booted test disk. The compressed image is **654,231,760 bytes (624 MiB)**; its raw disk size is **6,444,548,096 bytes**. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
+Download the **pristine** [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz), not a booted test disk. The compressed download is **653,793,812 bytes (624 MiB)** and expands to a **6,444,548,096-byte** disk image. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
 
 Image SHA256:
 
 ```text
-31ed2db7a8f16de4a0947eb5468cb61054a3eeff4ea6001c5ebb86498bed462d
+bfd14e31cc8a07d988d4c2f8c5ced086cbc94237a0ca5edf0ba2ce1995c64baa
 ```
 
 The release includes [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS), its [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS.asc), the [public signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-experimental-signing-key.asc), manifest, source archives, package inventory and test report. OS source and notices are optional downloads; they are not needed to flash the image. To check only the image without downloading every optional source archive:
@@ -49,8 +49,8 @@ Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF
 
 ## Verification scope
 
-The pristine file passed filesystem, identity-absence, packaged-source, ARM executable and compression/hash checks. A disposable generic ARM VM passed initial registration, Core/electrs, HTTP/TUI/QR and mempool tip checks. Its first Tor onion RPC attempt timed out; that cold-boot failure is retained. Separate recovery and a subsequent actual reboot passed with the same data, identity, explorer database and authenticated onion RPC. This does not establish reliable cold Tor startup or physical Pi5 acceptance for beta1.
+See [release validation](TESTING.md) for image checks, component tests and remaining hardware requirements.
 
-New beta1 Pi5 installation, physical mobile-wallet/camera tests and the remaining [acceptance gates](TESTING.md) are pending. Earlier dev16 Pi results are not beta1 results. The release page provides the image, checksums, signature, notices and component source.
+Physical installation of beta2, mobile-wallet/camera tests and the remaining [release validation](TESTING.md) are pending. The release page provides the image, checksums, signature, notices and component source.
 
 For development, use [BUILD.md](BUILD.md). Use the release-linked filenames and HTTP onboarding instructions above.

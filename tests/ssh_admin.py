@@ -28,7 +28,7 @@ def run(*args, **kwargs):
                           stderr=subprocess.PIPE, **kwargs)
 
 
-def ssh_check(work, port, password, command, admin_password=None):
+def ssh_check(work, port, password, command, admin_password=None, timeout=25):
     master, slave = pty.openpty()
     def controlling_terminal():
         os.setsid()
@@ -45,7 +45,7 @@ def ssh_check(work, port, password, command, admin_password=None):
     pending = b''
     login_sent = False
     admin_count = 0
-    deadline = time.monotonic() + 25
+    deadline = time.monotonic() + timeout
     try:
         while proc.poll() is None:
             if time.monotonic() >= deadline:
