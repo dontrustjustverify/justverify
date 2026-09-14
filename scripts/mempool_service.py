@@ -104,13 +104,13 @@ def main():
                     path.rename(cache / (name + '.oversized-' + str(time.time_ns())))
             sql_socket = a.runtime / 'mysql.sock'
             if not (db / 'mysql').is_dir():
-                subprocess.run(['mariadb-install-db', '--no-defaults', '--datadir=' + str(db), '--auth-root-authentication-method=socket', '--auth-root-socket-user=justverify', '--skip-test-db'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(['/usr/bin/mariadb-install-db', '--no-defaults', '--datadir=' + str(db), '--auth-root-authentication-method=socket', '--auth-root-socket-user=justverify', '--skip-test-db'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             def start(command, name):
                 log = (folder / name).open('ab'); logs.append(log)
                 process = subprocess.Popen(command, stdout=log, stderr=log); processes.append(process)
                 return process
-            database = start(['mariadbd', '--no-defaults', '--datadir=' + str(db), '--socket=' + str(sql_socket), '--pid-file=' + str(a.runtime / 'mysql.pid'), '--skip-networking', '--innodb-buffer-pool-size=128M', '--max-connections=20', '--innodb-log-file-size=32M'], 'database.log')
-            sql = ['mariadb', '--no-defaults', '--socket=' + str(sql_socket), '--user=justverify']
+            database = start(['/usr/sbin/mariadbd', '--no-defaults', '--datadir=' + str(db), '--socket=' + str(sql_socket), '--pid-file=' + str(a.runtime / 'mysql.pid'), '--skip-networking', '--innodb-buffer-pool-size=128M', '--max-connections=20', '--innodb-log-file-size=32M'], 'database.log')
+            sql = ['/usr/bin/mariadb', '--no-defaults', '--socket=' + str(sql_socket), '--user=justverify']
             deadline = time.monotonic() + 60
             while not STOP:
                 if database.poll() is not None: raise RuntimeError('Database stopped')
