@@ -1,4 +1,4 @@
-# Install JustVerify 0.1.0-beta1
+# Install JustVerify 0.1.0-beta2
 
 [English overview](../README.md) · [한국어 설치](ko/README.md) · [日本語](ja/README.md)
 
@@ -6,7 +6,7 @@ This image targets Raspberry Pi 5 with wired Ethernet and NVMe. The validation t
 
 ## Artifact and verification
 
-Download the **pristine** [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), not a booted test disk. The compressed image is **654,231,760 bytes (624 MiB)**; its raw disk size is **6,444,548,096 bytes**. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
+Download the **pristine** [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz), not a booted test disk. The compressed image is **654,231,760 bytes (624 MiB)**; its raw disk size is **6,444,548,096 bytes**. Empty filesystem space compresses well. Blockchain data and indexes are downloaded after installation.
 
 Image SHA256:
 
@@ -14,10 +14,10 @@ Image SHA256:
 31ed2db7a8f16de4a0947eb5468cb61054a3eeff4ea6001c5ebb86498bed462d
 ```
 
-The release includes [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), its [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS.asc), the [public signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-experimental-signing-key.asc), manifest, source archives, package inventory and test report. OS source and notices are optional downloads; they are not needed to flash the image. To check only the image without downloading every optional source archive:
+The release includes [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS), its [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS.asc), the [public signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-experimental-signing-key.asc), manifest, source archives, package inventory and test report. OS source and notices are optional downloads; they are not needed to flash the image. To check only the image without downloading every optional source archive:
 
 ```sh
-awk '$2 == "justverify-0.1.0-beta1.img.xz"' justverify-0.1.0-beta1-SHA256SUMS | shasum -a 256 -c -
+awk '$2 == "justverify-0.1.0-beta2.img.xz"' justverify-0.1.0-beta2-SHA256SUMS | shasum -a 256 -c -
 ```
 
 For signature verification:
@@ -25,7 +25,7 @@ For signature verification:
 ```sh
 gpg --import justverify-experimental-signing-key.asc
 gpg --fingerprint 705D2C55D7BAFACB3683EE18329759FF93A854DF
-gpg --verify justverify-0.1.0-beta1-SHA256SUMS.asc justverify-0.1.0-beta1-SHA256SUMS
+gpg --verify justverify-0.1.0-beta2-SHA256SUMS.asc justverify-0.1.0-beta2-SHA256SUMS
 ```
 
 Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF`. This is an experimental project key; a key downloaded beside the artifact does not independently establish the publisher's identity. Bitcoin Core's upstream signatures are verified separately during assembly.
@@ -33,7 +33,7 @@ Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF
 ## Flash and start
 
 1. Keep your encrypted configuration backup and its password off the NVMe. Flashing replaces the selected disk contents.
-2. Extract `justverify-0.1.0-beta1.img.xz` with an XZ-capable archive tool, then select `justverify-0.1.0-beta1.img` and the intended NVMe in balenaEtcher. Keep validation enabled and wait for success. On our macOS/Etcher 2.1.6 test, direct XZ input failed with `EVALIDATION`; the extracted IMG passed on the same target. Etcher supports XZ in general, but this tested installation uses the extracted image.
+2. Extract `justverify-0.1.0-beta2.img.xz` with an XZ-capable archive tool, then select `justverify-0.1.0-beta2.img` and the intended NVMe in balenaEtcher. Keep validation enabled and wait for success. On our macOS/Etcher 2.1.6 test, direct XZ input failed with `EVALIDATION`; the extracted IMG passed on the same target. Etcher supports XZ in general, but this tested installation uses the extracted image.
 3. Eject the NVMe safely, connect it to your Pi 5, attach Ethernet and power it on.
 4. Open **http://justverify.local** on the same LAN. Use the IP shown by your router if mDNS is unavailable. HTTP is the normal initial setup path.
 5. Create and confirm a new web administrator password. The default Core profile starts automatically after registration.
@@ -42,7 +42,7 @@ Expected signing fingerprint: `705D 2C55 D7BA FACB 3683 EE18 3297 59FF 93A8 54DF
 
 ## Access and recovery
 
-- SSH: `ssh justverify@justverify.local`, initially `justverify` / `justverify`. Change the SSH password with `passwd`. The web password is separate. There is no unrestricted sudo access, and the public image has no developer root SSH key.
+- SSH: `ssh justverify@justverify.local`, initially `justverify` / `justverify`. Change the SSH password with `passwd`. The web password is separate. Beta2 provides password-authenticated sudo; see [SSH administration](SSH.md). Public images have no developer root SSH key.
 - Electrs: choose **Local network** or **Tor** in its menu and use the displayed host, port, protocol and QR. See [mobile connections](MOBILE_CONNECTIONS.md).
 - Keep management HTTP and port 3006 on your trusted LAN. Core RPC uses a separate authenticated gateway; do not expose raw RPC by forwarding a port.
 - Use Settings to restart or shut down. Follow [recovery instructions](RECOVERY.md) for service and configuration failures. Reflashing is a fresh installation, not an in-place update or an automatically verified migration of a backup to a new data UUID.

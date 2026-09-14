@@ -5,7 +5,7 @@
 
 自分で検証するBitcoin Coreノードです。NVMeにイメージを書き込み、Raspberry Pi 5を起動して **http://justverify.local** を開きます。端末風ダッシュボード、Tor、electrs、ローカルmempoolエクスプローラーを同梱しています。
 
-**0.1.0-beta1はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
+**0.1.0-beta2はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
 
 ## 主な機能
 
@@ -44,8 +44,8 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 
 ## ダウンロードとインストール
 
-1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1) に公開された [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz)、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta1.img.xz` を実行し、[justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
+1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2) に公開された [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz)、[justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
+2. macOSでは `shasum -a 256 justverify-0.1.0-beta2.img.xz` を実行し、[justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
 3. XZ対応の展開ツールで`.img.xz`を解凍し、**balenaEtcher**で展開した`.img`と対象NVMeを選択して書き込みます。macOS/Etcher 2.1.6の実測ではXZの直接書き込みは検証に失敗し、展開したIMGは成功しました。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
@@ -65,7 +65,7 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 | 設定 → バックアップと復元 | 暗号化した設定の保管・復元 |
 | 設定 → トラブルシューティング | サービス状態とストレージの詳細管理 |
 
-Web管理者パスワードとSSHパスワードは別です。指定された初期SSHアカウントは **`justverify` / `justverify`** です。初回SSH接続後に`passwd`で変更してください。無制限のrootシェルを提供するアカウントではありません。公開イメージには開発者のroot SSH鍵や事前生成された機器秘密鍵を含めません。
+Web管理者パスワードとSSHパスワードは別です。指定された初期SSHアカウントは **`justverify` / `justverify`** です。初回SSH接続後に`passwd`で変更してください。beta2ではSSHパスワードを入力すると`sudo`でOSを管理できます。[SSH管理ガイド](../SSH.md)をご覧ください。公開イメージには開発者のroot SSH鍵や事前生成された機器秘密鍵を含めません。
 
 管理HTTPとエクスプローラーは信頼できるLANで使用し、インターネットからポート転送しないでください。Core RPCはローカルに限定し、ウォレット用リモートRPCには別の認証・保護された経路を使用します。Remote Tor accessは明示的に有効化し、サービスごとに別のアドレスを使用します。[ウォレット接続ガイド](../MOBILE_CONNECTIONS.md)もご確認ください。
 

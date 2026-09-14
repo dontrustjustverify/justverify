@@ -1,0 +1,4 @@
+# Owner's SSH administration requires the SSH account password on every command.
+# Sort before justverify-core/install-core/profile to retain their narrow NOPASSWD rules.
+Defaults:justverify timestamp_type=tty, timestamp_timeout=0
+justverify ALL=(ALL:ALL) PASSWD: ALL

@@ -22,8 +22,9 @@ PrivateTmp=yes
 ProtectSystem=strict
 ProtectHome=yes
 ReadWritePaths=/var/lib/justverify/config /var/lib/justverify/preflight
-# sudo is restricted to the root-owned, argument-free restart-core helper.
-# NoNewPrivileges would disable that specific privilege boundary.
+# This service uses only the root-owned, argument-free NOPASSWD restart helper.
+# Owner SSH administration separately requires a password, without a cached grant.
+# NoNewPrivileges would disable the helper's privilege boundary.
 UMask=0077
 
 [Install]

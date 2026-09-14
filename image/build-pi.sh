@@ -7,7 +7,7 @@ base=${1:?verified base .img.xz required}
 core=${2:?verified extracted ARM Core directory required}
 binary=${3:?ARM Linux JustVerify executable required}
 electrs=${4:?verified ARM electrs executable required}
-build_tag=${5:-0.1.0-beta1}
+build_tag=${5:-0.1.0-beta2}
 mempool=${6:?verified native mempool bundle directory required}
 (cd "$mempool" && sha256sum -c SHA256SUMS > /dev/null)
 [[ "$build_tag" =~ ^[A-Za-z0-9.-]+$ ]] || exit 1
@@ -63,6 +63,7 @@ chown -R root:root "$mountdir/opt/justverify"
 chmod -R go-w "$mountdir/opt/justverify"
 install -m 0755 scripts/fetch_core.py scripts/web_identity.py scripts/owner_console.py scripts/disk_inventory.py scripts/storage_probe.py scripts/volume_setup.py scripts/storage_service.py scripts/device_service.py scripts/backup_bundle.py scripts/backup_service.py scripts/backup_guard.py scripts/wait_core_rpc.py scripts/node_ready.py scripts/publish_onions.py scripts/mempool_service.py scripts/mempool_data.py image/firstboot.sh "$mountdir/opt/justverify/scripts/"
 install -d "$mountdir/usr/libexec" "$mountdir/etc/sudoers.d"
+install -m 0440 image/justverify-admin.sudoers "$mountdir/etc/sudoers.d/00-justverify-admin"
 install -m 0755 image/restart-core.sh "$mountdir/usr/libexec/justverify-restart-core"
 install -m 0755 scripts/profile_helper.py "$mountdir/usr/libexec/justverify-profile"
 install -d "$mountdir/opt/justverify/templates"
@@ -98,6 +99,7 @@ chroot "$mountdir" /bin/bash -ec '
   visudo -cf /etc/sudoers.d/justverify-core
   visudo -cf /etc/sudoers.d/justverify-profile
   visudo -cf /etc/sudoers.d/justverify-install-core
+  visudo -c
   python3 -m venv /opt/justverify/venv
   /opt/justverify/venv/bin/pip install --require-hashes --only-binary=:all: -r /opt/justverify/web/requirements.arm64.lock
   systemctl enable justverify-firstboot justverify-core justverify-manager justverify-web justverify-console justverify-storage justverify-device justverify-backup justverify-versions justverify-policy justverify-electrs justverify-tor avahi-daemon

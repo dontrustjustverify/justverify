@@ -35,12 +35,18 @@ chroot "$work/root" /usr/sbin/mariadbd --version
 chroot "$work/root" /usr/sbin/visudo -cf /etc/sudoers.d/justverify-core
 chroot "$work/root" /usr/sbin/visudo -cf /etc/sudoers.d/justverify-profile
 chroot "$work/root" /usr/sbin/visudo -cf /etc/sudoers.d/justverify-install-core
+chroot "$work/root" /usr/sbin/visudo -c
 chroot "$work/root" /usr/bin/gpg --version | head -n 2
 chroot "$work/root" /bin/sh -n /opt/justverify/scripts/firstboot.sh
 python3 - "$work/root" "$source_root" <<'VERIFY_HASH'
 import hashlib,json,pathlib,sys
 root=pathlib.Path(sys.argv[1]);catalog=root/'opt/justverify/catalog'
 source=pathlib.Path(sys.argv[2])
+admin=root/'etc/sudoers.d/00-justverify-admin'
+assert admin.read_bytes()==(source/'image/justverify-admin.sudoers').read_bytes()
+assert admin.stat().st_uid==0 and admin.stat().st_mode&0o777==0o440
+assert (root/'opt/justverify/scripts/ssh-firstboot.sh').read_bytes()==(source/'image/ssh-firstboot.sh').read_bytes()
+assert (root/'etc/ssh/sshd_config.d/00-justverify.conf').read_bytes()==(source/'image/ssh/00-justverify.conf').read_bytes()
 for item in (source/'catalog').glob('*.json'):
     assert (catalog/item.name).read_bytes()==item.read_bytes(),f'stale packaged catalog: {item.name}'
 assert (root/'usr/libexec/justverify-restart-core').read_bytes()==(source/'image/restart-core.sh').read_bytes(),'stale restart helper'

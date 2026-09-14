@@ -5,7 +5,7 @@
 
 Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
 
-**0.1.0-beta1 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+**0.1.0-beta2 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
 ## What is included
 
@@ -44,8 +44,8 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get [justverify-0.1.0-beta1.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1.img.xz), [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta1). Use only an artifact listed in that release's manifest.
-2. Check the download against [justverify-0.1.0-beta1-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta1.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Get [justverify-0.1.0-beta2.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2.img.xz), [justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta2). Use only an artifact listed in that release's manifest.
+2. Check the download against [justverify-0.1.0-beta2-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta2/justverify-0.1.0-beta2-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta2.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. Extract the `.img.xz` with an XZ-capable archive tool, then select the resulting `.img` and your intended NVMe in **balenaEtcher**. Our macOS/Etcher 2.1.6 test failed validation with direct XZ input; the extracted IMG passed. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
@@ -65,7 +65,7 @@ Fresh profiles enable `txindex=1` for mempool transaction lookups. Existing prof
 | Settings → Backup and restore | Encrypted configuration backup and recovery |
 | Settings → Troubleshoot | Service diagnosis and advanced storage tools |
 
-The browser administrator password and SSH password are separate. As requested for this appliance, initial SSH access is **`justverify` / `justverify`**; change it with `passwd` after your first SSH login. This account does not grant an unrestricted root shell. Public images do not include the developer's root SSH key or any pre-generated device private keys.
+The browser administrator password and SSH password are separate. As requested for this appliance, initial SSH access is **`justverify` / `justverify`**; change it with `passwd` after your first SSH login. In beta2, `sudo` grants OS administrator access after authentication with the SSH password. See [SSH administration](docs/SSH.md). Public images do not include the developer's root SSH key or any pre-generated device private keys.
 
 Management HTTP and the explorer are intended for a trusted LAN. Do not forward these ports from the internet. Core RPC remains local; wallet RPC access uses the separately authenticated protected gateway. Remote Tor access is an explicit setting, and each service has its own address. Read [wallet connection details](docs/MOBILE_CONNECTIONS.md) before importing a QR.
 

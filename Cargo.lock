@@ -1078,7 +1078,7 @@ dependencies = [
 
 [[package]]
 name = "justverify"
-version = "0.1.0"
+version = "0.1.0-beta2"
 dependencies = [
  "anyhow",
  "clap",
