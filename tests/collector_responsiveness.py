@@ -37,20 +37,31 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
  def tip_is(tip):return lambda s:s['rpc']['getblockchaininfo']['value']['bestblockhash']==tip and not s['rpc']['getblockchaininfo']['error'] and s['rpc']['recentblocks']['value'][0]['hash']==tip and not s['rpc']['recentblocks']['error']
  try:
   core=subprocess.Popen([str(a.core/'bitcoind'),'-regtest',f'-datadir={d}',f'-rpcport={rpcport}','-listen=0','-networkactive=0','-server=1'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  cli('createwallet','delay-test');address=cli('getnewaddress');cli('generatetoaddress',8,address)
+  cli('createwallet','delay-test');address=cli('getnewaddress')
   manager=subprocess.Popen([str(a.binary),'daemon','--cookie',str(d/'regtest/.cookie'),'--rpc-port',str(proxy.server_port),'--socket',str(d/'manager.sock')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+  genesis=wait(lambda s:s['rpc']['recentblocks']['value'][0].get('size',0)>0)
+  assert genesis['rpc']['recentblocks']['value'][0]['size']==len(cli('getblock',cli('getbestblockhash'),0))//2
+  cli('generatetoaddress',8,address)
   wait(tip_is(cli('getbestblockhash')))
   hold.set();cli('generatetoaddress',1,address);assert entered.wait(10),'coinbase read was not intercepted'
   t=time.monotonic();cli('generatetoaddress',1,address);tip=cli('getbestblockhash');s=wait(tip_is(tip),6);latency=round(time.monotonic()-t,3)
   assert not release.is_set() and s['rpc']['getnetworkinfo']['error'] is None
   assert time.time()-s['rpc']['getnetworkinfo']['updated']<6
   release.set();hold.clear();wait(lambda s:s['rpc']['recentblocks']['value'][0]['miner']['status']!='pending')
+  def verify_sizes():
+   s=wait(lambda s:len(s['rpc']['recentblocks']['value'])==6 and all(b.get('size',0)>0 for b in s['rpc']['recentblocks']['value']))
+   for block in s['rpc']['recentblocks']['value']:
+    actual=json.loads(cli('getblock',block['hash'],1))
+    assert block['size']==actual['size']==len(cli('getblock',block['hash'],0))//2
+   return s
+  verify_sizes()
   cli('invalidateblock',tip);cli('generatetoaddress',2,address);newtip=cli('getbestblockhash');s=wait(tip_is(newtip));assert tip not in [b['hash'] for b in s['rpc']['recentblocks']['value']]
+  sized=verify_sizes();time.sleep(3);assert [(b['hash'],b['size']) for b in sized['rpc']['recentblocks']['value']]==[(b['hash'],b['size']) for b in snap()['rpc']['recentblocks']['value']]
   core.send_signal(signal.SIGSTOP);paused=True;time.sleep(18)
   s=snap();assert s['rpc']['getblockchaininfo']['error'];assert time.time()-s['rpc']['getblockchaininfo']['updated']>15;assert time.time()-s['host']['updated']<5;assert s['rpc']['getblockchaininfo']['value']['bestblockhash']==newtip
   core.send_signal(signal.SIGCONT);paused=False;s=wait(tip_is(newtip),20)
   assert not s['rpc']['getblockchaininfo']['error']
-  print(json.dumps({'status':'PASS','binary_sha256':hashlib.sha256(a.binary.read_bytes()).hexdigest(),'core':cli('-version').splitlines()[0],'network':'isolated regtest','chain_and_headers_seconds_while_coinbase_held':latency,'tip':newtip,'checks':['real forwarded RPC responses only','blocked coinbase read does not block chain/headers/network','hash-linked reorg replacement','Core SIGSTOP retains stale last value while host refreshes','SIGCONT restores real status without manager restart']}))
+  print(json.dumps({'status':'PASS','binary_sha256':hashlib.sha256(a.binary.read_bytes()).hexdigest(),'core':cli('-version').splitlines()[0],'network':'isolated regtest','chain_and_headers_seconds_while_coinbase_held':latency,'tip':newtip,'checks':['real forwarded RPC responses only','genesis and all six block sizes match serialized block bytes','block sizes retained across header refresh and keyed by hash after reorg','blocked coinbase read does not block chain/headers/network','hash-linked reorg replacement','Core SIGSTOP retains stale last value while host refreshes','SIGCONT restores real status without manager restart']}))
  finally:
   release.set()
   if paused:core.send_signal(signal.SIGCONT)

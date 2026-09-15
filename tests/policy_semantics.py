@@ -63,6 +63,10 @@ try:
  oversized=signed([(0,b'\x6a'+push(b'x'*41))]);record('OP_RETURN script 43 exceeds 42',oversized,False,data_reason)
  block=rpc('generateblock',mine_address,[oversized]);assert rpc('getblock',block['hash'])['tx'][1]==rpc('decoderawtransaction',oversized)['txid'];results[-1]['valid_block_accepted']=True
  start(datacarrier='0');record('datacarrier disabled',signed([(0,b'\x6a\x00')]),False,data_reason)
+ start(datacarrier='0',datacarriersize='83');record('JustVerify default off with 83-byte size',signed([(0,b'\x6a\x00')]),False,data_reason)
+ start(datacarrier='1');record('enabled OP_RETURN script exactly 83 bytes',signed([(0,b'\x6a'+push(b'x'*80))]),True)
+ record('enabled OP_RETURN script 84 exceeds 83',signed([(0,b'\x6a'+push(b'x'*81))]),False,data_reason)
+ start(datacarrier='0',datacarriersize='42')
  start(datacarrier='1');record('multiple OP_RETURN within total budget',signed([(0,b'\x6a'+push(b'x'*10)),(0,b'\x6a'+push(b'y'*10))]),modern,None if modern else 'multi-op-return')
  if modern:record('multiple OP_RETURN exceeds total 42-byte budget',signed([(0,b'\x6a'+push(b'x'*20)),(0,b'\x6a'+push(b'y'*20))]),False,'datacarrier')
  pub=bytes.fromhex(rpc('getaddressinfo',mine_address,wallet=True)['pubkey']);bare=b'\x51'+push(pub)+b'\x51\xae'

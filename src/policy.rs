@@ -12,6 +12,13 @@ use std::{
 };
 
 pub type Values = BTreeMap<String, String>;
+pub fn installation_defaults() -> Values {
+    Values::from([
+        ("txindex".into(), "1".into()),
+        ("datacarrier".into(), "0".into()),
+        ("datacarriersize".into(), "83".into()),
+    ])
+}
 fn selects(values: &Values, key: &str, network: &str) -> bool {
     values
         .get(key)
@@ -148,6 +155,28 @@ impl Policy {
                     serde_json::json!(version.starts_with("22."));
             }
         }
+        for (key, value) in [("datacarrier", "0"), ("datacarriersize", "83")] {
+            if let Some(entry) = entries.get_mut(key) {
+                entry["installation_default"] = serde_json::json!(value);
+            }
+        }
+        // Retain a user's legacy preference without sending a removed Core option.
+        if version.split('.').next().unwrap().parse::<u32>()? >= 30 {
+            entries.insert("legacy_maxorphantx".into(), serde_json::json!({
+                "key":"legacy_maxorphantx", "display_key":"maxorphantx", "type":"integer",
+                "default":"100", "range":{"min":0,"max":4294967295u64},
+                "editable":true,"source_registration_present":true,"preference_only":true,
+                "description":"Saved preference only. Core 30 ignores maxorphantx; Core 31 removed it. Never written as a Core option."
+            }));
+        }
+        for key in ["debug", "debugexclude"] {
+            if runtime[version]["options"]
+                .as_array()
+                .is_some_and(|opts| opts.iter().any(|v| v == key))
+            {
+                entries.insert(key.into(), serde_json::json!({"key":key,"type":"debug_categories","default":if key == "debug" { "0" } else { "" },"editable":true,"source_registration_present":true,"description":"Comma-separated diagnostic categories: net, mempool, mempoolrej, validation, rpc; or 0 / 1 for debug. Debug logging can grow the log and include network and transaction information."}));
+            }
+        }
         Ok(Self {
             version: version.into(),
             network: network.into(),
@@ -210,6 +239,36 @@ impl Policy {
                         "1" => "127.0.0.1:9050".into(),
                         _ => bail!("proxy: use 0 for direct Clearnet or 1 for local Tor"),
                     },
+                    Some("debug_categories") => {
+                        let categories: Vec<_> = value.split(',').collect();
+                        if categories.is_empty()
+                            || categories.len() > 5
+                            || categories.iter().any(|v| {
+                                ![
+                                    "net",
+                                    "mempool",
+                                    "mempoolrej",
+                                    "validation",
+                                    "rpc",
+                                    "0",
+                                    "1",
+                                ]
+                                .contains(v)
+                            })
+                            || categories.len()
+                                != categories
+                                    .iter()
+                                    .collect::<std::collections::BTreeSet<_>>()
+                                    .len()
+                            || categories.len() > 1
+                                && categories.iter().any(|v| ["0", "1"].contains(v))
+                            || key == "debugexclude"
+                                && categories.iter().any(|v| ["0", "1"].contains(v))
+                        {
+                            bail!("{key}: unsupported or conflicting diagnostic categories");
+                        }
+                        value.clone()
+                    }
                     Some("boolean") => {
                         if !matches!(value.as_str(), "0" | "1") {
                             bail!("{key}: use 0 or 1");
@@ -389,6 +448,13 @@ impl Policy {
             .into_iter()
             .filter(|k| old.get(*k) != core_values.get(*k))
             .map(|k| {
+                if k == "legacy_maxorphantx" {
+                    return format!(
+                        "maxorphantx preference: {} -> {} (not applied to Core)",
+                        old.get(k).map(String::as_str).unwrap_or("100"),
+                        core_values.get(k).map(String::as_str).unwrap_or("100")
+                    );
+                }
                 format!(
                     "{k}: {} -> {} (Core unit)",
                     old.get(k).map(String::as_str).unwrap_or("Core default"),
@@ -436,6 +502,15 @@ impl Policy {
             && !core_values.get("txindex").is_some_and(|v| v == "1")
         {
             warning.push("Disabling txindex prevents the bundled mempool explorer from becoming ready. Historical transaction lookup is limited; existing index files are retained.".into());
+        }
+        if core_values.contains_key("legacy_maxorphantx") {
+            warning.push("maxorphantx is a stored preference only: Core 30 ignores it and Core 31 removed it. This value is not applied to Core.".into());
+        }
+        if core_values
+            .keys()
+            .any(|key| matches!(key.as_str(), "debug" | "debugexclude"))
+        {
+            warning.push("Diagnostic logging may grow disk usage and include peer or transaction information. It remains in the local node logs.".into());
         }
         if core_values.get("datacarrier").is_some_and(|v| v == "0") {
             warning.push("OP_RETURN data outputs will be rejected by local standard transaction policy. This does not reject valid blocks or filter every kind of arbitrary data. datacarriersize is inactive while datacarrier=0.".into());
@@ -686,6 +761,15 @@ fn parse_config(text: &str, network: &str) -> Result<Values> {
     let mut clear_bind = false;
     let mut binding_section = false;
     for line in text.lines() {
+        if let Some(value) = line.strip_prefix("# JustVerify legacy-maxorphantx=") {
+            if out
+                .insert("legacy_maxorphantx".into(), value.into())
+                .is_some()
+            {
+                bail!("duplicate legacy preference");
+            }
+            continue;
+        }
         if let Some(incoming) = line.strip_prefix("# JustVerify incoming=") {
             if out.insert("listen".into(), incoming.into()).is_some() {
                 bail!("duplicate incoming selector");
@@ -716,7 +800,7 @@ fn parse_config(text: &str, network: &str) -> Result<Values> {
                 bail!("invalid derived binding reset");
             }
             clear_bind = true;
-        } else if k == "onlynet" {
+        } else if matches!(k, "onlynet" | "debug" | "debugexclude") {
             out.entry(k.into())
                 .and_modify(|old| {
                     old.push(',');
@@ -765,13 +849,15 @@ fn render(values: &Values, network: &str, isolated_port: Option<u16>) -> Result<
     let mut out =
         String::from("# JustVerify managed policy; units are Bitcoin Core native units\n");
     for (k, v) in values {
-        if k == "listen" {
+        if k == "legacy_maxorphantx" {
+            out.push_str(&format!("# JustVerify legacy-maxorphantx={v}\n"));
+        } else if k == "listen" {
             continue;
         } else if k == "asmap" && v == "0" {
             out.push_str("noasmap=1\n");
-        } else if k == "onlynet" {
+        } else if matches!(k.as_str(), "onlynet" | "debug" | "debugexclude") {
             for network in v.split(',') {
-                out.push_str(&format!("onlynet={network}\n"));
+                out.push_str(&format!("{k}={network}\n"));
             }
         } else {
             out.push_str(&format!("{k}={v}\n"));
@@ -1075,6 +1161,86 @@ impl Policy {
         if self.version.starts_with("30.") {
             values.remove("maxorphantx");
         }
+    }
+    pub fn config_text(&self, path: &Path) -> Result<String> {
+        let values = self.current_effective(path)?;
+        let mut text = String::from(
+            "# Bitcoin Core native units: fees are BTC/kvB.\n# Network, RPC and data paths are managed separately.\n",
+        );
+        for (key, value) in values {
+            if matches!(
+                key.as_str(),
+                "listen" | "onlynet" | "proxy" | "legacy_maxorphantx"
+            ) {
+                continue;
+            }
+            if matches!(key.as_str(), "debug" | "debugexclude") {
+                for category in value.split(',') {
+                    text.push_str(&format!("{key}={category}\n"));
+                }
+            } else {
+                text.push_str(&format!("{key}={value}\n"));
+            }
+        }
+        Ok(text)
+    }
+    pub fn config_values(&self, path: &Path, text: &str) -> Result<Values> {
+        if text.len() > 8192
+            || text
+                .chars()
+                .any(|c| c.is_control() && !matches!(c, '\n' | '\r' | '\t'))
+        {
+            bail!("configuration exceeds 8192 bytes or contains control characters");
+        }
+        let mut values = self.current(path)?;
+        values.retain(|key, _| {
+            matches!(
+                key.as_str(),
+                "listen" | "onlynet" | "proxy" | "legacy_maxorphantx"
+            )
+        });
+        let mut seen = std::collections::BTreeSet::new();
+        for (index, line) in text.lines().enumerate() {
+            let line = line.split('#').next().unwrap().trim();
+            if line.is_empty() {
+                continue;
+            }
+            let (key, native) = line
+                .split_once('=')
+                .context(format!("line {}: expected option=value", index + 1))?;
+            let key = key.trim();
+            let native = native.trim();
+            if matches!(key, "listen" | "onlynet" | "proxy" | "legacy_maxorphantx") {
+                bail!(
+                    "{key}: use its dedicated control; network and application metadata are protected"
+                );
+            }
+            let entry = self.entries.get(key).context(format!(
+                "{key}: unsupported or protected option for Core {}",
+                self.version
+            ))?;
+            if !seen.insert(key) && !matches!(key, "debug" | "debugexclude") {
+                bail!("{key}: duplicate option");
+            }
+            let value = if entry["type"] == "decimal" {
+                native_fee_to_input(native)?
+            } else {
+                native.to_owned()
+            };
+            if matches!(key, "debug" | "debugexclude") {
+                values
+                    .entry(key.into())
+                    .and_modify(|old| {
+                        old.push(',');
+                        old.push_str(&value);
+                    })
+                    .or_insert(value);
+            } else {
+                values.insert(key.into(), value);
+            }
+        }
+        self.validate(&values)?;
+        Ok(values)
     }
     pub fn current_effective(&self, path: &Path) -> Result<Values> {
         let mut values = self.current(path)?;

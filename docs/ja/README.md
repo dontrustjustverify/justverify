@@ -5,9 +5,9 @@
 
 自分で検証するBitcoin Coreノードです。NVMeにイメージを書き込み、Raspberry Pi 5を起動して **http://justverify.local** を開きます。端末風ダッシュボード、Tor、electrs、ローカルmempoolエクスプローラーを同梱しています。
 
-**0.1.0-beta5はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
+**0.1.0-beta6はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
 
-beta5ではElectrsのインデックス進捗をリアルタイムに表示し、応答が遅れた場合も最後に確認した高さを保持します。Tor経由のMempool、I2Pと既存のノード管理機能も含みます。[変更点とダウンロード](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta5)。
+beta6ではCore同期前のElectrs進捗表示を修正し、Clearnet選択を統合しました。保護されたbitcoin.conf編集、同期状態アイコン、最近のブロックサイズ表示を追加しました。新規プロファイルでは任意データ取引の中継は無効、サイズ上限は83バイトです。[変更点とダウンロード](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta6)。
 
 
 **I2Pピア:** beta3はi2pdを内蔵します。Bitcoin Core → Mempool・ネットワーク設定でI2Pの受信・送信を選択できます。初期値は両方オフです。Core 22の受信には送信も必要です。Core 23以降は受信だけを有効にできます。[ネットワーク設定](../SETTINGS.md)をご覧ください。
@@ -49,8 +49,8 @@ https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
 
 ## ダウンロードとインストール
 
-1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta5) に公開された [justverify-0.1.0-beta5.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta5/justverify-0.1.0-beta5.img.xz)、[justverify-0.1.0-beta5-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta5/justverify-0.1.0-beta5-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta5.img.xz` を実行し、[justverify-0.1.0-beta5-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta5/justverify-0.1.0-beta5-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
+1. このリポジトリの [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta6) に公開された [justverify-0.1.0-beta6.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta6/justverify-0.1.0-beta6.img.xz)、[justverify-0.1.0-beta6-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta6/justverify-0.1.0-beta6-SHA256SUMS)、署名、manifest、リリースノートを取得します。manifestに記載されたイメージを使用してください。
+2. macOSでは `shasum -a 256 justverify-0.1.0-beta6.img.xz` を実行し、[justverify-0.1.0-beta6-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta6/justverify-0.1.0-beta6-SHA256SUMS)と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
 3. XZ対応の展開ツールで`.img.xz`を解凍し、**balenaEtcher**で展開した`.img`と対象NVMeを選択して書き込みます。macOS/Etcher 2.1.6の実測ではXZの直接書き込みは検証に失敗し、展開したIMGは成功しました。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
 4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
 5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。

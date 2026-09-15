@@ -12,7 +12,7 @@ assert.equal(ctx.rows({state:'READY',height:42,height_updated:100},120)[2][1],'�
 assert.equal(ctx.progress({height:99,target_height:100}).percent,99);
 assert.equal(ctx.progress({height:999999,target_height:1000000}).percent,99.99);
 assert.equal(ctx.progress({height:100,target_height:100,state:'VERIFYING'}).state,'인덱스·지갑 응답 확인 중');
-assert.equal(ctx.progress({height:0,target_height:0}).percent,100);
+assert.equal(ctx.progress({height:0,target_height:0,state:'CORE_SYNCING'}).percent,null);
 assert.equal(ctx.progress({height:42}).percent,null);
 const index=fs.readFileSync('web/static/index.html','utf8');assert(index.indexOf('/electrs_status.js')<index.indexOf('/dashboard.js'));
 assert(fs.readFileSync('web/server.py','utf8').includes("'electrs_status.js'"));

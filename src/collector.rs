@@ -101,9 +101,7 @@ pub fn start(
                             .flatten()
                             .find(|b| b["hash"] == block["hash"])
                         {
-                            if !cached["miner"].is_null() {
-                                block["miner"] = cached["miner"].clone();
-                            }
+                            merge_details(block, cached);
                         }
                     }
                     blocks
@@ -142,22 +140,24 @@ pub fn start(
                     let Some(hash) = block["hash"].as_str() else {
                         continue;
                     };
-                    let current = known.get(hash).or_else(|| block.get("miner"));
-                    let retry = current.is_none_or(|v| {
-                        v["status"] == "pending"
-                            || (v["status"] == "unavailable"
-                                && now().saturating_sub(v["checked"].as_u64().unwrap_or(0)) >= 30)
-                    });
+                    let current = known.get(hash).unwrap_or(block);
+                    let status = &current["miner"];
+                    let retry = status.is_null()
+                        || status["status"] == "pending"
+                        || (status["status"] == "unavailable"
+                            && now().saturating_sub(status["checked"].as_u64().unwrap_or(0)) >= 30);
                     let value = if retry {
                         let result = coinbase(&miner_rpc, block, mainnet);
-                        let mut value = result.unwrap_or_else(|_| json!({"status":"unavailable"}));
-                        value["checked"] = json!(now());
+                        let mut value =
+                            result.unwrap_or_else(|_| json!({"miner":{"status":"unavailable"}}));
+                        value["miner"]["checked"] = json!(now());
+                        if value["size"].is_null() {
+                            value["size"] = current["size"].clone();
+                        }
                         known.insert(hash.to_owned(), value.clone());
                         value
                     } else {
-                        current
-                            .cloned()
-                            .unwrap_or_else(|| json!({"status":"pending"}))
+                        current.clone()
                     };
                     let mut shared = miner_cache.write().unwrap();
                     if let Some(rows) = shared
@@ -166,7 +166,7 @@ pub fn start(
                         .and_then(|s| s.value.as_array_mut())
                     {
                         if let Some(target) = rows.iter_mut().find(|b| b["hash"] == hash) {
-                            target["miner"] = value;
+                            merge_details(target, &value);
                         }
                     }
                     drop(shared);
@@ -247,14 +247,37 @@ fn headers(rpc: &Rpc, tip: &str, cached: &Value) -> Result<Value> {
     }
     Ok(json!(rows))
 }
-fn coinbase(rpc: &Rpc, block: &Value, mainnet: bool) -> Result<Value> {
-    if block["height"] == 0 {
-        return Ok(json!({"status":"unknown"}));
+fn merge_details(block: &mut Value, details: &Value) {
+    for key in ["miner", "size"] {
+        if !details[key].is_null() {
+            block[key] = details[key].clone();
+        }
     }
+}
+fn coinbase(rpc: &Rpc, block: &Value, mainnet: bool) -> Result<Value> {
     let hash = block["hash"].as_str().context("block hash missing")?;
     // One txid list and only its coinbase; never decode the entire block.
     let body = rpc.call("getblock", json!([hash, 1]))?;
-    let txid = body["tx"][0].as_str().context("coinbase unavailable")?;
-    let tx = rpc.call("getrawtransaction", json!([txid, true, hash]))?;
-    Ok(miner::identify(&tx, mainnet))
+    if body["hash"].as_str() != Some(hash) {
+        bail!("Block body hash mismatch");
+    }
+    // Core's serialized byte size includes witness data; it is not weight/vsize.
+    // Retain it even if the separate coinbase lookup fails (including pruned data).
+    let size = body["size"]
+        .as_u64()
+        .filter(|n| *n > 0)
+        .context("block size unavailable")?;
+    let pool = if block["height"] == 0 {
+        json!({"status":"unknown"})
+    } else {
+        body["tx"][0]
+            .as_str()
+            .and_then(|txid| {
+                rpc.call("getrawtransaction", json!([txid, true, hash]))
+                    .ok()
+            })
+            .map(|tx| miner::identify(&tx, mainnet))
+            .unwrap_or_else(|| json!({"status":"unavailable"}))
+    };
+    Ok(json!({"size":size,"miner":pool}))
 }

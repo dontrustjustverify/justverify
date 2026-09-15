@@ -33,6 +33,7 @@ struct Profile {
 enum Request {
     State,
     Preview { values: Values },
+    PreviewConfig { config: String },
     Apply { token: String },
     Recover,
 }
@@ -132,16 +133,21 @@ pub fn serve(profile_file: &Path, socket: &Path) -> Result<()> {
             }
             let mut request = String::new();
             BufReader::new(stream.try_clone()?)
-                .take(16384)
+                .take(32768)
                 .read_line(&mut request)?;
             if !request.ends_with('\n') {
                 bail!("request too long or unterminated");
             }
-            let command = parse_request(&request)?;
+            let command = match parse_request(&request)? {
+                Request::PreviewConfig { config } => Request::Preview {
+                    values: policy.config_values(&profile.managed_config, &config)?,
+                },
+                other => other,
+            };
             pending.retain(|_, (_, _, time)| time.elapsed() < Duration::from_secs(300));
             match command {
                 Request::State => Ok(
-                    json!({"version":profile.version,"network":profile.network,"requested":policy.current(&profile.managed_config)?,"entries":policy.entries(),"transaction":crate::policy::transaction_status(&profile.managed_config)?}),
+                    json!({"version":profile.version,"network":profile.network,"requested":policy.current(&profile.managed_config)?,"entries":policy.entries(),"config":policy.config_text(&profile.managed_config)?,"transaction":crate::policy::transaction_status(&profile.managed_config)?}),
                 ),
                 Request::Preview { values } => {
                     if profile.p2p_backend_port.is_none()
@@ -178,6 +184,7 @@ pub fn serve(profile_file: &Path, socket: &Path) -> Result<()> {
                         || restart(&profile, &policy),
                     )?)?)
                 }
+                Request::PreviewConfig { .. } => unreachable!(),
                 Request::Recover => {
                     let _operation = crate::version_service::operation_lock()?;
                     Ok(serde_json::to_value(policy.recover(
@@ -203,6 +210,7 @@ fn parse_request(text: &str) -> Result<Request> {
     let allowed: &[&str] = match value["method"].as_str() {
         Some("state" | "recover") => &["method"],
         Some("preview") => &["method", "values"],
+        Some("preview_config") => &["method", "config"],
         Some("apply") => &["method", "token"],
         _ => bail!("unknown administrative method"),
     };

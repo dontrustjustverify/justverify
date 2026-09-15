@@ -1,10 +1,10 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta5.
+This guide applies to JustVerify 0.1.0-beta6.
 
 ## OP_RETURN and transaction policy
 
-Open **Bitcoin Core → Mempool · Network settings → Optimization**. **Relay OP_RETURN data transactions** writes Bitcoin Core's `datacarrier=1` or `datacarrier=0`. `OP_RETURN` is a script opcode; there is no separate `op_return` configuration option in the supported Core releases from 22.0 through 31.1.
+Open **Bitcoin Core → Mempool · Network settings → Optimization**. **Relay Transactions Containing Arbitrary Data** writes Bitcoin Core's `datacarrier=1` or `datacarrier=0`. `OP_RETURN` is a script opcode; there is no separate `op_return` configuration option in the supported Core releases from 22.0 through 31.1.
 
 Disabling the toggle restricts local acceptance and relay of unconfirmed transactions with OP_RETURN outputs. It does not change Bitcoin consensus, reject otherwise valid blocks, remove historical data, or filter every way of embedding arbitrary data. The size field (`datacarriersize`) becomes editable when relay is enabled; disabling the toggle preserves the chosen size.
 
@@ -14,8 +14,8 @@ Disabling the toggle restricts local acceptance and relay of unconfirmed transac
 | Prune old blocks | `prune` | JustVerify keeps 0/full blocks: bundled electrs 0.11.1 rejects pruned Core. Pruning also conflicts with the two transaction indexes. |
 | Full transaction index | `txindex` | Core defaults to 0. JustVerify enables it during initial setup for the bundled Mempool app. Disabling it retains existing index files. |
 | Transaction output spender index | `txospenderindex` | 0; available from Core 31. Requires additional indexing and disk space. |
-| OP_RETURN relay | `datacarrier` | 1/on. |
-| OP_RETURN size limit | `datacarriersize` | 100,000 bytes since Core 30; earlier versions use 83 bytes. Core 30+ limits the combined output-script size across multiple OP_RETURN outputs. This includes script overhead. |
+| Arbitrary-data relay | `datacarrier` | Core: 1/on. JustVerify new profiles: 0/off. |
+| Arbitrary-data size limit | `datacarriersize` | JustVerify new profiles: 83 bytes. Core: 100,000 bytes since Core 30; earlier versions use 83 bytes. Core 30+ limits the combined output-script size across multiple OP_RETURN outputs. This includes script overhead. |
 | Mempool memory limit | `maxmempool` | 300 MB; 1 MB = 1,000,000 bytes. |
 | Minimum block template fee | `blockmintxfee` | 0.001 sat/vB. Applies to this node's block templates. |
 | Minimum relay fee | `minrelaytxfee` | 0.1 sat/vB. |
@@ -24,15 +24,15 @@ Disabling the toggle restricts local acceptance and relay of unconfirmed transac
 | Persist mempool | `persistmempool` | 1/on; saved at clean shutdown and loaded on startup. |
 | Maximum orphan transactions | `maxorphantx` | No effect in Core 30; removed in Core 31. Older versions support it, normally defaulting to 100. |
 
-Defaults follow the selected Core version. For example, Core 22 defaults to 1 sat/vB for all three fee settings above; Core 29.4 uses 0.001 / 0.1 / 0.1. Existing saved values are retained. The interface distinguishes the Core default from your saved request. Fee inputs use sat/vB and are converted exactly to Core's BTC/kvB units.
+Except for the stated JustVerify installation defaults, defaults follow the selected Core version. For example, Core 22 defaults to 1 sat/vB for all three fee settings above; Core 29.4 uses 0.001 / 0.1 / 0.1. Existing saved values are retained. The interface distinguishes the Core default from your saved request. Fee inputs use sat/vB and are converted exactly to Core's BTC/kvB units.
 
 Choose **Review changes → Save and apply**. The service validates the version, input and dependencies, starts the selected Core binary against fresh private preflight data, saves the reviewed configuration atomically, restarts related services and checks observable runtime values. Core does not expose every option through RPC. OP_RETURN behavior is additionally checked with signed transactions in isolated regtest. Saving can interrupt node and wallet connections briefly.
 
-For a Core 30 configuration containing an old `maxorphantx` value, use **Remove ineffective setting** and review the removal. A new save containing that option is rejected.
+**Maximum orphan transactions** remains editable on all versions. For Core 30/31, the value is explicitly a reference preference stored as a comment; it is never passed as an active, ineffective or removed Core option. Older supported versions apply `maxorphantx`.
 
 ## Peer networks
 
-Incoming and outgoing controls are separate. Outgoing clearnet is split into IPv4 and IPv6; Umbrel's single clearnet choice enables both. Tor outgoing uses Core's onion network. **Route clearnet through Tor** controls the proxy for ordinary internet destinations; onion connections always use Tor.
+Incoming and outgoing controls are separate. A single **Clearnet** outgoing toggle controls IPv4 and IPv6 together. Incoming Clearnet also covers both IP families, subject to the device network and firewall. Tor outgoing uses Core's onion network. **Route clearnet through Tor** controls the proxy for ordinary internet destinations; onion connections always use Tor.
 
 **I2P incoming and outgoing** are available in beta3. The image bundles i2pd 2.61.0 and starts it when either I2P selector is enabled. Both are off by default. Saving both off stops the router; ordinary policy changes preserve a running router and its tunnels.
 
@@ -46,7 +46,7 @@ Core 22.0/22.1 override `onlynet` reachability when a SAM endpoint is configured
 
 SAM is bound to loopback and cannot be used from the LAN. Bitcoin I2P peer addresses use `.b32.i2p:0`; this is not an Electrs, RPC or browser endpoint. Routing clearnet through Tor does not route I2P through Tor. No router console, SOCKS/HTTP proxy or UPnP service is exposed. The bundled router uses a 256 KB/s bandwidth class, 50% sharing and a maximum of 20 transit tunnels. Actual traffic and startup times depend on the I2P network.
 
-The dashboard shows **OFF**, **ROUTER UNAVAILABLE**, **SAM READY; waiting for peers**, or **CONNECTED** with actual incoming/outgoing counts. SAM READY means only that the local API answers; it does not prove a usable tunnel. Old Core data is marked STALE. Initial tunnel creation can take several minutes.
+A listening SAM endpoint alone does not prove a usable tunnel. Initial tunnel creation can take several minutes; confirm actual I2P peers. The Core overview keeps its service summary focused on Electrs; Tor and I2P controls remain in their settings.
 
 Incoming I2P uses Core's persistent `i2p_private_key`. Encrypted configuration backups include that identity; old backups without it remain restorable. Turning incoming off retains the key. Core 22/23 also reuse this persistent identity for outgoing connections; Core 24+ use transient outgoing identities. Core 24.0/24.0.1 can create excessive transient tunnels: use incoming and outgoing together, or choose Core 24.1 or newer with the upstream session limit. Router transport keys are generated locally and are not copied into the image or configuration backup.
 
@@ -64,15 +64,25 @@ Browser login lasts seven days and renews during authenticated use. Refresh and 
 
 Core status, network data, block headers, mining-pool identification and host metrics are collected separately. The browser makes one status request at a time. During initial sync, the recent-block list is sampled every 15 seconds; pool identification may finish later.
 
-An RPC timeout during heavy disk activity is shown as a delayed update. A failed RPC connection is shown separately. Previously collected values retain their timestamps and stale indication; a host update does not make old Core data current. This improves responsiveness but does not eliminate Core or disk latency during initial synchronization.
+The title badge shows syncing, delayed status updates, or synchronized. Fresh Core data with IBD=false and equal block/header heights is required for synchronized status. Delayed data takes precedence, even after a previous completion; waiting for the next block keeps completion visible. Rounded percentages are not used to decide completion. Icons respect reduced-motion preferences. Previously collected values keep their original timestamps, and the duplicate delay banners are omitted.
+
+Recent blocks show serialized size beside the height to two decimals in MB (1 MB = 1,000,000 bytes). Size includes witness bytes, is not block weight or virtual size, and comes from the existing background block lookup. Mining-pool identification is preserved; unavailable sizes show an em dash.
 
 ## Electrs progress
 
-The Bitcoin Core overview shows Electrs progress as a percentage followed by **processed height / Core height**. The Electrs menu shows the same numbers and a progress bar, updated automatically while the menu is open. Progress is based on block heights, not elapsed time or estimated work remaining; larger blocks can take longer to index.
+The Bitcoin Core overview shows Electrs progress as a percentage followed by **processed height / target height**. The Electrs menu shows the same numbers and a progress bar, updated automatically while the menu is open. Progress is based on block heights, not elapsed time or estimated work remaining; larger blocks can take longer to index.
+
+While Core is in initial sync, the known header height is used as the target when higher than its validated block height. An unknown or zero target shows no percentage; 0/0 does not become 100%.
 
 **100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. During a delayed response, the last observed height and its timestamp stay visible. A connection failure or index error is shown separately instead of clearing progress to a dash.
 
-These displays are included in beta5.
+These corrections are included in beta6.
+
+## Advanced bitcoin.conf editor
+
+Open **Bitcoin Core → Mempool · Network settings → Advanced → Danger Zone** to edit supported custom options. Review the generated change and preflight results before applying. RPC authentication/listeners, data paths and managed network topology stay protected; external include files, duplicate options and options removed from the selected Core release are rejected.
+
+The editor accepts up to 8 KiB of text. Settings are validated against the selected executable, saved atomically and checked after restart. Failed starts restore the prior supported configuration. Editing does not bypass version compatibility, data protection or service recovery rules.
 
 ## Source references
 

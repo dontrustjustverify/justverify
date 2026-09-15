@@ -108,7 +108,7 @@ class Bridge:
         self.same_origin(r);self.read_session(r)
         from node_admin import call,validate
         try:
-            body=await r.json()
+            body=await (r.clone(client_max_size=32768) if r.path=='/policy' else r).json()
             if r.path=='/node-start':
                 if body!={}:raise ValueError('잘못된 시작 요청입니다.')
                 result=await self.startup.start()

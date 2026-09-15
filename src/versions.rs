@@ -166,7 +166,7 @@ impl Versions {
         if !target.policy_file.exists() {
             // New installations include the local mempool explorer. Existing
             // profiles retain their explicit index choice and chain data.
-            values.insert("txindex".into(), "1".into());
+            values.extend(crate::policy::installation_defaults());
         }
         let plan = policy.preview(&target.policy_file, values)?;
         // A new binary is exercised on fresh private data before any active service is stopped.
@@ -238,7 +238,10 @@ impl Versions {
             }
         }
         if new_policy {
-            crate::policy::atomic(&preview.target.policy_file, b"txindex=1\n")?;
+            crate::policy::atomic(
+                &preview.target.policy_file,
+                b"datacarrier=0\ndatacarriersize=83\ntxindex=1\n",
+            )?;
         }
         let mut journal = Journal {
             phase: "stopping".into(),

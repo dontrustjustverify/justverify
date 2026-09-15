@@ -237,3 +237,87 @@ fn real_policy_apply_and_rollback() -> Result<()> {
     fs::remove_dir_all(state)?;
     Ok(())
 }
+
+#[test]
+#[ignore = "Run explicitly with JV_CORE_BIN pointing to signature-verified Core 31.1"]
+fn real_native_editor_restart_and_failed_start_recovery() -> Result<()> {
+    let binary = PathBuf::from(std::env::var("JV_CORE_BIN")?);
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let state = root
+        .join(".state")
+        .join(format!("native-editor-{}", std::process::id()));
+    private(&state);
+    private(&state.join("stage"));
+    private(&state.join("data"));
+    let file = state.join("managed.conf");
+    fs::write(&file, "")?;
+    let listener = std::net::TcpListener::bind("127.0.0.1:0")?;
+    let port = listener.local_addr()?.port();
+    drop(listener);
+    let mut node = Node {
+        child: None,
+        binary: binary.clone(),
+        data: state.join("data"),
+        config: file.clone(),
+        port,
+    };
+    node.start(false)?;
+    let p = Policy::load(&root.join("catalog"), "31.1", "regtest")?;
+    let text = "datacarrier=0\ndatacarriersize=83\nmaxmempool=333\nminrelaytxfee=0.000001\ndebug=mempoolrej\n";
+    let mut values = p.config_values(&file, text)?;
+    values.insert("legacy_maxorphantx".into(), "123".into());
+    let plan = p.preview(&file, values.clone())?;
+    let receipt = p.preflight(&binary, &state.join("stage"), &plan)?;
+    assert_eq!(
+        p.apply(&file, &plan, &receipt, || node.start(false))?.phase,
+        "committed"
+    );
+    assert_eq!(
+        node.rpc().call("getmempoolinfo", json!([]))?["maxmempool"],
+        333_000_000
+    );
+    assert_eq!(
+        node.rpc().call("getmempoolinfo", json!([]))?["maxdatacarriersize"],
+        0
+    );
+    assert_eq!(p.current(&file)?, values);
+    assert!(
+        !fs::read_to_string(&file)?
+            .lines()
+            .any(|l| l.starts_with("maxorphantx="))
+    );
+    let edited = p
+        .config_text(&file)?
+        .replace("datacarrier=0", "datacarrier=1")
+        .replace("maxmempool=333", "maxmempool=444");
+    let plan = p.preview(&file, p.config_values(&file, &edited)?)?;
+    let receipt = p.preflight(&binary, &state.join("stage"), &plan)?;
+    let mut starts = 0;
+    let rolled = p.apply(&file, &plan, &receipt, || {
+        starts += 1;
+        node.start(starts == 1)
+    })?;
+    assert_eq!(rolled.phase, "rolled_back");
+    assert_eq!(starts, 2);
+    assert_eq!(p.current(&file)?, values);
+    assert_eq!(
+        node.rpc().call("getmempoolinfo", json!([]))?["maxdatacarriersize"],
+        0
+    );
+    let plan = p.preview(&file, p.config_values(&file, &edited)?)?;
+    let receipt = p.preflight(&binary, &state.join("stage"), &plan)?;
+    assert_eq!(
+        p.apply(&file, &plan, &receipt, || node.start(false))?.phase,
+        "committed"
+    );
+    assert_eq!(
+        node.rpc().call("getmempoolinfo", json!([]))?["maxdatacarriersize"],
+        83
+    );
+    assert_eq!(p.current(&file)?["legacy_maxorphantx"], "123");
+    node.stop();
+    println!(
+        "PASS native editor: actual Core restart, fee/size RPC, legacy preference only, real failed start and recovery"
+    );
+    Ok(())
+}

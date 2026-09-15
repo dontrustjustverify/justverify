@@ -19,8 +19,8 @@ async def main():
     REPORT['boot']='second' if previous else 'first'
     password=previous['password'] if previous else secrets.token_urlsafe(32)
     boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta5'
-    assert '0.1.0-beta5' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
+    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta6'
+    assert '0.1.0-beta6' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
     assert 'HiddenServicePort 3006 127.0.0.1:28445' in Path('/etc/justverify/torrc').read_text()
     async def wait(check,seconds=120):
         deadline=time.monotonic()+seconds
@@ -74,6 +74,23 @@ async def main():
         async with c.get('http://127.0.0.1/electrs_status.js') as r:
             assert r.status==200 and 'progress' in await r.text()
         REPORT['checks'].append('packaged live Electrs metrics, exact progress heights, fresh matching tip and wallet readiness')
+        policy=await post('/policy',{'method':'state'})
+        assert policy['requested']['datacarrier']=='0' and policy['requested']['datacarriersize']=='83'
+        assert (await rpc('getmempoolinfo'))['maxdatacarriersize']==0
+        preview=await post('/policy',{'method':'preview_config','config':policy['config']+'\ndebug=mempoolrej\n'})
+        assert preview['plan']['requested']['debug']=='mempoolrej'
+        assert preview['preflight']['observed']['maxdatacarriersize']==0
+        assert (await post('/policy',{'method':'state'}))['requested']==policy['requested']
+        async def block_sizes():
+            rows=(await dashboard()).get('rpc',{}).get('recentblocks',{}).get('value',[])
+            return rows if rows and rows[0]['hash']==tip and all(row.get('size',0)>0 for row in rows) else None
+        rows=await wait(block_sizes)
+        for row in rows:assert row['size']==(await rpc('getblock',[row['hash'],1]))['size']
+        for name,terms in [('dashboard.js',['CoreStatus','block-size','1000000']),('app.css',['--status-icon-size','prefers-reduced-motion','block-identity']),('settings.js',['preview_config','datacarrier'])]:
+            async with c.get('http://127.0.0.1/'+name) as r:
+                assert r.status==200;body=await r.text();assert all(term in body for term in terms)
+        REPORT['checks'].append('beta6 factory data policy, real editor preflight, exact recent-block byte sizes and current status interface')
+
         async def address():return (await post('/device-settings',{'action':'state'}))['remote_web']['onion_host']
         host=await wait(address,60)
         async def toggle(enabled):

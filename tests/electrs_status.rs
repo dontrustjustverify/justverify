@@ -72,3 +72,26 @@ fn progress_validation_rejects_invalid_duplicate_or_missing_gauges() {
     );
     assert!(parse_metrics("# no index yet\n").is_err());
 }
+
+#[test]
+fn unknown_target_is_not_complete_and_ibd_uses_headers() {
+    let mut status = Status::default();
+    status.progress = sample(json!({"height":0,"db_error":false}));
+    let mut chain = core();
+    chain.rpc.get_mut("getblockchaininfo").unwrap().value =
+        json!({"blocks":0,"headers":0,"initialblockdownload":true});
+    let view = status.view(&chain, 50001, 101);
+    assert_eq!(view["state"], "CORE_SYNCING");
+    assert!(!justverify::electrs_status::progress_text(&view).contains("100"));
+    chain.rpc.get_mut("getblockchaininfo").unwrap().value =
+        json!({"blocks":50,"headers":100,"initialblockdownload":true});
+    status.progress.value["height"] = json!(50);
+    let view = status.view(&chain, 50001, 101);
+    assert_eq!(view["target_height"], 100);
+    assert_eq!(view["state"], "CORE_SYNCING");
+    assert_eq!(
+        justverify::electrs_status::progress_text(&view),
+        "50.00% (50/100)"
+    );
+    assert_eq!(view["wallet_ready"], false);
+}

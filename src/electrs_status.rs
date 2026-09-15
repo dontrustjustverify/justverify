@@ -241,6 +241,8 @@ impl Status {
             && (!metrics_fresh || self.progress.value["height"] == self.electrum.value["height"])
         {
             "READY"
+        } else if core_fresh && chain_value["initialblockdownload"] == true {
+            "CORE_SYNCING"
         } else if rpc_fresh && self.electrum.value["index_ready"] == false
             || metrics_fresh
                 && core_fresh
@@ -250,8 +252,6 @@ impl Status {
                     .is_some_and(|(h, c)| h < c)
         {
             "INDEXING"
-        } else if core_fresh && chain_value["initialblockdownload"] == true {
-            "CORE_SYNCING"
         } else if metrics_fresh || rpc_fresh {
             "VERIFYING"
         } else if self.electrum.error.as_deref() == Some("Electrum connection unavailable") {
@@ -262,7 +262,8 @@ impl Status {
             "STARTING"
         };
         json!({"state":state,"height":sample.value["height"],"height_source":source,
-            "target_height":chain_value["blocks"],"target_updated":chain.map_or(0,|s|s.updated),"target_stale":!core_fresh,
+            "target_height":chain_value["blocks"].as_u64().map(|blocks| blocks.max(chain_value["headers"].as_u64().unwrap_or(blocks))),
+            "core_ibd":chain_value["initialblockdownload"],"target_updated":chain.map_or(0,|s|s.updated),"target_stale":!core_fresh,
             "height_updated":sample.updated,"height_stale":!fresh(sample,at),
             "served_height":self.electrum.value["height"],"tip":self.electrum.value["tip"],
             "rpc_updated":self.electrum.updated,"rpc_error":self.electrum.error,
@@ -283,16 +284,12 @@ pub fn height_text(value: &Value) -> String {
 
 pub fn progress_text(value: &Value) -> String {
     match (value["height"].as_u64(), value["target_height"].as_u64()) {
-        (Some(height), Some(total)) => {
-            let points = if total == 0 {
-                10000
-            } else {
-                height
-                    .saturating_mul(10000)
-                    .checked_div(total)
-                    .unwrap()
-                    .min(10000)
-            };
+        (Some(height), Some(total)) if total > 0 => {
+            let points = height
+                .saturating_mul(10000)
+                .checked_div(total)
+                .unwrap()
+                .min(10000);
             let text = format!("{}.{:02}% ({height}/{total})", points / 100, points % 100);
             if value["height_stale"] == true || value["target_stale"] == true {
                 format!("{text} [STALE @{}]", value["height_updated"])

@@ -1,3 +1,17 @@
+# JustVerify 0.1.0-beta6
+
+- Correct Electrs progress while Core is syncing: unknown/zero targets no longer show 100%, and waiting takes priority over apparent height completion.
+- Show distinct syncing, delayed-update and synchronized SVG indicators, with reduced-motion support and compact, right-aligned placement. Remove repeated delay notices.
+- Show recent block sizes to two decimals in MB beside each block number, preserving mining-pool names and mobile layout.
+- Combine outgoing IPv4/IPv6 into one Clearnet toggle; incoming Clearnet covers both IP families.
+- Default new profiles to arbitrary-data relay disabled (`datacarrier=0`) and an 83-byte size limit. Existing saved settings are preserved.
+- Keep the orphan-limit field editable with explicit Core-version behavior. Core 30/31 store it only as a reference preference.
+- Add a Danger Zone bitcoin.conf editor with protected system settings, version validation, real Core preflight and failed-start recovery.
+
+Bundled versions remain Bitcoin Core31.1, electrs0.11.1, mempool3.3.1 and i2pd2.61.0. Includes previous Tor Mempool routing, I2P and seven-day renewable browser sessions.
+
+Download [image and signed checksums](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta6). Read [installation](INSTALL.md), [settings](SETTINGS.md) and [validation](TESTING.md). Reflashing erases the selected disk; it is a fresh installation, not an in-place update.
+
 # JustVerify 0.1.0-beta5
 
 - Show Electrs indexing percentage and processed/Core heights in the Bitcoin Core overview, with a live progress bar in the Electrs menu.

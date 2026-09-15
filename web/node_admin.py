@@ -36,7 +36,7 @@ async def call(service, body):
 
 def validate(service, body):
     schemas = {'state': {'method'}, 'recover': {'method'}, 'apply': {'method', 'token'}}
-    schemas.update({'preview': {'method', 'values'}} if service == 'policy' else {
+    schemas.update({'preview': {'method', 'values'}, 'preview_config': {'method', 'config'}} if service == 'policy' else {
         'preview': {'method', 'version', 'network', 'watch_only'}, 'download': {'method', 'version'}})
     if not isinstance(body, dict) or not isinstance(body.get('method'), str) or set(body) != schemas.get(body['method']):
         raise ValueError('지원하지 않는 설정 요청입니다.')
@@ -44,6 +44,9 @@ def validate(service, body):
         if key == 'values':
             if not isinstance(value, dict) or len(value) > 128 or any(not isinstance(k, str) or not isinstance(v, str) or len(v) > 256 for k, v in value.items()):
                 raise ValueError('설정 값은 문자열이어야 합니다.')
+        elif key == 'config':
+            if not isinstance(value, str) or len(value.encode()) > 8192:
+                raise ValueError('설정 파일은 8192 bytes 이하의 텍스트여야 합니다.')
         elif key == 'watch_only':
             if not isinstance(value, bool):
                 raise ValueError('잘못된 지갑 모드입니다.')

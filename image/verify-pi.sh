@@ -60,7 +60,7 @@ assert (root/'etc/ssh/sshd_config.d/00-justverify.conf').read_bytes()==(source/'
 for item in (source/'catalog').glob('*.json'):
     assert (catalog/item.name).read_bytes()==item.read_bytes(),f'stale packaged catalog: {item.name}'
 assert (root/'usr/libexec/justverify-restart-core').read_bytes()==(source/'image/restart-core.sh').read_bytes(),'stale restart helper'
-for name in ('server.py','device_settings.py','remote_web.py','rpc_gateway.py','manage_clients.py','electrum_qr.py','electrum_tls.py','requirements.lock','requirements.arm64.lock','wallet_gateway.py','watch_only.py','remote_rpc.py','rpc_qr.py','mempool_proxy.py','mempool_frontend.json'):
+for name in ('server.py','node_admin.py','device_settings.py','remote_web.py','rpc_gateway.py','manage_clients.py','electrum_qr.py','electrum_tls.py','requirements.lock','requirements.arm64.lock','wallet_gateway.py','watch_only.py','remote_rpc.py','rpc_qr.py','mempool_proxy.py','mempool_frontend.json'):
     packaged=root/'opt/justverify/web'/name
     assert packaged.read_bytes()==(source/'web'/name).read_bytes(),f'stale packaged web component: {name}'
     assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0

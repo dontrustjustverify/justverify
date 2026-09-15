@@ -1,6 +1,14 @@
 'use strict';
 const I18n=(()=>{
 const messages={
+ "동기화 중":{"en":"Syncing","ja":"同期中"},
+ "상태갱신 지연":{"en":"Status update delayed","ja":"状態更新の遅延"},
+ "동기화 완료":{"en":"Synced","ja":"同期完了"},
+ "참고값 초기화":{"en":"Reset saved preference","ja":"参考値をリセット"},
+ "Clearnet은 IPv4와 IPv6를 함께 제어합니다.":{"en":"Clearnet controls IPv4 and IPv6 together.","ja":"ClearnetはIPv4とIPv6をまとめて制御します。"},
+ "기존 Clearnet 설정은 IPv4·IPv6 중 일부만 사용합니다. 토글을 누르면 둘을 함께 설정합니다.":{"en":"The saved Clearnet setting uses only one IP family. The toggle sets both together.","ja":"保存済みのClearnet設定は片方のIPのみを使用しています。トグルで両方をまとめて設定します。"},
+ "현재 Core에 적용되지 않음":{"en":"Not applied to the current Core","ja":"現在のCoreには適用されません"},
+"임의 데이터가 포함된 거래 전파":{"en": "Relay Transactions Containing Arbitrary Data", "ja": "任意データを含む取引の中継"},"거래 내 임의 데이터의 최대 허용 크기":{"en": "Max Allowed Size of Arbitrary Data in Transactions", "ja": "取引内の任意データの最大許容サイズ"},"Core 30에서는 효력이 없고 Core 31에서 제거되었습니다. 입력값은 참고용으로 저장되며 현재 Core에는 적용되지 않습니다.":{"en": "Core 30 ignores this option and Core 31 removed it. The value is saved as a preference and is not applied to the current Core.", "ja": "Core 30では無効となり、Core 31で削除されました。入力値は参考用として保存され、現在のCoreには適用されません。"},"부모 거래의 입력을 아직 찾지 못한 고아 거래의 최대 저장 개수입니다.":{"en": "Maximum stored orphan transactions whose parent inputs are not yet available.", "ja": "親取引の入力がまだ見つからない孤立取引の最大保存件数です。"},"JustVerify 기본값으로":{"en": "Reset to JustVerify default", "ja": "JustVerifyの初期値に戻す"},"bitcoin.conf 직접 편집":{"en": "Edit bitcoin.conf", "ja": "bitcoin.confを編集"},"설정 파일 변경 내용 확인":{"en": "Review configuration changes", "ja": "設定ファイルの変更を確認"},"설정을 잘못 변경하면 노드와 연결된 앱이 작동하지 않을 수 있습니다. 저장 전 검사 후 Core를 재시작하며, 시작에 실패하면 이전 설정으로 복구합니다.":{"en": "Incorrect settings can stop the node and connected apps. Changes are checked before Core restarts; a failed start restores the previous configuration.", "ja": "誤った設定でノードや接続アプリが動作しなくなる場合があります。保存前に検査してCoreを再起動し、起動に失敗した場合は前の設定に戻します。"},"아래는 Core가 읽는 정책 설정입니다. 수수료는 BTC/kvB 단위를 사용합니다. 저장하면 다른 탭의 해당 설정도 바뀝니다. 다른 탭의 미저장 변경은 포함되지 않습니다.":{"en": "These are the policy options read by Core. Fees use BTC/kvB. Saving also updates the corresponding controls in other tabs. Unsaved edits in other tabs are not included.", "ja": "Coreが読み込むポリシー設定です。手数料の単位はBTC/kvBです。保存すると他のタブの該当設定も変わります。他のタブの未保存の変更は含まれません。"},"RPC 인증·공개 범위, 데이터 경로, 네트워크와 서비스 포트는 보호됩니다. 네트워크는 전용 탭에서 변경하세요. 지원되는 정책 옵션과 debug / debugexclude를 편집할 수 있습니다. 주석과 공백은 저장할 때 정리됩니다.":{"en": "RPC access, data paths, networks and service ports are protected. Use the network tab for network settings. Supported policy options and debug / debugexclude can be edited here. Comments and spacing are normalized on save.", "ja": "RPCアクセス、データパス、ネットワーク、サービスポートは保護されています。ネットワークは専用タブで変更してください。対応するポリシーとdebug / debugexcludeを編集できます。コメントと空白は保存時に整形されます。"},
  "인덱싱 상태":{"en":"Indexing status","ja":"インデックスの状態"},
  "Core 높이 갱신 지연":{"en":"Core height update delayed","ja":"Coreの高さ更新が遅延"},
  "이전에 확인한 진행률 · 자동 재확인":{"en":"Last observed progress · retrying automatically","ja":"前回取得した進捗・自動再確認中"},
@@ -962,13 +970,13 @@ const messages={
   "en": "Accept and relay unconfirmed transactions with OP_RETURN data outputs. Valid blocks are still verified when disabled. This does not block every form of arbitrary data.",
   "ja": "OP_RETURNデータ出力を含む未確認取引をローカルで受け入れ、中継します。無効でも有効なブロックは検証します。任意データのすべての形式を遮断する機能ではありません。"
  },
- "한 거래에 있는 OP_RETURN 출력 스크립트의 합계 한도입니다. 여러 출력을 허용하며 Core 30부터 기본값은 100,000 bytes입니다.": {
-  "en": "Combined OP_RETURN output script size per transaction. Multiple outputs are allowed; Core 30 and later default to 100,000 bytes.",
-  "ja": "取引内のOP_RETURN出力スクリプトの合計上限です。複数出力に対応し、Core 30以降の既定値は100,000 bytesです。"
+ "한 거래에 있는 OP_RETURN 출력 스크립트의 합계 한도입니다. 여러 출력을 허용하며 Core 30부터 Core 기본값은 100,000 bytes입니다. JustVerify 기본값은 83 bytes이며, 전파가 꺼져 있으면 적용되지 않습니다.": {
+  "en": "Combined OP_RETURN output script size per transaction. Multiple outputs are allowed; Core 30 and later default to 100,000 bytes. JustVerify defaults to 83 bytes; inactive when data relay is disabled.",
+  "ja": "取引内のOP_RETURN出力スクリプトの合計上限です。複数出力に対応し、Core 30以降の既定値は100,000 bytesです。JustVerifyの初期値は83 bytesで、データ中継が無効な間は適用されません。"
  },
- "OP_RETURN 출력 스크립트의 크기 한도입니다. 이 버전의 기본값은 83 bytes입니다.": {
-  "en": "OP_RETURN output script size limit. This version defaults to 83 bytes.",
-  "ja": "OP_RETURN出力スクリプトのサイズ上限です。このバージョンの既定値は83 bytesです。"
+ "OP_RETURN 출력 스크립트의 크기 한도입니다. 기본값은 83 bytes이며, 전파가 꺼져 있으면 적용되지 않습니다.": {
+  "en": "OP_RETURN output script size limit. The default is 83 bytes; inactive when data relay is disabled.",
+  "ja": "OP_RETURN出力スクリプトのサイズ上限です。初期値は83 bytesで、データ中継が無効な間は適用されません。"
  },
  "UTXO 데이터베이스 캐시의 RAM 상한입니다. 초기 동기화에 도움이 될 수 있으며, 미사용 mempool 메모리가 추가로 공유될 수 있습니다.": {
   "en": "RAM limit for the UTXO database cache. It can help initial sync; unused mempool memory may also be shared with the cache.",
@@ -1085,7 +1093,7 @@ function text(value){
  const patterns=[[/^마지막 확인 · (\d+)초 전$/,language==='en'?'Last observed · $1s ago':'最終取得・$1秒前'],[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
  for(const [pattern,replacement] of patterns)if(pattern.test(value))return value.replace(pattern,replacement);
  if(/\d(?:일|시간|분|초)/.test(value))value=value.replace(/(\d+)일/g,language==='en'?'$1d':'$1日').replace(/(\d+)시간/g,language==='en'?'$1h':'$1時間').replace(/(\d+)분/g,language==='en'?'$1m':'$1分').replace(/(\d+)초/g,language==='en'?'$1s':'$1秒').replace(/ 전$/,language==='en'?' ago':'前');
- for(const [source,translations] of Object.entries({"Core 기본값: ": ["Core default: ", "Core既定値: "], "기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);
+ for(const [source,translations] of Object.entries({"참고용 기본값: ": ["Preference default: ", "参考用の初期値: "], "JustVerify 기본값: ": ["JustVerify default: ", "JustVerify初期値: "], "Core 기본값: ": ["Core default: ", "Core既定値: "], "기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);
  if(value.includes('기본값 사용'))value=value.replaceAll('기본값 사용',messages['기본값 사용'][language]);
  return value;
 }
@@ -1106,7 +1114,7 @@ function translate(){
  }
  observer?.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title']});
 }
-function set(value){if(!['ko','en','ja'].includes(value))return;language=value;document.documentElement.lang=value;document.documentElement.style.setProperty('--stale-label',JSON.stringify(value==='en'?'Some values are from an earlier sample.':value==='ja'?'一部は以前の取得値です。':'일부 항목은 이전 수집값입니다.'));translate();}
+function set(value){if(!['ko','en','ja'].includes(value))return;language=value;document.documentElement.lang=value;translate();}
 observer=new MutationObserver(translate);translate();
 return {set,text};
 })();
