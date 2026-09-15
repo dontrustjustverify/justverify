@@ -307,7 +307,7 @@ class BackupBundle:
             # Backup service uses system Python without aiohttp: validate data here.
             value = _json(preferences)
             import unicodedata
-            if set(value) != {"schema", "name", "theme", "language"} or value["schema"] != 1 or value["theme"] not in ("teal", "amber", "green", "ice") or value["language"] not in ("ko", "en", "ja") or not isinstance(value["name"], str) or not 1 <= len(value["name"]) <= 40 or value["name"] != value["name"].strip() or any(unicodedata.category(c).startswith("C") for c in value["name"]):
+            if set(value) != {"schema", "name", "theme", "language"} or value["schema"] != 1 or value["theme"] not in ("teal", "amber", "green", "ice") or value["language"] not in ("auto", "ko", "en", "ja") or not isinstance(value["name"], str) or not 1 <= len(value["name"]) <= 40 or value["name"] != value["name"].strip() or any(unicodedata.category(c).startswith("C") for c in value["name"]):
                 raise ValueError("invalid owner preferences")
         remote_web = values.get("web/remote-web.json")
         if remote_web is not None:

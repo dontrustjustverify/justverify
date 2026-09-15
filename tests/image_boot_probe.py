@@ -66,7 +66,7 @@ async def probe():
     async with lan.post('http://127.0.0.1/device-settings',headers={'Origin':'http://127.0.0.1','X-CSRF-Token':lan_auth['csrf']},json={'action':'state'}) as response:
      assert response.status==200;device=await response.json()
      assert device['device']['os_version']==json.loads(pathlib.Path('/etc/justverify/os-release.json').read_text())['version']
-     assert device['preferences']['language']=='ko'
+     assert device['preferences']['language']=='auto'
      assert not device['remote_web']['running']
     checks['packaged_lan_login_session_favicon_device_settings']=True
    if previous:client=previous['client']

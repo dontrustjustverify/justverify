@@ -6,16 +6,19 @@ const app=fs.readFileSync(path.join(root,'web/static/app.js'),'utf8');
 const initial=app.split('\n').find(line=>line.startsWith('{const url=new URL(location.href);'));
 const device=fs.readFileSync(path.join(root,'web/static/device.js'),'utf8');
 const language=device.match(/if\(link\)\{(const url=new URL\(link.href\);[^}]+)\}/)[1];
+const locale=fs.readFileSync(path.join(root,'web/static/i18n.js'),'utf8');
+const localeContext=vm.createContext({navigator:{languages:['ja-JP']}});
+vm.runInContext(locale.slice(locale.indexOf('function detect('),locale.indexOf('let language=resolve('))+';this.I18n={resolve};',localeContext);
 const integration=fs.readFileSync(path.join(root,'web/static/mempool-integration.js'),'utf8');
 const back=integration.match(/(const url=new URL\(location.href\);.*?home.href=url.href;)/)[1];
 const onion='a'.repeat(56)+'.onion';
 let count=0;
 for(const origin of ['http://justverify.local','http://192.168.1.50','http://[fd00::1]','http://'+onion]) {
-  for(const lang of ['ko','en','ja']) {
+  for(const lang of ['ko','en','ja','auto']) {
     const link={href:''};
     vm.runInNewContext(initial,{URL,location:{href:origin+'/settings?x=1#account'},$:selector=>{assert.equal(selector,'#mempool-link');return link;}});
-    vm.runInNewContext(language,{URL,link,prefs:{language:lang}});
-    assert.equal(link.href,origin+':3006/'+(lang==='en'?'en-US':lang)+'/');
+    vm.runInNewContext(language,{URL,link,prefs:{language:lang},I18n:localeContext.I18n});
+    assert.equal(link.href,origin+':3006/'+(lang==='en'?'en-US':lang==='auto'?'ja':lang)+'/');
     const home={href:''};
     vm.runInNewContext(back,{URL,location:{href:link.href+'?x=1#block'},home});
     assert.equal(home.href,origin+'/');count++;

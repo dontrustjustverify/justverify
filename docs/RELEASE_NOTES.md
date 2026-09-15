@@ -1,3 +1,15 @@
+# JustVerify 0.1.0-beta7
+
+- Keep the previous recent-block list visible until the next batch has size and mining-pool details. A bounded wait still reports unavailable data honestly.
+- Use a clearer waiting-for-response status and remove routine Electrs query ages and wallet-probe rows from the overview.
+- Fit the full mobile tagline on one line below YOUR BITCOIN NODE and use the available desktop peer-panel height.
+- Keep the language selector heading fixed as **Language/언어설정/言語設定**. New installations default to Automatic, following the browser's Korean, English or Japanese preferences and falling back to English.
+- Preserve manual language choices across refresh, include Automatic in encrypted backups, and use the resolved language for Mempool links.
+
+Bundled versions remain Bitcoin Core31.1, electrs0.11.1, mempool3.3.1 and i2pd2.61.0. Existing Core policy, Tor/I2P connectivity and renewable browser sessions are retained.
+
+Download [image and signed checksums](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta7). Read [installation](INSTALL.md), [settings](SETTINGS.md) and [validation](TESTING.md). Reflashing erases the selected disk; it is a fresh installation, not an in-place update.
+
 # JustVerify 0.1.0-beta6
 
 - Correct Electrs progress while Core is syncing: unknown/zero targets no longer show 100%, and waiting takes priority over apparent height completion.

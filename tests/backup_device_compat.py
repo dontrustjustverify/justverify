@@ -14,10 +14,11 @@ with tempfile.TemporaryDirectory(prefix='jv-backup-device-') as temp:
  # A new installation accepts the complete legacy catalog, without weakening
  # the original mandatory entries or the encrypted manifest authentication.
  modern.inspect(legacy.destination,password)
- preferences={'schema':1,'name':'복구 시험','language':'ja','theme':'amber'}
- helper.write(added[0].path,json.dumps(preferences,ensure_ascii=False).encode(),0o600)
- helper.write(added[1].path,b'{"schema":1,"enabled":false,"phase":"committed"}',0o600)
- result=modern.create(password);original=modern.snapshot()
- helper.write(added[0].path,b'{"schema":1,"name":"changed","language":"ko","theme":"teal"}',0o600)
- modern.restore(password,result['sha256']);assert modern.snapshot()==original
- print('PASS: actual GPG legacy manifest compatibility + preference and remote-web restore')
+ for language in ('ja','auto'):
+  preferences={'schema':1,'name':'복구 시험','language':language,'theme':'amber'}
+  helper.write(added[0].path,json.dumps(preferences,ensure_ascii=False).encode(),0o600)
+  helper.write(added[1].path,b'{"schema":1,"enabled":false,"phase":"committed"}',0o600)
+  result=modern.create(password);original=modern.snapshot()
+  helper.write(added[0].path,b'{"schema":1,"name":"changed","language":"ko","theme":"teal"}',0o600)
+  modern.restore(password,result['sha256']);assert modern.snapshot()==original
+ print('PASS: actual GPG legacy manifest compatibility + manual/automatic language preference and remote-web restore')

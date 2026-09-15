@@ -1,6 +1,6 @@
 'use strict';
 const DeviceView=(()=>{
- let prefs={theme:'teal',language:'ko',name:'justverify'},data,timer,busy=false;
+ let prefs={theme:'teal',language:'auto',name:'justverify'},data,timer,busy=false;
  const root=()=>document.querySelector('#device-view');
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
  const api=async body=>{const response=await fetch('/device-settings',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:JSON.stringify(body)});if(!response.ok){if(response.status===401){const session=await fetch('/session');if(!session.ok)await showAuth();}throw Error(await response.text());}return response.json();};
@@ -8,8 +8,10 @@ const DeviceView=(()=>{
  const colors={teal:'#50D4C7',amber:'#FFB000',green:'#00FF00',ice:'#F0FFF8'};
  const names={teal:'Teal',amber:'Amber',green:'Green',ice:'Ice'};
  function applyTerminalTheme(){try{if(typeof term!=='undefined'&&term){const css=getComputedStyle(document.documentElement),c=colors[prefs.theme],text=css.getPropertyValue('--text').trim(),muted=css.getPropertyValue('--muted').trim();term.options.theme={background:'#080d10',foreground:text,cyan:c,brightCyan:c,green:c,brightGreen:c,white:text,brightWhite:text,brightBlack:muted};}}catch{}}
- function apply(value){prefs=value;document.documentElement.dataset.theme=prefs.theme;I18n.set(prefs.language);const link=document.querySelector('#mempool-link');if(link){const url=new URL(link.href);url.pathname='/'+(prefs.language==='en'?'en-US':prefs.language)+'/';link.href=url.href;}applyTerminalTheme();try{localStorage.setItem('jv-appearance',JSON.stringify({theme:prefs.theme,language:prefs.language}));}catch{}}
- try{const p=JSON.parse(localStorage.getItem('jv-appearance'));if(p&&colors[p.theme]&&['ko','en','ja'].includes(p.language))apply({...prefs,...p});}catch{}
+ function apply(value){prefs=value;document.documentElement.dataset.theme=prefs.theme;I18n.set(prefs.language);const link=document.querySelector('#mempool-link');if(link){const url=new URL(link.href);const language=I18n.resolve(prefs.language);url.pathname='/'+(language==='en'?'en-US':language)+'/';link.href=url.href;}applyTerminalTheme();try{localStorage.setItem('jv-appearance',JSON.stringify({theme:prefs.theme,language:prefs.language}));}catch{}}
+ try{const p=JSON.parse(localStorage.getItem('jv-appearance'));if(p&&colors[p.theme]&&['auto','ko','en','ja'].includes(p.language))prefs={...prefs,...p};}catch{}
+ apply(prefs);
+ addEventListener('languagechange',()=>{if(prefs.language==='auto')apply(prefs);});
  async function loadPreferences(){try{data=await api({action:'state'});apply(data.preferences);}catch{}}
  function stop(){clearInterval(timer);timer=null;}
  function message(text){const n=document.querySelector('#device-message');if(n)n.textContent=text;}
@@ -24,8 +26,8 @@ const DeviceView=(()=>{
   const settings=el('section',undefined,'device-list panel');settings.append(row('계정명, 패스워드 변경',prefs.name,[button('계정명 변경',()=>account('name')),button('패스워드 변경',()=>account('password'))]));
   const swatches=el('div',undefined,'swatches');for(const [key,color] of Object.entries(colors)){const b=button(names[key],()=>run(async()=>{const result=await api({action:'preferences',theme:key,language:prefs.language});apply(result.preferences);render();message('저장되었습니다.');}),'swatch');b.dataset.color=key;b.style.setProperty('--swatch',color);b.setAttribute('aria-pressed',String(prefs.theme===key));b.title=color;swatches.append(b);}
   settings.append(row('글자색 선택','글자, 테두리와 버튼에 함께 적용됩니다.',[swatches]));
-  const select=el('select');select.id='language-choice';select.setAttribute('aria-label','언어선택');for(const [value,label] of [['ko','한국어'],['en','English'],['ja','日本語']]){const o=el('option',label);o.value=value;select.append(o);}select.value=prefs.language;
-  select.onchange=()=>run(async()=>{const result=await api({action:'preferences',theme:prefs.theme,language:select.value});apply(result.preferences);render();message('저장되었습니다.');});settings.append(row('언어선택','',[select]));
+  const select=el('select');select.id='language-choice';select.setAttribute('aria-labelledby','language-settings-label');for(const [value,label] of [['auto','자동 (브라우저 언어)'],['ko','한국어'],['en','English'],['ja','日本語']]){const o=el('option',label);o.value=value;select.append(o);}select.value=prefs.language;
+  select.onchange=()=>run(async()=>{const result=await api({action:'preferences',theme:prefs.theme,language:select.value});apply(result.preferences);render();message('저장되었습니다.');});const languageRow=row('Language/언어설정/言語設定','',[select]);const languageLabel=languageRow.querySelector('h3');languageLabel.id='language-settings-label';languageLabel.setAttribute('translate','no');settings.append(languageRow);
   const remote=data.remote_web;const toggle=button(remote.running?'켜짐':'꺼짐',()=>reviewTor(!remote.running),'toggle');toggle.id='remote-web-toggle';toggle.setAttribute('role','switch');toggle.setAttribute('aria-checked',String(remote.running));settings.append(row('Remote Tor access','Tor Browser로 외부에서 관리 화면에 접속합니다.',[toggle]));
   if(remote.running&&remote.url){const link=el('input');link.readOnly=true;link.value=remote.url;link.setAttribute('aria-label','Tor 관리 화면 주소');const help=el('p','Tor Browser에서 이 주소를 열고 관리자 암호로 로그인하세요.','hint');settings.append(CopyAddress.wrap(link),help);}
   if(remote.needs_recovery)settings.append(el('p','Tor 설정이 저장값과 다릅니다. 토글을 다시 적용하세요.','notice'));

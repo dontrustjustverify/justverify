@@ -79,7 +79,7 @@ async def run():
      assert response.status==200 and await response.read()==(pathlib.Path('/opt/justverify/web/static')/name).read_bytes()
    async with lan.post('http://127.0.0.1/device-settings',headers={'Origin':'http://127.0.0.1','X-CSRF-Token':login['csrf']},json={'action':'state'}) as response:
     assert response.status==200;device=await response.json()
-    assert device['preferences']['language']=='ko' and not device['remote_web']['running']
+    assert device['preferences']['language']=='auto' and not device['remote_web']['running']
    checks['http_login_refresh_favicon_device_preferences']=True
   async with session.ws_connect('https://127.0.0.1/terminal',origin='https://justverify.local') as ws:
    screen=pyte.Screen(120,40);stream=pyte.Stream(screen);deadline=time.monotonic()+20

@@ -1,7 +1,11 @@
 'use strict';
 const I18n=(()=>{
 const messages={
+ "자동 (브라우저 언어)":{"en":"Automatic (browser language)","ja":"自動（ブラウザーの言語）"},
  "동기화 중":{"en":"Syncing","ja":"同期中"},
+ "응답 대기":{"en":"Waiting for response","ja":"応答待ち"},
+ "응답 대기 · 자동 재확인":{"en":"Waiting for response · retrying automatically","ja":"応答待ち・自動再確認中"},
+ "연결 준비 확인 중":{"en":"Checking connection readiness","ja":"接続準備を確認中"},
  "상태갱신 지연":{"en":"Status update delayed","ja":"状態更新の遅延"},
  "동기화 완료":{"en":"Synced","ja":"同期完了"},
  "참고값 초기화":{"en":"Reset saved preference","ja":"参考値をリセット"},
@@ -1078,13 +1082,45 @@ const messages={
   "en": "Checking mining pool",
   "ja": "マイニングプールを確認中"
  },
+ "블록 크기·채굴 풀을 확인하고 있습니다.": {
+  "en": "Loading block sizes and mining pools.",
+  "ja": "ブロックサイズとマイニングプールを確認しています。"
+ },
+ "블록 상세 정보를 갱신하고 있습니다.": {
+  "en": "Updating block details.",
+  "ja": "ブロックの詳細を更新しています。"
+ },
+ "초기 동기화 중 · 상세 정보 확인 후 목록을 갱신합니다.": {
+  "en": "Initial sync · The list updates when block details are ready.",
+  "ja": "初期同期中・ブロックの詳細を確認してから一覧を更新します。"
+ },
+ "일부 블록 상세 정보의 조회가 지연되고 있습니다. 자동으로 다시 확인합니다.": {
+  "en": "Some block details are delayed. Retrying automatically.",
+  "ja": "一部のブロック詳細の取得が遅れています。自動で再確認します。"
+ },
+ "조회 지연": {
+  "en": "Lookup delayed",
+  "ja": "取得遅延"
+ },
  "기기 응답이 지연되고 있습니다. 자동으로 다시 연결합니다.": {
   "en": "Device response is delayed. Reconnecting automatically.",
   "ja": "デバイスの応答が遅延しています。自動で再接続します。"
  }
 };
 
-let language='ko';const originals=new WeakMap();let observer;
+function detect(languages=[]){
+ for(const locale of Array.isArray(languages)?languages:[]){
+  if(typeof locale!=='string')continue;
+  const base=locale.trim().toLowerCase().replaceAll('_','-').split('-')[0];
+  if(['ko','en','ja'].includes(base))return base;
+ }
+ return 'en';
+}
+function resolve(value){
+ if(['ko','en','ja'].includes(value))return value;
+ return detect(typeof navigator==='undefined'?[]:navigator.languages?.length?navigator.languages:[navigator.language]);
+}
+let language=resolve('auto');const originals=new WeakMap();let observer;
 function text(value){
  if(language==='ko')return value;
  const trimmed=value.trim(),entry=messages[trimmed];
@@ -1102,19 +1138,19 @@ function translate(){
  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
  let node;
  while(node=walker.nextNode()){
-  if(node.parentElement.closest('script,style,#terminal,code,textarea'))continue;
+  if(node.parentElement.closest('script,style,#terminal,code,textarea,[translate="no"]'))continue;
   const cached=originals.get(node);const source=cached&&node.data===cached.rendered?cached.source:node.data;
   const rendered=text(source);if(node.data!==rendered)node.data=rendered;originals.set(node,{source,rendered});
  }
  for(const node of document.querySelectorAll('[aria-label],[title]')){
-  if(node.closest('#terminal'))continue;
+  if(node.closest('#terminal,[translate="no"]'))continue;
   for(const attr of ['aria-label','title'])if(node.hasAttribute(attr)){
    const key='i18n'+attr;node._jvTranslations??={};const c=node._jvTranslations[key],now=node.getAttribute(attr);const source=c&&now===c.rendered?c.source:now;const rendered=text(source);if(now!==rendered)node.setAttribute(attr,rendered);node._jvTranslations[key]={source,rendered};
   }
  }
  observer?.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title']});
 }
-function set(value){if(!['ko','en','ja'].includes(value))return;language=value;document.documentElement.lang=value;translate();}
-observer=new MutationObserver(translate);translate();
-return {set,text};
+function set(value){if(!['auto','ko','en','ja'].includes(value))return;language=resolve(value);document.documentElement.lang=language;translate();}
+observer=new MutationObserver(translate);set(language);
+return {set,text,detect,resolve};
 })();

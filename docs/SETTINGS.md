@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta6.
+This guide applies to JustVerify 0.1.0-beta7.
 
 ## OP_RETURN and transaction policy
 
@@ -62,9 +62,9 @@ Browser login lasts seven days and renews during authenticated use. Refresh and 
 
 ## Dashboard freshness
 
-Core status, network data, block headers, mining-pool identification and host metrics are collected separately. The browser makes one status request at a time. During initial sync, the recent-block list is sampled every 15 seconds; pool identification may finish later.
+Core status, network data, block headers, mining-pool identification and host metrics are collected separately. The browser makes one status request at a time. During initial sync, the recent-block list is sampled every 15 seconds; the last complete list remains visible until the next size/pool batch is ready. An ongoing lookup has a bounded wait so unavailable data cannot freeze the list indefinitely.
 
-The title badge shows syncing, delayed status updates, or synchronized. Fresh Core data with IBD=false and equal block/header heights is required for synchronized status. Delayed data takes precedence, even after a previous completion; waiting for the next block keeps completion visible. Rounded percentages are not used to decide completion. Icons respect reduced-motion preferences. Previously collected values keep their original timestamps, and the duplicate delay banners are omitted.
+The title badge shows syncing, waiting for a response, or synchronized. Fresh Core data with IBD=false and equal block/header heights is required for synchronized status. Delayed data takes precedence, even after a previous completion; waiting for the next block keeps completion visible. Rounded percentages are not used to decide completion. Icons respect reduced-motion preferences. Previously collected values keep their original timestamps, and the duplicate delay banners are omitted.
 
 Recent blocks show serialized size beside the height to two decimals in MB (1 MB = 1,000,000 bytes). Size includes witness bytes, is not block weight or virtual size, and comes from the existing background block lookup. Mining-pool identification is preserved; unavailable sizes show an em dash.
 
@@ -74,7 +74,7 @@ The Bitcoin Core overview shows Electrs progress as a percentage followed by **p
 
 While Core is in initial sync, the known header height is used as the target when higher than its validated block height. An unknown or zero target shows no percentage; 0/0 does not become 100%.
 
-**100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. During a delayed response, the last observed height and its timestamp stay visible. A connection failure or index error is shown separately instead of clearing progress to a dash.
+**100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. While waiting for a response, the last observed height is retained and marked as previous progress. Routine query-age and wallet-probe rows are omitted from the overview. A connection failure or index error is shown separately instead of clearing progress to a dash.
 
 These corrections are included in beta6.
 
@@ -99,3 +99,7 @@ Enable **Settings → Remote Tor access**, open the displayed onion address and 
 On the device, Tor forwards onion port3006 to a separate authenticated loopback listener at28445. It does not forward to the anonymous LAN explorer. Core RPC and wallet credentials remain separate.
 
 Restoring a supported older encrypted backup preserves its onion identities and uses the installed fixed Tor routing template, including the explorer route. Unrecognized listener destinations are rejected.
+
+## Interface language
+
+The selector is always labeled **Language/언어설정/言語設定**. New preferences use **Automatic (browser language)**. The first supported language in the browser preference list wins: Korean, English or Japanese, including regional variants. Other preferences fall back to English. Manually saved selections take priority; choose Automatic to follow each browser again. Theme and account-name changes, refresh, service restart and encrypted backup restore retain this choice. Mempool opens in the resolved language.

@@ -19,8 +19,8 @@ async def main():
     REPORT['boot']='second' if previous else 'first'
     password=previous['password'] if previous else secrets.token_urlsafe(32)
     boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta6'
-    assert '0.1.0-beta6' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
+    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta7'
+    assert '0.1.0-beta7' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
     assert 'HiddenServicePort 3006 127.0.0.1:28445' in Path('/etc/justverify/torrc').read_text()
     async def wait(check,seconds=120):
         deadline=time.monotonic()+seconds
@@ -40,6 +40,16 @@ async def main():
             async with c.post('http://127.0.0.1'+path,headers={'Origin':'http://127.0.0.1','X-CSRF-Token':csrf},json=body) as r:
                 assert r.status==200,(path,r.status)
                 return await r.json()
+        preferences=(await post('/device-settings',{'action':'state'}))['preferences']
+        assert preferences['language']=='auto'
+        for language in ('ja','ko','en','auto'):
+            saved=await post('/device-settings',{'action':'preferences','theme':preferences['theme'],'language':language})
+            assert saved['preferences']['language']==language
+        async with c.get('http://127.0.0.1/device.js') as r:
+            assert r.status==200 and 'Language/언어설정/言語設定' in await r.text()
+        async with c.get('http://127.0.0.1/i18n.js') as r:
+            assert r.status==200 and "resolve('auto')" in await r.text()
+        REPORT['checks'].append('automatic language factory default and reboot retention; all explicit language choices and fixed selector label packaged')
         if not previous:
             assert (await post('/storage',{'action':'prepare_profile'}))['ok']
             review=await post('/versions',{'method':'preview','version':'31.1','network':'regtest','watch_only':False})
@@ -176,6 +186,7 @@ async def main():
             assert encrypted.returncode==0
             bundle.destination.write_bytes(MAGIC+cipher.read_bytes());bundle.destination.chmod(0o600)
             reviewed=bundle.inspect(bundle.destination,passphrase)
+            await post('/device-settings',{'action':'preferences','theme':preferences['theme'],'language':'en'})
             quiesce()
             def recovered():resume();health()
             try:assert bundle.restore(passphrase,reviewed['sha256'],health_check=recovered)['phase']=='committed'
@@ -189,6 +200,8 @@ async def main():
                     assert r.status==200
                     return (await r.json())['csrf']
             csrf=await wait(login_restored,30)
+            assert (await post('/device-settings',{'action':'state'}))['preferences']['language']=='auto'
+            REPORT['checks'].append('actual encrypted backup restores automatic language after manual English change')
             assert await wait(address,60)==host
             assert (await toggle(True))['running']
             headers['Cookie']='jv_tor_session='+await tor_login()

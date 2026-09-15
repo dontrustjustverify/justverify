@@ -3,12 +3,12 @@ import asyncio, hmac, json, pathlib, secrets, time, unicodedata
 from aiohttp import web
 from node_admin import call
 
-DEFAULTS = {'schema': 1, 'name': 'justverify', 'theme': 'teal', 'language': 'ko'}
+DEFAULTS = {'schema': 1, 'name': 'justverify', 'theme': 'teal', 'language': 'auto'}
 
 def validate(value):
     if not isinstance(value, dict) or set(value) != set(DEFAULTS) or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('잘못된 설정 형식입니다.')
-    if value['theme'] not in ('teal', 'amber', 'green', 'ice') or value['language'] not in ('ko', 'en', 'ja'):
+    if value['theme'] not in ('teal', 'amber', 'green', 'ice') or value['language'] not in ('auto', 'ko', 'en', 'ja'):
         raise ValueError('지원하지 않는 색상 또는 언어입니다.')
     name = value['name']
     if not isinstance(name, str) or not 1 <= len(name) <= 40 or name != name.strip() or any(unicodedata.category(c).startswith('C') for c in name):

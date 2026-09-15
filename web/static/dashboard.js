@@ -1,7 +1,7 @@
 'use strict';
 // Core sync is independent of block arrival intervals and displayed percentages.
 const CoreStatus=(()=>{
- const labels={syncing:'동기화 중',delayed:'상태갱신 지연',synced:'동기화 완료'};
+ const labels={syncing:'동기화 중',delayed:'응답 대기',synced:'동기화 완료'};
  function state(snapshot,now=Date.now()/1000,transportFailed=false){
   const sample=snapshot?.rpc?.getblockchaininfo,chain=sample?.value;
   const fresh=stamp=>Number.isFinite(stamp)&&stamp>0&&now-stamp<=15;
@@ -21,9 +21,40 @@ const CoreStatus=(()=>{
  }
  return {state,render};
 })();
+// Stage header snapshots while the independent block-detail worker catches up.
+const RecentBlocks=(()=>{
+ const terminal=new Set(['identified','unknown','ambiguous','unavailable']);
+ const hasSize=b=>Number.isSafeInteger(b.size)&&b.size>0;
+ const settled=b=>terminal.has(b.miner?.status)&&(hasSize(b)||b.miner.status==='unavailable');
+ function create(){
+  let chain,shown=[],waitingSince=null;
+  return {update(snapshot,now=performance.now()){
+   const nextChain=snapshot?.rpc?.getblockchaininfo?.value?.chain;
+   if(nextChain&&chain!==nextChain){chain=nextChain;shown=[];waitingSince=null;}
+   const sample=snapshot?.rpc?.recentblocks;
+   const incoming=Array.isArray(sample?.value)?sample.value:[];
+   if(!incoming.length||sample.error)return {list:shown,waiting:false,partial:shown.some(b=>!settled(b))};
+   const previous=new Map(shown.map(b=>[b.hash,b]));
+   const candidate=incoming.map(b=>{
+    const old=previous.get(b.hash),row={...b,miner:{...b.miner}};
+    // Never lose already resolved details for the same immutable block hash.
+    if(!hasSize(row)&&old&&hasSize(old))row.size=old.size;
+    if(old&&terminal.has(old.miner?.status)&&old.miner.status!=='unavailable'&&(!terminal.has(row.miner.status)||row.miner.status==='unavailable'))row.miner={...old.miner};
+    return row;
+   });
+   const complete=candidate.every(settled);
+   if(!complete&&waitingSince===null)waitingSince=now;
+   // Do not reset the deadline when IBD advances to another header batch.
+   if(complete||now-waitingSince>=30000){shown=candidate;waitingSince=null;}
+   return {list:shown,waiting:!complete,partial:shown.some(b=>!settled(b))};
+  }};
+ }
+ return {create};
+})();
 // Read-only presentation of the same snapshot used by the native TUI.
 const NodeView=(()=>{
  const find=id=>document.getElementById(id);let timer,watchdog,mode='lan',generation=0,controller,endpointInfo,electrsSnapshot,coreIbd,lastSnapshot,transportFailed=false;
+ let recentBlocks=RecentBlocks.create();
  function updateStatus(){CoreStatus.render(find('live-state'),CoreStatus.state(lastSnapshot,Date.now()/1000,transportFailed));}
  const text=v=>v===null||v===undefined?'—':String(v).replace(/[\x00-\x1f\x7f\u202a-\u202e\u2066-\u2069]/g,'');
  const fmt=v=>v===null||v===undefined?'—':Number(v).toLocaleString('ko-KR');
@@ -46,11 +77,12 @@ const NodeView=(()=>{
   rows('network-data',[['연결된 피어',fmt(v('getnetworkinfo','connections'))],['들어옴 / 나감',fmt(v('getnetworkinfo','connections_in'))+' / '+fmt(v('getnetworkinfo','connections_out'))],['수신 / 송신',bytes(v('getnettotals','totalbytesrecv'))+' / '+bytes(v('getnettotals','totalbytessent'))],['미확인 거래',fmt(v('getmempoolinfo','size'))+' tx'],['Mempool 크기',bytes(v('getmempoolinfo','bytes'))]]);
   const fee=(m,k)=>v(m,k)==null?'추정 불가':(Number(v(m,k))*100000).toFixed(3);
   rows('fees-data',[['6블록 이내 추정',fee('estimatesmartfee','feerate')],['Mempool 최저',fee('getmempoolinfo','mempoolminfee')],['Relay 최저',fee('getmempoolinfo','minrelaytxfee')]]);
-  const blocks=find('blocks-data');blocks.replaceChildren();const list=sample('recentblocks').value||[];
+  const blocks=find('blocks-data');blocks.replaceChildren();const batch=recentBlocks.update(s),list=batch.list;
   if(sample('recentblocks').error&&sample('recentblocks').updated>0)blocks.append(element('p','블록 목록 갱신 지연 · 이전에 확인한 블록입니다.','hint'));
-  else if(list.length&&list[0].hash!==core.value?.bestblockhash)blocks.append(element('p',v('getblockchaininfo','initialblockdownload')?'초기 동기화 중 · 블록 목록은 15초 간격으로 갱신합니다.':'새 블록 목록을 갱신하고 있습니다.','hint'));
-  for(const b of list){const card=element('article',undefined,'block-row');const heading=element('h4',undefined,'block-heading');const miner=b.miner||{};const name=miner.status==='identified'?miner.name:miner.status==='pending'?'채굴 풀 확인 중':miner.status==='unavailable'?'조회 불가':miner.status==='ambiguous'?'식별 불확실':'알 수 없음';const pool=element('span',name,'block-miner');pool.title=miner.status==='identified'?'보상 거래의 태그·주소로 추정한 채굴 풀입니다. 실제 채굴자 신원을 보증하지 않습니다.':'블록의 보상 거래에서 채굴 풀을 식별하지 못했습니다.';const identity=element('span',undefined,'block-identity');const size=element('span',Number.isSafeInteger(b.size)&&b.size>0?(b.size/1000000).toFixed(2)+' MB':'— MB','block-size');identity.append(element('span','블록 '+fmt(b.height)),size);heading.append(identity,pool);card.append(heading,element('p',fmt(b.nTx)+' transactions · '+duration(now-b.time)+' 전'),element('code',b.hash));blocks.append(card);}
-  if(!list.length)blocks.append(element('p','첫 블록 정보를 기다리고 있습니다.','empty'));
+  else if(batch.partial)blocks.append(element('p','일부 블록 상세 정보의 조회가 지연되고 있습니다. 자동으로 다시 확인합니다.','hint'));
+  else if(list.length&&(batch.waiting||list[0].hash!==core.value?.bestblockhash))blocks.append(element('p',v('getblockchaininfo','initialblockdownload')?'초기 동기화 중 · 상세 정보 확인 후 목록을 갱신합니다.':'블록 상세 정보를 갱신하고 있습니다.','hint'));
+  for(const b of list){const card=element('article',undefined,'block-row');const heading=element('h4',undefined,'block-heading');const miner=b.miner||{};const name=miner.status==='identified'?miner.name:!miner.status||miner.status==='pending'?'조회 지연':miner.status==='unavailable'?'조회 불가':miner.status==='ambiguous'?'식별 불확실':'알 수 없음';const pool=element('span',name,'block-miner');pool.title=miner.status==='identified'?'보상 거래의 태그·주소로 추정한 채굴 풀입니다. 실제 채굴자 신원을 보증하지 않습니다.':'블록의 보상 거래에서 채굴 풀을 식별하지 못했습니다.';const identity=element('span',undefined,'block-identity');const size=element('span',Number.isSafeInteger(b.size)&&b.size>0?(b.size/1000000).toFixed(2)+' MB':'— MB','block-size');identity.append(element('span','블록 '+fmt(b.height)),size);heading.append(identity,pool);card.append(heading,element('p',fmt(b.nTx)+' transactions · '+duration(now-b.time)+' 전'),element('code',b.hash));blocks.append(card);}
+  if(!list.length)blocks.append(element('p',batch.waiting?'블록 크기·채굴 풀을 확인하고 있습니다.':'첫 블록 정보를 기다리고 있습니다.','empty'));
   const peers=find('peers-data');peers.replaceChildren();const peersList=sample('getpeerinfo').value||[];
   for(const p of peersList){const row=element('div',undefined,'peer-row');row.append(element('span',p.inbound?'IN':'OUT','direction'),element('code',p.addr),element('small',p.subver));peers.append(row);}
   if(!peersList.length)peers.append(element('p',ok?'현재 연결된 피어가 없습니다.':'Core 연결 후 피어가 표시됩니다.','empty'));
@@ -64,7 +96,7 @@ const NodeView=(()=>{
   catch(e){if(current===generation){transportFailed=true;updateStatus();}}
   finally{clearTimeout(timeout);if(controller===request)controller=null;if(current===generation)timer=setTimeout(()=>refresh(current),2000);}
  }
- function start(){stop();lastSnapshot=null;transportFailed=false;updateStatus();watchdog=setInterval(updateStatus,1000);refresh(generation);}
+ function start(){stop();recentBlocks=RecentBlocks.create();lastSnapshot=null;transportFailed=false;updateStatus();watchdog=setInterval(updateStatus,1000);refresh(generation);}
  function stop(){clearTimeout(timer);clearInterval(watchdog);generation++;controller?.abort();controller=null;}
  function updateElectrumNotice(){
   if(!endpointInfo)return;
@@ -76,14 +108,13 @@ const NodeView=(()=>{
   bar.value=p.percent===null?0:p.percent;
   bar.setAttribute('aria-valuetext',p.text);find('electrum-progress-value').textContent=p.text;
   find('electrum-progress-state').textContent=p.state;
-  const detail=ElectrsStatus.rows(status);
-  find('electrum-progress-note').textContent=I18n.text(detail[2][1])+' · '+I18n.text(detail[3][1]);
+  const note=ElectrsStatus.note(status);find('electrum-progress-note').textContent=note;find('electrum-progress-note').hidden=!note;
   updateElectrumNotice();
  }
  async function refreshElectrum(current){
   const request=new AbortController();controller=request;const timeout=setTimeout(()=>request.abort(),8000);
   try{const s=await api('/dashboard',request.signal);if(current===generation)renderElectrumProgress(s.host?.electrs,s.rpc?.getblockchaininfo?.value?.initialblockdownload);}
-  catch(e){if(current===generation){electrsSnapshot={...electrsSnapshot,state:'STALE',wallet_ready:false};find('electrum-progress-state').textContent='상태 갱신 지연';find('electrum-progress-note').textContent='이전에 확인한 진행률 · 자동 재확인';updateElectrumNotice();}}
+  catch(e){if(current===generation){electrsSnapshot={...electrsSnapshot,state:'STALE',wallet_ready:false};find('electrum-progress-state').textContent='응답 대기';find('electrum-progress-note').textContent='이전에 확인한 진행률 · 자동 재확인';find('electrum-progress-note').hidden=false;updateElectrumNotice();}}
   finally{clearTimeout(timeout);if(controller===request)controller=null;if(current===generation)timer=setTimeout(()=>refreshElectrum(current),2000);}
  }
  async function connection(selected='lan'){
