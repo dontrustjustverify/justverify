@@ -43,7 +43,7 @@ def build(source,output,expected,binary=None,binary_sha256=None):
       if not binary.is_file() or binary.is_symlink() or hashlib.sha256(binary.read_bytes()).hexdigest()!=binary_sha256:raise ValueError('application binary hash mismatch')
       run(['/usr/bin/install','-m','0755',str(binary),str(root/'opt/justverify/bin/justverify')])
      (root/'etc/justverify-factory.json').write_text(json.dumps(layout,indent=2)+'\n')
-     for name in ('factory_volume.py','storage_service.py'):
+     for name in ('factory_volume.py','storage_service.py','chain_reset.py','node_ready.py'):
       run(['/usr/bin/install','-m','0755',str(ROOT/'scripts'/name),str(root/'opt/justverify/scripts'/name)])
      run(['/usr/bin/install','-m','0755',str(ROOT/'scripts/profile_helper.py'),str(root/'usr/libexec/justverify-profile')])
      run(['/usr/bin/install','-m','0755',str(ROOT/'image/firstboot.sh'),str(root/'opt/justverify/scripts/firstboot.sh')])

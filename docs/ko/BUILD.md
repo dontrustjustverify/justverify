@@ -4,7 +4,7 @@
 
 GitHub에서 JustVerify·electrs·mempool 소스와 잠금된 라이브러리를 받아 컴파일하고 Raspberry Pi 5 ARM64 설치 이미지를 만드는 안내입니다. Bitcoin Core는 **공식 서명과 체크섬을 검증한 바이너리**를 사용하며 Pi OS·Debian 패키지도 upstream 배포물을 사용합니다. OS의 모든 패키지와 Bitcoin Core까지 소스에서 컴파일하는 과정은 아닙니다.
 
-릴리스 소스는 `v0.1.0-beta4` 태그를 사용하세요. 최신 변경을 빌드하려면 `main`의 commit을 기록하세요. 직접 만든 이미지는 자체 체크섬을 가지며 프로젝트 서명을 이어받지 않습니다. OS 이미지 전체의 바이트 단위 재현성은 아직 입증되지 않았습니다.
+beta8은 릴리스에 포함된 소스 압축파일을 사용하세요. 최신 변경을 빌드하려면 `main`의 commit을 기록하세요. 직접 만든 이미지는 자체 체크섬을 가지며 프로젝트 서명을 이어받지 않습니다. OS 이미지 전체의 바이트 단위 재현성은 아직 입증되지 않았습니다.
 
 ## 1. 격리된 Linux 빌드 환경 준비
 
@@ -38,17 +38,25 @@ apt에서 고정한 Node/MariaDB 버전을 찾지 못하면 중단합니다. 정
 
 ## 2. 소스와 컴파일러 받기
 
+beta8 소스 압축파일과 검증한 체크섬 파일이 있는 폴더에서 아래 블록을 시작하세요. 먼저 [서명 검증](../INSTALL.md)을 확인하세요. 이 압축파일은 beta8 릴리스의 정확한 소스이며 GitHub main과 다를 수 있습니다. 로컬 Git 기준점은 이후 빌드 변경을 기록하기 위한 것입니다.
+
 ```bash
+export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-beta8-source.tar.gz"
+test -f "$JV_SOURCE_ARCHIVE"
+sha256sum --ignore-missing -c justverify-0.1.0-beta8-SHA256SUMS
 export JV_WORK="$(mktemp -d /var/tmp/justverify-source.XXXXXX)"
 chmod 755 "$JV_WORK"
-git clone --branch main --single-branch \
-  https://github.com/dontrustjustverify/justverify.git "$JV_WORK/repo"
+mkdir "$JV_WORK/repo"
+tar -xzf "$JV_SOURCE_ARCHIVE" --strip-components=1 -C "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0-beta4-local1
+export JV_TAG=0.1.0-beta8-local1
+git init -b local-build
+git add .
+git -c user.name='Local builder' -c user.email='builder@localhost' commit -qm 'Imported verified source archive'
 mkdir -p .state/build-guide docs/evidence
+sha256sum "$JV_SOURCE_ARCHIVE" > .state/build-guide/source-archive.sha256
 git rev-parse HEAD > .state/build-guide/source-commit.txt
-git switch --detach "$(git rev-parse HEAD)"
 curl --proto '=https' --tlsv1.2 -fsSLo "$JV_WORK/rustup-init.sh" https://sh.rustup.rs
 sh "$JV_WORK/rustup-init.sh" -y --profile minimal --default-toolchain none
 source "$HOME/.cargo/env"
@@ -212,14 +220,14 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | 산출물 | 용도 |
 |---|---|
-| `dist/justverify-0.1.0-beta4-local1.img` | balenaEtcher에서 선택할 압축 해제 이미지 |
-| `dist/justverify-0.1.0-beta4-local1.img.xz` | 보관·다운로드용 압축 이미지 |
-| `dist/justverify-0.1.0-beta4-local1-SHA256SUMS` | 두 파일의 체크섬; `dist/`에서 검증 |
-| `dist/justverify-0.1.0-beta4-local1.layout.json` / `.size-audit.json` | 파티션 구성·용량 분석 |
+| `dist/justverify-0.1.0-beta8-local1.img` | balenaEtcher에서 선택할 압축 해제 이미지 |
+| `dist/justverify-0.1.0-beta8-local1.img.xz` | 보관·다운로드용 압축 이미지 |
+| `dist/justverify-0.1.0-beta8-local1-SHA256SUMS` | 두 파일의 체크섬; `dist/`에서 검증 |
+| `dist/justverify-0.1.0-beta8-local1.layout.json` / `.size-audit.json` | 파티션 구성·용량 분석 |
 | `dist/os-packages.tsv` | 이미지 안에 실제 설치한 OS 패키지 |
 | `.state/build-guide/` | 소스 commit·수정 내역·로그·로컬 구성요소 검증 근거 |
 
-`JV_TAG`를 바꾸면 파일명도 바뀝니다. SHA256은 파일 무결성 검사이며 배포자 서명이 아닙니다. 이 예제는 서명되지 않은 로컬 이미지를 만듭니다. 다른 사람에게 재배포하려면 정확한 소스·수정 내역, 각 구성요소의 대응 소스·라이선스, 지원 범위·시험 보고서와 자체 서명 절차를 갖춰야 합니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)와 [릴리스의 대응 소스 자료](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta4)를 참고하세요. 수정한 파일에 공식 릴리스 서명을 재사용할 수 없습니다.
+`JV_TAG`를 바꾸면 파일명도 바뀝니다. SHA256은 파일 무결성 검사이며 배포자 서명이 아닙니다. 이 예제는 서명되지 않은 로컬 이미지를 만듭니다. 다른 사람에게 재배포하려면 정확한 소스·수정 내역, 각 구성요소의 대응 소스·라이선스, 지원 범위·시험 보고서와 자체 서명 절차를 갖춰야 합니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)와 [릴리스의 대응 소스 자료](https://github.com/dontrustjustverify/justverify/releases)를 참고하세요. 수정한 파일에 공식 릴리스 서명을 재사용할 수 없습니다.
 
 [설치 안내](../INSTALL.md)에 따라 Etcher의 검증을 켜고 기록하세요. 실제 macOS/Etcher 2.1.6 시험에서는 XZ 직접 입력이 체크섬 검증에 실패했고 **압축을 푼 IMG** 기록은 통과했습니다. 이후 실제 Pi 5에서 최초 설정, Core·electrs·Tor, 3006 포트 mempool, LAN·onion 지갑, 재부팅·복구를 확인합니다. 실행하지 않은 검증은 `NOT RUN`/`BLOCKED`로 기록하세요. 남은 배포 기준은 [TESTING.md](../TESTING.md)에 있습니다.
 

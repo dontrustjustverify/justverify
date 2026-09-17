@@ -14,38 +14,159 @@ import re
 import signal
 import socket
 import subprocess
+import threading
 import time
 import urllib.request
 
 STOP = False
+LOG_BYTES = 2 * 1024 * 1024
+
+
+class BoundedLog:
+    """Drain child output continuously; retain at most three 2 MiB segments."""
+    def __init__(self, path, stream):
+        self.path, self.stream = path, stream
+        self.thread = threading.Thread(target=self.run, daemon=True)
+        self.thread.start()
+
+    def run(self):
+        try:
+            # A previous release may have left a large log. Keep only its tail.
+            if self.path.exists() and self.path.stat().st_size > LOG_BYTES:
+                with self.path.open('rb') as source:
+                    source.seek(-LOG_BYTES, os.SEEK_END)
+                    tail = source.read()
+                self.path.write_bytes(tail)
+            with self.path.open('ab') as output:
+                while chunk := self.stream.read1(16384):
+                    if output.tell() + len(chunk) > LOG_BYTES:
+                        output.close()
+                        oldest = self.path.with_name(self.path.name + '.2')
+                        oldest.unlink(missing_ok=True)
+                        previous = self.path.with_name(self.path.name + '.1')
+                        if previous.exists(): previous.replace(oldest)
+                        self.path.replace(previous)
+                        output = self.path.open('ab')
+                    output.write(chunk)
+                    output.flush()
+                output.close()
+        except OSError:
+            # Disk/log errors must not block the child on a full pipe.
+            while self.stream.read(16384): pass
+        finally:
+            self.stream.close()
+
+    def close(self):
+        self.thread.join(timeout=5)
+
+
+def profile_folder(data, profile):
+    # Root-generated data_id survives executable-version changes. Legacy
+    # profiles retain their original path until the next managed activation.
+    identity = profile.get('data_id', profile['version'] + ('-watch-only' if profile.get('watch_only') else ''))
+    if not isinstance(identity, str) or not re.fullmatch(r'\d+\.\d+(?:\.\d+)?(?:-watch-only)?', identity):
+        raise ValueError('Invalid profile storage identity')
+    if identity.endswith('-watch-only') != bool(profile.get('watch_only',False)):
+        raise ValueError('Profile storage mode mismatch')
+    folder = data / (profile['network'] + '-' + identity)
+    folder.mkdir(mode=0o700, exist_ok=True)
+    if folder.is_symlink(): raise ValueError('Linked explorer storage refused')
+    for name in ('mysql', 'cache', 'backend.log', 'database.log'):
+        for suffix in ('', '.1', '.2'):
+            if (folder / (name + suffix)).is_symlink(): raise ValueError('Linked explorer data refused')
+    return folder
+
+
+def trim_cache(cache):
+    # Only disposable RBF snapshots; never SQL, chain, wallet or other files.
+    for name in ('rbfcache.json', 'tmp-rbfcache.json'):
+        path = cache / name
+        if path.is_symlink(): raise ValueError('Linked explorer cache refused')
+        if path.is_file() and path.stat().st_size > 64 * 1024 * 1024: path.unlink()
+        for old in cache.glob(name + '.oversized-*'):
+            if re.fullmatch(re.escape(name) + r'\.oversized-\d+', old.name) and old.is_file() and not old.is_symlink(): old.unlink()
+
+
+def validate_block_cache(cache, profile, chain):
+    """Do not reopen a saved tip from before a reset or incompatible fork."""
+    path = cache / 'cache.json'
+    if not path.exists(): return
+    if path.is_symlink(): raise ValueError('Linked explorer cache refused')
+    invalid = path.stat().st_size > 64 * 1024 * 1024
+    tip = None
+    if not invalid:
+        try:
+            saved = json.loads(path.read_bytes())
+            blocks = saved['blocks']
+            if not isinstance(blocks, list): raise ValueError('Invalid cached blocks')
+            tip = max(blocks, key=lambda block: block['height']) if blocks else None
+            if tip:
+                height, digest = tip['height'], tip['id']
+                if type(height) is not int or height < 0 or not isinstance(digest,str) or not re.fullmatch(r'[0-9a-f]{64}',digest): raise ValueError('Invalid cached tip')
+                invalid = height > chain['blocks']
+        except (ValueError, KeyError, TypeError):
+            invalid = True
+    if not invalid and tip:
+        # RPC failures leave the cache untouched and defer startup.
+        invalid = rpc(profile, 'getblockhash', [tip['height']]) != tip['id']
+    if invalid:
+        names = ['cache.json','tmp-cache.json','rbfcache.json','tmp-rbfcache.json']
+        names += [prefix+str(n)+'.json' for prefix in ('cache','tmp-cache') for n in range(1,25)]
+        paths = [cache / name for name in names]
+        if any(p.is_symlink() for p in paths): raise ValueError('Linked explorer cache refused')
+        for p in paths: p.unlink(missing_ok=True)
 
 def stop(*_):
     global STOP
     STOP = True
 
 
-def rpc(profile, method):
+def rpc(profile, method, params=None):
     cookie = Path(profile['cookie']).read_bytes().strip()
     request = urllib.request.Request('http://127.0.0.1:' + str(profile['rpc_port']),
-        json.dumps({'id': 1, 'method': method, 'params': []}).encode(),
+        json.dumps({'id': 1, 'method': method, 'params': params or []}).encode(),
         {'Authorization': 'Basic ' + base64.b64encode(cookie).decode(), 'Content-Type': 'application/json'})
-    with urllib.request.urlopen(request, timeout=8) as response:
+    with urllib.request.urlopen(request, timeout=3) as response:
         result = json.load(response)
     if result.get('error'):
         raise ValueError('Core RPC not ready')
     return result['result']
 
 
-def electrs_header(port):
-    with socket.create_connection(('127.0.0.1', port), 3) as sock:
-        sock.settimeout(5)
-        sock.sendall(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n')
-        header = json.loads(sock.makefile('rb').readline())['result']
-    tip = hashlib.sha256(hashlib.sha256(bytes.fromhex(header['hex'])).digest()).digest()[::-1].hex()
-    return header['height'], tip
+def electrs_status(port):
+    deadline = time.monotonic() + 3
+    with socket.create_connection(('127.0.0.1', port), .5) as sock:
+        sock.sendall(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n{"id":2,"method":"server.ping","params":[]}\n')
+        replies, pending, size = {}, b'', 0
+        while len(replies) < 2:
+            left = deadline - time.monotonic()
+            if left <= 0: raise TimeoutError('Electrum response pending')
+            sock.settimeout(left)
+            chunk = sock.recv(4096)
+            if not chunk: raise OSError('Electrum disconnected')
+            size += len(chunk)
+            if size > 16384: raise ValueError('Electrum response exceeds limit')
+            pending += chunk
+            while b'\n' in pending:
+                line, pending = pending.split(b'\n', 1)
+                value = json.loads(line)
+                if not isinstance(value, dict): raise ValueError('Invalid Electrum reply')
+                if value.get('id') in (1, 2):
+                    if value['id'] in replies: raise ValueError('Duplicate Electrum reply')
+                    replies[value['id']] = value
+        header = replies[1]['result']
+        if not isinstance(header, dict) or not isinstance(header.get('hex'), str): raise ValueError('Invalid Electrum header')
+        raw = bytes.fromhex(header['hex'])
+        if len(raw) != 80 or type(header['height']) is not int or header['height'] < 0: raise ValueError('Invalid Electrum header')
+        ping = replies[2]
+        ready = 'result' in ping and ping['result'] is None and not ping.get('error')
+        if not ready and ping.get('error') != {'code':-32603,'message':'unavailable index'}: raise ValueError('Invalid Electrum readiness reply')
+    tip = hashlib.sha256(hashlib.sha256(raw).digest()).digest()[::-1].hex()
+    return {'height':header['height'], 'tip':tip, 'ready':ready}
 
 
 def atomic(path, data):
+    data = {**data, 'updated':time.time()}
     tmp = path.with_suffix('.tmp')
     tmp.write_text(json.dumps(data, indent=2) + '\n')
     tmp.chmod(0o600)
@@ -78,36 +199,24 @@ def main():
             assert network in ('main', 'test', 'testnet4', 'signet', 'regtest')
             chain = rpc(profile, 'getblockchaininfo')
             assert chain['chain'] == network, 'Selected network must match the actual Core chain'
-            indexes = rpc(profile, 'getindexinfo')
-            reason = 'core_sync' if chain['initialblockdownload'] else 'txindex'
-            if chain['initialblockdownload'] or not indexes.get('txindex', {}).get('synced'):
-                atomic(status, {'state': reason, 'network': network, 'blocks': chain['blocks'], 'headers': chain['headers'], 'ibd': chain['initialblockdownload']})
-                time.sleep(5)
-                continue
-            electrs_height, tip = electrs_header(a.electrum_port)
-            if tip != chain['bestblockhash'] or electrs_height != chain['blocks']:
-                atomic(status, {'state': 'electrs_sync', 'network': network, 'blocks': chain['blocks'], 'electrs_height': electrs_height})
-                time.sleep(5)
-                continue
+            # Start HTTP and its native retrying Electrum client independently
+            # of index completion. Address queries may still be unavailable.
             atomic(status, {'state':'starting', 'network':network})
-            folder = a.data / (network + '-' + version + ('-watch-only' if profile.get('watch_only') else ''))
-            folder.mkdir(mode=0o700, exist_ok=True)
-            assert not folder.is_symlink()
+            folder = profile_folder(a.data, profile)
             db = folder / 'mysql'
             db.mkdir(mode=0o700, exist_ok=True)
             cache = folder / 'cache'
             cache.mkdir(mode=0o700, exist_ok=True)
-            # Oversized disposable cache is retained for diagnosis, not erased.
-            for name in ('rbfcache.json', 'tmp-rbfcache.json'):
-                path = cache / name
-                if path.is_file() and path.stat().st_size > 64 * 1024 * 1024:
-                    path.rename(cache / (name + '.oversized-' + str(time.time_ns())))
+            trim_cache(cache)
+            validate_block_cache(cache, profile, chain)
             sql_socket = a.runtime / 'mysql.sock'
             if not (db / 'mysql').is_dir():
                 subprocess.run(['/usr/bin/mariadb-install-db', '--no-defaults', '--datadir=' + str(db), '--auth-root-authentication-method=socket', '--auth-root-socket-user=justverify', '--skip-test-db'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            def start(command, name):
-                log = (folder / name).open('ab'); logs.append(log)
-                process = subprocess.Popen(command, stdout=log, stderr=log); processes.append(process)
+            def start(command, name, **kwargs):
+                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, **kwargs)
+                logs.append(BoundedLog(folder / name, process.stdout))
+                processes[:] = [p for p in processes if p.poll() is None]
+                processes.append(process)
                 return process
             database = start(['/usr/sbin/mariadbd', '--no-defaults', '--datadir=' + str(db), '--socket=' + str(sql_socket), '--pid-file=' + str(a.runtime / 'mysql.pid'), '--skip-networking', '--innodb-buffer-pool-size=128M', '--max-connections=20', '--innodb-log-file-size=32M'], 'database.log')
             sql = ['/usr/bin/mariadb', '--no-defaults', '--socket=' + str(sql_socket), '--user=justverify']
@@ -127,25 +236,59 @@ def main():
                 'STATISTICS': {'ENABLED':True}, 'FIAT_PRICE': {'ENABLED':False}, 'LIGHTNING': {'ENABLED':False}, 'SYSLOG': {'ENABLED':False}, 'MAXMIND': {'ENABLED':False}, 'REPLICATION': {'ENABLED':False}, 'MEMPOOL_SERVICES': {'ACCELERATIONS':False}}
             atomic(a.runtime / 'config.json', conf)
             env = dict(os.environ, MEMPOOL_CONFIG_FILE=str(a.runtime / 'config.json'))
-            backend_log = (folder / 'backend.log').open('ab'); logs.append(backend_log)
-            backend = subprocess.Popen(['/usr/bin/node', '--max-old-space-size=1024', str(a.bundle / 'backend/index.js')], env=env, cwd=a.bundle / 'backend', stdout=backend_log, stderr=backend_log); processes.append(backend)
+            command = ['/usr/bin/node', '--max-old-space-size=1024', str(a.bundle / 'backend/index.js')]
+            backend = start(command, 'backend.log', env=env, cwd=a.bundle / 'backend')
+            backend_since, retry_at, retry_delay = time.monotonic(), 0, 5
             atomic(status, {'state':'starting', 'network':network})
             while not STOP and a.profile.read_bytes() == raw:
-                if backend.poll() is not None or database.poll() is not None: raise RuntimeError('Explorer process stopped')
+                if database.poll() is not None: raise RuntimeError('Database stopped')
+                if backend.poll() is not None:
+                    if not retry_at:
+                        if time.monotonic() - backend_since >= 60: retry_delay = 5
+                        retry_at = time.monotonic() + retry_delay
+                        retry_delay = min(retry_delay * 2, 60)
+                        atomic(status, {'state':'waiting', 'network':network, 'api_available':False, 'reason':'backend_restart'})
+                    if time.monotonic() >= retry_at:
+                        trim_cache(cache)
+                        try: validate_block_cache(cache, profile, rpc(profile,'getblockchaininfo'))
+                        except (OSError, ValueError, KeyError):
+                            retry_at = time.monotonic() + 5
+                            time.sleep(.5)
+                            continue
+                        logs[:] = [log for log in logs if log.thread.is_alive()]
+                        backend = start(command, 'backend.log', env=env, cwd=a.bundle / 'backend')
+                        backend_since, retry_at = time.monotonic(), 0
+                    time.sleep(.5)
+                    continue
+                available = False
+                observation = {'state':'waiting', 'network':network, 'api_available':False}
                 try:
                     with urllib.request.urlopen(f'http://127.0.0.1:{a.api_port}/api/v1/backend-info', timeout=3) as response:
                         info = json.load(response)
+                    available = True
+                    observation.update(api_available=True, version=info.get('version'), core_version=version)
                     chain = rpc(profile, 'getblockchaininfo')
-                    if chain['chain'] != network: raise ValueError('Core chain changed')
+                    if chain['chain'] != network:
+                        available = False
+                        raise ValueError('Core chain changed')
+                    observation.update(blocks=chain['blocks'], headers=chain['headers'], ibd=chain['initialblockdownload'])
                     indexes = rpc(profile, 'getindexinfo')
+                    phase = 'core_sync' if chain['initialblockdownload'] else ('txindex' if not indexes.get('txindex', {}).get('synced') else 'electrs_waiting')
+                    observation.update(state=phase, txindex_enabled='txindex' in indexes)
+                    electrs = electrs_status(a.electrum_port)
+                    observation.update(electrs_height=electrs['height'], electrs_ready=electrs['ready'])
+                    matches_core = electrs['tip'] == chain['bestblockhash'] and electrs['height'] == chain['blocks']
+                    if phase == 'electrs_waiting':
+                        observation['state'] = 'electrs_finalizing' if matches_core and not electrs['ready'] else 'electrs_sync'
                     with urllib.request.urlopen(f'http://127.0.0.1:{a.api_port}/api/v1/blocks/tip/hash', timeout=3) as response:
                         indexed_tip = response.read().decode().strip()
-                    electrs_height, electrs_tip = electrs_header(a.electrum_port)
-                    indexes_match = indexed_tip == electrs_tip == chain['bestblockhash'] and electrs_height == chain['blocks']
-                    state = 'core_sync' if chain['initialblockdownload'] else ('txindex' if not indexes.get('txindex', {}).get('synced') else ('running' if indexes_match else 'electrs_sync'))
-                    atomic(status, {'state':state, 'network':network, 'version':info.get('version'), 'core_version':version, 'blocks':chain['blocks'], 'headers':chain['headers'], 'ibd':chain['initialblockdownload']})
+                    if phase == 'electrs_waiting' and matches_core and electrs['ready']:
+                        observation['state'] = 'running' if indexed_tip == chain['bestblockhash'] else 'mempool_sync'
                 except (OSError, ValueError, KeyError):
-                    atomic(status, {'state':'waiting', 'network':network})
+                    # Preserve the known phase; one slow dependency must not
+                    # revoke the already-listening backend's HTTP/WebSocket.
+                    pass
+                atomic(status, {**observation, 'api_available':available})
                 time.sleep(3)
             atomic(status, {'state':'waiting'})
         except Exception as error:

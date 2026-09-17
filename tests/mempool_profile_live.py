@@ -28,9 +28,10 @@ try:
  result['checks'].append('mismatched actual Core chain rejected before SQL/data creation')
  path.write_text(json.dumps(profile))
  wait(lambda:status()['state']=='running')
- old=a.state/'data/regtest-31.1/mysql';assert (old/'mysql').is_dir()
- path.write_text(json.dumps({**profile,'watch_only':True}))
- new=a.state/'data/regtest-31.1-watch-only/mysql'
+ identity=profile.get('data_id',profile['version'])
+ old=a.state/('data/regtest-'+identity+'/mysql');assert (old/'mysql').is_dir()
+ path.write_text(json.dumps({**profile,'watch_only':True,'data_id':identity+'-watch-only'}))
+ new=a.state/('data/regtest-'+identity+'-watch-only/mysql')
  wait(lambda:(new/'mysql').is_dir())
  wait(lambda:status()['state']=='running')
  assert (old/'mysql').is_dir() and old.stat().st_ino!=new.stat().st_ino

@@ -6,8 +6,9 @@ import contextlib
 import ipaddress
 import json
 import mimetypes
+import time
 from pathlib import Path
-from aiohttp import ClientSession, ClientTimeout, WSMsgType, web
+from aiohttp import ClientError, ClientSession, ClientTimeout, WSMsgType, web
 
 LAN = tuple(ipaddress.ip_network(n) for n in ('127.0.0.0/8','10.0.0.0/8','172.16.0.0/12','192.168.0.0/16','169.254.0.0/16','::1/128','fc00::/7','fe80::/10'))
 
@@ -35,6 +36,13 @@ def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authoriz
     def state():
         try: return json.loads((runtime/'status.json').read_text())
         except (OSError, ValueError): return {'state':'waiting'}
+    def backend_available():
+        value = state()
+        # Readiness of the HTTP server is independent of Electrum catch-up.
+        # A dead supervisor must not leave an indefinitely fresh running flag.
+        updated = value.get('updated', 0)
+        return (value.get('api_available', value.get('state') == 'running') is True
+                and isinstance(updated, (int, float)) and 0 <= time.time() - updated <= 30)
     async def status(request): return web.json_response(state(), headers={'Cache-Control':'no-store'})
     async def config(request):
         value = json.loads((Path(__file__).parent/'mempool_frontend.json').read_text())
@@ -48,8 +56,12 @@ def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authoriz
         value['NGINX_PORT']=str(request.url.port)
         return web.Response(text='window.__env=Object.assign(window.__env||{},'+json.dumps(value)+');', content_type='application/javascript', headers={'Cache-Control':'no-store'})
     async def websocket(request):
-        if state().get('state') != 'running': raise web.HTTPServiceUnavailable(text='Explorer is preparing the local node')
-        async with app['client'].ws_connect(backend+'/', heartbeat=30, max_msg_size=16*1024*1024) as upstream:
+        if not backend_available(): raise web.HTTPServiceUnavailable(text='Explorer is preparing the local node')
+        try:
+            upstream = await app['client'].ws_connect(backend+'/', heartbeat=30, max_msg_size=16*1024*1024)
+        except (ClientError, asyncio.TimeoutError):
+            raise web.HTTPServiceUnavailable(text='Explorer backend is reconnecting')
+        async with upstream:
             downstream=web.WebSocketResponse(heartbeat=30, max_msg_size=1024*1024)
             await downstream.prepare(request)
             if streams is not None: streams.add(downstream)
@@ -74,14 +86,17 @@ def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authoriz
                 if streams is not None: streams.discard(downstream)
             return downstream
     async def api(request):
-        if state().get('state') != 'running':
+        if not backend_available():
             return web.json_response({'error':'Local explorer is preparing','node':state()},status=503)
         path=request.path
         if not path.startswith('/api/v1/'): path='/api/v1/'+path[len('/api/'):]
         # No external fallback or arbitrary host/header forwarding.
-        async with app['client'].request(request.method, backend+path, params=request.query, data=await request.read(), headers={'Content-Type':request.headers.get('Content-Type','application/json')}, allow_redirects=False) as response:
-            headers={name:response.headers[name] for name in ('Content-Type','X-Total-Count','Cache-Control') if name in response.headers}
-            return web.Response(body=await response.read(),status=response.status,headers=headers)
+        try:
+            async with app['client'].request(request.method, backend+path, params=request.query, data=await request.read(), headers={'Content-Type':request.headers.get('Content-Type','application/json')}, allow_redirects=False) as response:
+                headers={name:response.headers[name] for name in ('Content-Type','X-Total-Count','Cache-Control') if name in response.headers}
+                return web.Response(body=await response.read(),status=response.status,headers=headers)
+        except (ClientError, asyncio.TimeoutError):
+            return web.json_response({'error':'Explorer backend is reconnecting'}, status=503, headers={'Cache-Control':'no-store'})
     async def source_index(request):
         names=('mempool-3.3.1.tar.gz','justverify.patch','build_mempool.sh','frontend-config.json','gbt-Cargo.lock','gbt-package-lock.json','BUILD.md','LICENSE','COPYING.md')
         return web.Response(text='<h1>Mempool 3.3.1 corresponding source</h1><p>Upstream source, JustVerify modifications and build instructions. Licensed under AGPL-3.0; upstream notices apply.</p><ul>'+''.join('<li><a href="/source/'+name+'">'+name+'</a></li>' for name in names)+'</ul>',content_type='text/html')

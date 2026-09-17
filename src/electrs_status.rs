@@ -34,7 +34,7 @@ pub fn start(port: u16, metrics_port: u16) -> Result<Monitor> {
     let client = reqwest::blocking::Client::builder()
         .no_proxy()
         .redirect(reqwest::redirect::Policy::none())
-        .timeout(Duration::from_secs(1))
+        .timeout(Duration::from_secs(3))
         .build()?;
     let metrics = status.clone();
     thread::spawn(move || {
@@ -219,7 +219,18 @@ impl Status {
         let chain = core.rpc.get("getblockchaininfo");
         let core_fresh = chain.is_some_and(|s| fresh(s, at));
         let chain_value = chain.map(|s| &s.value).unwrap_or(&Value::Null);
-        let (source, sample) = if metrics_fresh {
+        let matches_core = core_fresh
+            && rpc_fresh
+            && chain_value["initialblockdownload"] == false
+            && self.electrum.value["height"].as_u64().is_some()
+            && self.electrum.value["height"] == chain_value["blocks"]
+            && self.electrum.value["tip"] == chain_value["bestblockhash"];
+        // A functional Electrum reply matching Core is stronger evidence than
+        // a metrics scrape taken just before the last block was indexed.
+        let confirmed = matches_core && self.electrum.value["index_ready"] == true;
+        let (source, sample) = if confirmed {
+            ("electrum", &self.electrum)
+        } else if metrics_fresh {
             ("metrics", &self.progress)
         } else if rpc_fresh {
             ("electrum", &self.electrum)
@@ -228,19 +239,12 @@ impl Status {
         } else {
             ("electrum", &self.electrum)
         };
-        let matches_core = core_fresh
-            && rpc_fresh
-            && chain_value["initialblockdownload"] == false
-            && self.electrum.value["height"].as_u64().is_some()
-            && self.electrum.value["height"] == chain_value["blocks"]
-            && self.electrum.value["tip"] == chain_value["bestblockhash"];
         let state = if metrics_fresh && self.progress.value["db_error"] == true {
             "INDEX_ERROR"
-        } else if matches_core
-            && self.electrum.value["index_ready"] == true
-            && (!metrics_fresh || self.progress.value["height"] == self.electrum.value["height"])
-        {
+        } else if confirmed {
             "READY"
+        } else if matches_core && self.electrum.value["index_ready"] == false {
+            "FINALIZING"
         } else if core_fresh && chain_value["initialblockdownload"] == true {
             "CORE_SYNCING"
         } else if rpc_fresh && self.electrum.value["index_ready"] == false
@@ -262,7 +266,8 @@ impl Status {
             "STARTING"
         };
         json!({"state":state,"height":sample.value["height"],"height_source":source,
-            "target_height":chain_value["blocks"].as_u64().map(|blocks| blocks.max(chain_value["headers"].as_u64().unwrap_or(blocks))),
+            "target_height":chain_value["blocks"].as_u64().map(|blocks| if chain_value["initialblockdownload"] == true { blocks.max(chain_value["headers"].as_u64().unwrap_or(blocks)) } else { blocks }),
+            "core_headers":chain_value["headers"],
             "core_ibd":chain_value["initialblockdownload"],"target_updated":chain.map_or(0,|s|s.updated),"target_stale":!core_fresh,
             "height_updated":sample.updated,"height_stale":!fresh(sample,at),
             "served_height":self.electrum.value["height"],"tip":self.electrum.value["tip"],

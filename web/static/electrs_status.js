@@ -1,7 +1,7 @@
 'use strict';
 // Progress is an indexer observation; wallet readiness additionally requires Electrum RPC.
 const ElectrsStatus=(()=>{
- const labels={READY:'준비 완료',INDEXING:'인덱싱 중',INDEX_ERROR:'인덱스 오류 · 점검 필요',CORE_SYNCING:'Core 동기화 대기',VERIFYING:'연결 준비 확인 중',UNAVAILABLE:'연결 확인 필요',STALE:'응답 대기',STARTING:'첫 응답 대기'};
+ const labels={READY:'동기화 완료',FINALIZING:'인덱스 정리 중',INDEXING:'인덱싱 중',INDEX_ERROR:'인덱스 오류 · 점검 필요',CORE_SYNCING:'Core 동기화 대기',VERIFYING:'연결 준비 확인 중',UNAVAILABLE:'연결 확인 필요',STALE:'응답 대기',STARTING:'첫 응답 대기'};
  function ready(status,at){return status.wallet_ready===true&&status.state==='READY'&&!status.height_stale&&!status.target_stale&&status.rpc_updated>0&&status.rpc_updated<=at&&at-status.rpc_updated<=15&&status.height_updated>0&&at-status.height_updated<=15;}
  function progress(status={},at=Date.now()/1000){
   const valid=Number.isSafeInteger(status.height)&&status.height>=0&&Number.isSafeInteger(status.target_height)&&status.target_height>0;

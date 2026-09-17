@@ -2,7 +2,8 @@
 """Real Core regtest responses, with delayed coinbase reads and a paused Core process."""
 import argparse,base64,hashlib,http.client,http.server,json,os,pathlib,signal,socket,subprocess,tempfile,threading,time
 R=pathlib.Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser();p.add_argument('--core',type=pathlib.Path,default=R/'.cache/core/31.1/arm64-apple-darwin/bitcoin-31.1/bin');p.add_argument('--binary',type=pathlib.Path,default=R/'target/debug/justverify');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--core',type=pathlib.Path,default=R/'.cache/core/31.1/arm64-apple-darwin/bitcoin-31.1/bin');p.add_argument('--binary',type=pathlib.Path,default=R/'target/debug/justverify');p.add_argument('--observations',type=pathlib.Path);a=p.parse_args()
+observations=[];started=time.monotonic();result_status='NOT COMPLETE'
 def port():
  with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
@@ -24,7 +25,11 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   with socket.socket(socket.AF_UNIX) as s:
    s.settimeout(1);s.connect(str(d/'manager.sock'));s.sendall(b'snapshot\n');raw=b''
    while b:=s.recv(65536):raw+=b
-   return json.loads(raw)
+   value=json.loads(raw)
+   if a.observations:
+    selected={name:{'value':value['rpc'].get(name,{}).get('value'),'error':bool(value['rpc'].get(name,{}).get('error'))} for name in ('getblockchaininfo','recentblocks')}
+    observations.append({'elapsed_ms':round((time.monotonic()-started)*1000),'snapshot':{'rpc':selected}})
+   return value
  def wait(predicate,seconds=20):
   end=time.monotonic()+seconds
   while time.monotonic()<end:
@@ -61,6 +66,7 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   s=snap();assert s['rpc']['getblockchaininfo']['error'];assert time.time()-s['rpc']['getblockchaininfo']['updated']>15;assert time.time()-s['host']['updated']<5;assert s['rpc']['getblockchaininfo']['value']['bestblockhash']==newtip
   core.send_signal(signal.SIGCONT);paused=False;s=wait(tip_is(newtip),20)
   assert not s['rpc']['getblockchaininfo']['error']
+  result_status='PASS'
   print(json.dumps({'status':'PASS','binary_sha256':hashlib.sha256(a.binary.read_bytes()).hexdigest(),'core':cli('-version').splitlines()[0],'network':'isolated regtest','chain_and_headers_seconds_while_coinbase_held':latency,'tip':newtip,'checks':['real forwarded RPC responses only','genesis and all six block sizes match serialized block bytes','block sizes retained across header refresh and keyed by hash after reorg','blocked coinbase read does not block chain/headers/network','hash-linked reorg replacement','Core SIGSTOP retains stale last value while host refreshes','SIGCONT restores real status without manager restart']}))
  finally:
   release.set()
@@ -68,3 +74,4 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   if manager and manager.poll() is None:manager.terminate();manager.wait(timeout=10)
   if core and core.poll() is None:cli('stop');core.wait(timeout=20)
   proxy.shutdown();proxy.server_close()
+  if a.observations:a.observations.write_text(json.dumps({'status':result_status,'observations':observations}))

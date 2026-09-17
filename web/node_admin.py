@@ -23,7 +23,8 @@ async def call(service, body):
                     return json.loads(data)
                 data.extend(chunk)
             raise ValueError('service response too large')
-        response = await asyncio.wait_for(read(), 300)
+        timeout = 2400 if body.get('method') in ('apply','recover') else 300
+        response = await asyncio.wait_for(read(), timeout)
         if not response.get('ok'):
             raise ValueError(response.get('error', '설정을 적용하지 못했습니다.'))
         return response['result']
@@ -37,7 +38,7 @@ async def call(service, body):
 def validate(service, body):
     schemas = {'state': {'method'}, 'recover': {'method'}, 'apply': {'method', 'token'}}
     schemas.update({'preview': {'method', 'values'}, 'preview_config': {'method', 'config'}} if service == 'policy' else {
-        'preview': {'method', 'version', 'network', 'watch_only'}, 'download': {'method', 'version'}})
+        'preview': {'method', 'version', 'network', 'watch_only'}, 'download': {'method', 'version'}, 'cancel': {'method','token'}})
     if not isinstance(body, dict) or not isinstance(body.get('method'), str) or set(body) != schemas.get(body['method']):
         raise ValueError('지원하지 않는 설정 요청입니다.')
     for key, value in body.items():

@@ -35,7 +35,7 @@ class Metrics(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             with urllib.request.urlopen('http://127.0.0.1:'+str(mp)+'/metrics',timeout=2) as r:raw=r.read(262144)
-            if metrics_delay.is_set():time.sleep(3)
+            if metrics_delay.is_set():time.sleep(5)
             self.send_response(200);self.end_headers();self.wfile.write(raw)
         except OSError:self.close_connection=True
 tcp=TCP(('127.0.0.1',0),Forward);metrics=http.server.ThreadingHTTPServer(('127.0.0.1',0),Metrics)

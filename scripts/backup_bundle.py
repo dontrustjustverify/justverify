@@ -294,6 +294,8 @@ class BackupBundle:
         instance = ready["instance"]
         if profile.get("version") != instance.get("core_version") or profile.get("network") != instance.get("network") or profile.get("watch_only", False) != instance.get("watch_only", False):
             raise ValueError("profile does not match registered instance")
+        identity=instance.get('data_id',instance['core_version']+('-watch-only' if instance.get('watch_only',False) else ''))
+        if profile.get('data_id',identity)!=identity:raise ValueError('profile storage identity differs from registration')
         if active.get("binary") != profile.get("binary") or active.get("binary_sha256") != ready.get("binary_sha256"):
             raise ValueError("active binary does not match registration")
         hashes = ready.get("configs")

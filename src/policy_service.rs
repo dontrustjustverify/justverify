@@ -17,6 +17,8 @@ use std::{
 struct Profile {
     #[serde(default, rename = "watch_only")]
     _watch_only: bool,
+    #[serde(default, rename = "data_id")]
+    _data_id: Option<String>,
     version: String,
     network: String,
     binary: PathBuf,
@@ -174,6 +176,10 @@ pub fn serve(profile_file: &Path, socket: &Path) -> Result<()> {
                 }
                 Request::Apply { token } => {
                     let _operation = crate::version_service::operation_lock()?;
+                    crate::version_service::ensure_no_reset()?;
+                    if fs::read(profile_file)? != bytes {
+                        bail!("profile changed while waiting for operation lock");
+                    }
                     let (plan, receipt, _) = pending
                         .remove(&token)
                         .context("preview missing or expired")?;
@@ -187,6 +193,10 @@ pub fn serve(profile_file: &Path, socket: &Path) -> Result<()> {
                 Request::PreviewConfig { .. } => unreachable!(),
                 Request::Recover => {
                     let _operation = crate::version_service::operation_lock()?;
+                    crate::version_service::ensure_no_reset()?;
+                    if fs::read(profile_file)? != bytes {
+                        bail!("profile changed while waiting for operation lock");
+                    }
                     Ok(serde_json::to_value(policy.recover(
                         &profile.managed_config,
                         &profile.binary,

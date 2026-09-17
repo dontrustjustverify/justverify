@@ -4,7 +4,7 @@ Save an encrypted configuration backup and its password off the NVMe before rein
 
 ## Restart and service problems
 
-Use **Settings → Troubleshoot** to inspect service state and errors. Core must finish IBD; electrs must match its tip; mempool also requires a synchronized txindex. A running service alone is not proof of readiness. After changing settings, wait for the affected services to restart and verify the new state.
+Use **Settings → Troubleshoot** to inspect service state and errors. Core-backed Mempool pages can open during Electrs indexing. Complete address/history features require the relevant indexes to catch up. A running service alone is not proof of readiness. After changing settings, wait for the affected services to restart and verify the new state.
 
 If Tor access times out, inspect device time, network and Tor status. Keep the existing onion identity and try again after connectivity recovers. Tor bootstrap 100% does not establish successful onion RPC access. Do not delete Tor keys, certificates or indexes to clear a connection error.
 
@@ -14,7 +14,7 @@ I2P starts only when selected in incoming or outgoing peer settings. SAM READY c
 
 ## Interrupted configuration changes
 
-The policy and version tools retain a change journal. Review the recovery operation in the TUI before applying it. Restore the previous configuration only when the binary, network and data profile still match. Do not roll an old binary back over a migrated database. Version transitions use separate data profiles.
+The policy and version tools retain a change journal. Review the recovery operation in the TUI before applying it. Restore the previous configuration only when the binary, network and data profile still match. Do not roll an old binary back over a migrated database. Changing Core versions resets the allowlisted chain and index files inside the current registered Core/electrs directories, after preparation and explicit confirmation. It requires a full IBD and index rebuild. Before deletion starts, recovery may restore the old execution state. After deletion starts, recovery only resumes the reviewed reset and retries the target version; it never automatically starts the old binary. Use Version change → Recover interrupted change (TUI: V → R). Keep the original volume, registration and target binary. Do not remove the startup guard. Wallet-bearing transitions are blocked before deletion.
 
 ## Storage and reinstallation
 
@@ -28,6 +28,6 @@ Supported older backups are validated against their exact historical Tor layout,
 
 ## Explorer database
 
-The bundled mempool service keeps separate SQL/cache directories per network, Core version and watch-only profile. A restart preserves its database. It reports waiting when Core/electrs is unavailable. Do not remove these directories or weaken permissions to force readiness.
+The bundled mempool service keeps separate SQL/cache directories per registered data identity, network and watch-only profile. A restart preserves its database. The backend retries independently of a healthy database. Logs retain up to three 2 MiB files per child. Oversized RBF snapshots above 64 MiB are disposable; older SQL/profile directories are not automatically deleted. Saved block-cache heights and hashes are checked against Core at startup; incompatible disposable snapshots are rebuilt after a reset or fork. Do not remove these directories or weaken permissions to force readiness.
 
 See [tested and pending behavior](TESTING.md) for the limits of this candidate.

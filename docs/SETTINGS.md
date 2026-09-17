@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta7.
+This guide applies to JustVerify 0.1.0-beta8.
 
 ## OP_RETURN and transaction policy
 

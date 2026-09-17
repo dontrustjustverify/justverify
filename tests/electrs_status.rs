@@ -24,7 +24,7 @@ fn readiness_requires_functional_index_and_matching_fresh_tip() {
     let mut status = Status::default();
     status.progress = sample(json!({"height":100,"db_error":false}));
     status.electrum = sample(json!({"height":100,"tip":"tip","index_ready":false}));
-    assert_eq!(status.view(&core(), 50001, 101)["state"], "INDEXING");
+    assert_eq!(status.view(&core(), 50001, 101)["state"], "FINALIZING");
     status.electrum.value["index_ready"] = json!(true);
     assert_eq!(status.view(&core(), 50001, 101)["state"], "READY");
     status.electrum.value["tip"] = json!("different-chain");
@@ -94,4 +94,27 @@ fn unknown_target_is_not_complete_and_ibd_uses_headers() {
         "50.00% (50/100)"
     );
     assert_eq!(view["wallet_ready"], false);
+}
+
+#[test]
+fn verified_rpc_tip_overrides_older_metrics_and_headers_after_ibd() {
+    let mut chain = core();
+    chain.rpc.get_mut("getblockchaininfo").unwrap().value["headers"] = json!(101);
+    let mut status = Status::default();
+    status.progress = sample(json!({"height":99,"db_error":false}));
+    status.electrum = sample(json!({"height":100,"tip":"tip","index_ready":true}));
+    status.electrum.updated = 101;
+    let view = status.view(&chain, 50001, 102);
+    assert_eq!(view["state"], "READY");
+    assert_eq!(view["height"], 100);
+    assert_eq!(view["target_height"], 100);
+    assert_eq!(
+        justverify::electrs_status::progress_text(&view),
+        "100.00% (100/100)"
+    );
+    status.electrum.value["tip"] = json!("fork");
+    assert_ne!(status.view(&chain, 50001, 102)["state"], "READY");
+    status.electrum.value["tip"] = json!("tip");
+    status.electrum.error = Some("Electrum response delayed".into());
+    assert_ne!(status.view(&chain, 50001, 102)["state"], "READY");
 }

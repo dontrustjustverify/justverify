@@ -501,7 +501,7 @@ impl Policy {
         if old.get("txindex").is_some_and(|v| v == "1")
             && !core_values.get("txindex").is_some_and(|v| v == "1")
         {
-            warning.push("Disabling txindex prevents the bundled mempool explorer from becoming ready. Historical transaction lookup is limited; existing index files are retained.".into());
+            warning.push("Disabling txindex limits historical transaction lookup in the bundled mempool explorer. Core-backed pages can still open; existing index files are retained.".into());
         }
         if core_values.contains_key("legacy_maxorphantx") {
             warning.push("maxorphantx is a stored preference only: Core 30 ignores it and Core 31 removed it. This value is not applied to Core.".into());
@@ -1055,6 +1055,9 @@ impl Policy {
                 }
                 std::thread::sleep(std::time::Duration::from_millis(100));
             };
+            if rpc.call("getblockchaininfo", serde_json::json!([]))?["chain"] != self.network {
+                bail!("preflight binary network does not match selected network");
+            }
             let parts = self
                 .version
                 .split('.')

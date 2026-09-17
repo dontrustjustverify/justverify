@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Narrow root API for reviewed encrypted backup creation and restore."""
 import base64
+import contextlib
+import fcntl
 import http.client
 import ssl
 import hashlib
@@ -22,6 +24,7 @@ OWNER = pathlib.Path("/var/lib/justverify/web/admin.json")
 SERVICES = (
     "justverify-web",
     "justverify-storage",
+    "justverify-mempool",
     "justverify-electrum-tls",
     "justverify-electrs",
     "justverify-core",
@@ -38,12 +41,27 @@ def system(action, *units, check=True):
         ["/usr/bin/systemctl", action, *units],
         check=check,
         capture_output=True,
-        timeout=180,
+        # Core/electrs each allow fifteen minutes to flush. systemd may
+        # serialize their stops; never abandon an ordinary flush after 180s.
+        timeout=2100 if action == "stop" else 240,
     )
 
 
 def quiesce():
     system("stop", *SERVICES)
+    for unit in SERVICES:
+        result=system("show",unit,"--property=ActiveState,MainPID,ControlPID,Result")
+        fields=dict(line.split('=',1) for line in result.stdout.decode().splitlines() if '=' in line)
+        # The fixed I2P condition exits 1 when the owner has switched I2P off.
+        # This is an intentional inactive state, not an unsuccessful shutdown.
+        disabled_i2p = False
+        if unit == 'justverify-i2p' and fields.get('ActiveState') == 'inactive' and fields.get('Result') == 'exec-condition':
+            # systemd may discard ExecCondition exit details after a reload.
+            # Recheck the trusted policy; malformed or enabled policy fails closed.
+            from i2p_service import enabled
+            disabled_i2p = not enabled()
+        if fields.get('ActiveState') not in ('inactive','failed') or fields.get('MainPID')!='0' or fields.get('ControlPID')!='0' or (fields.get('Result') not in ('success','') and not disabled_i2p):
+            raise RuntimeError('Service shutdown was not clean; backup was not applied')
 
 
 def resume():
@@ -52,7 +70,7 @@ def resume():
     system("start", "justverify-tor")
     system("start", "justverify-i2p")
     # Conditions and registration guards decide which node services may start.
-    for unit in ("justverify-versions", "justverify-core", "justverify-electrs", "justverify-manager", "justverify-policy", "justverify-electrum-tls"):
+    for unit in ("justverify-versions", "justverify-core", "justverify-electrs", "justverify-manager", "justverify-policy", "justverify-electrum-tls", "justverify-mempool"):
         system("start", unit)
 
     system("start", "justverify-storage", "justverify-web")
@@ -104,7 +122,8 @@ def schedule_web_restart():
 
 
 class BackupAPI:
-    def __init__(self, bundle, owner=OWNER, quiesce_callback=quiesce, resume_callback=resume, web_restart_callback=schedule_web_restart, health_callback=health):
+    def __init__(self, bundle, owner=OWNER, quiesce_callback=quiesce, resume_callback=resume, web_restart_callback=schedule_web_restart, health_callback=health, operation_path=None):
+        self.operation_path = operation_path
         self.bundle_source = bundle
         self.health_callback = health_callback
         self.auth_failures = []
@@ -168,6 +187,16 @@ class BackupAPI:
         return result
 
     def dispatch(self, request):
+        mutating=isinstance(request,dict) and request.get('action') in ('create_apply','restore_apply','recover')
+        with contextlib.ExitStack() as stack:
+            if mutating and self.operation_path is not None:
+                fd=os.open(self.operation_path,os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
+                stack.callback(os.close,fd);fcntl.flock(fd,fcntl.LOCK_EX)
+                # Validate barriers BEFORE stopping a version operation's services.
+                self.bundle._check_barriers()
+            return self._dispatch(request)
+
+    def _dispatch(self, request):
         if not self.enrolled():
             raise ValueError("owner enrollment required")
         if not isinstance(request, dict) or not isinstance(request.get("action"), str):
@@ -202,8 +231,8 @@ class BackupAPI:
             revision = self.consume(request["token"], "create")
             if not secrets.compare_digest(revision, self.revision()):
                 raise ValueError("device configuration changed after review")
-            self.quiesce_callback()
             try:
+                self.quiesce_callback()
                 if not secrets.compare_digest(revision,self.revision()):raise ValueError("configuration changed while stopping services")
                 result=self.bundle.create(request["passphrase"])
             finally:
@@ -228,8 +257,8 @@ class BackupAPI:
             digest = self.consume(request["token"], "restore")
             if request["confirmation"] != "RESTORE DEVICE IDENTITY":
                 raise ValueError("exact restore confirmation required")
-            self.quiesce_callback()
             try:
+                self.quiesce_callback()
                 bundle=self.bundle
                 def restored_health():
                     try:
@@ -242,8 +271,8 @@ class BackupAPI:
             finally:
                 self.resume_callback()
             return result
-        self.quiesce_callback()
         try:
+            self.quiesce_callback()
             result = self.bundle.recover()
         finally:
             self.resume_callback()
@@ -322,4 +351,4 @@ if __name__ == "__main__":
         health()
     else:
         notify_ready()
-    serve(BackupAPI(production_bundle), SOCKET, pwd.getpwnam("justverify").pw_uid)
+    serve(BackupAPI(production_bundle, operation_path="/var/lib/justverify/config/operations.lock"), SOCKET, pwd.getpwnam("justverify").pw_uid)

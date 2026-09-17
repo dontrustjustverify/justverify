@@ -10,6 +10,7 @@ pub struct VersionsPage {
     pub watch_only: bool,
     pub preview: Value,
     pub message: String,
+    pub confirm_delete: bool,
 }
 impl VersionsPage {
     pub fn load(&mut self, socket: &Path) -> Result<()> {
@@ -59,8 +60,59 @@ impl VersionsPage {
             [(names.iter().position(|n| *n == self.network).unwrap_or(0) + 1) % names.len()]
         .into();
     }
+    pub fn cancel(&mut self, socket: &Path) {
+        if let Some(token) = self.preview["token"].as_str() {
+            let _ = crate::tui::request(socket, &json!({"method":"cancel","token":token}));
+        }
+        self.preview = Value::Null;
+        self.confirm_delete = false;
+    }
+    pub fn review_lines(&self) -> Vec<String> {
+        let p = &self.preview["preview"];
+        let mut lines = vec![
+            "버전 변경 확인 | Esc 취소".into(),
+            format!(
+                "Core {} → {} | {} | {}",
+                p["previous"]["instance"]["core_version"],
+                p["target"]["instance"]["core_version"],
+                self.network,
+                if self.watch_only {
+                    "watch-only"
+                } else {
+                    "node"
+                }
+            ),
+            p["explanation"].as_str().unwrap_or("").into(),
+        ];
+        for (key, label) in [
+            ("delete_scope", "삭제 대상 (현재/대상 프로필의 동일 경로)"),
+            ("preserved", "보존 대상"),
+            ("warnings", "주의"),
+        ] {
+            lines.push(label.into());
+            if let Some(items) = p[key].as_array() {
+                for item in items {
+                    lines.push(item.as_str().unwrap_or("").into());
+                }
+            }
+        }
+        if p["destructive"] == true {
+            lines.push(format!(
+                "{} 취소    {} 데이터 삭제 후 버전 변경",
+                if self.confirm_delete { " " } else { ">" },
+                if self.confirm_delete { ">" } else { " " }
+            ));
+            lines.push(
+                "Left/Right 선택 · Space 실행 · Up/Down 스크롤 · Enter는 삭제하지 않습니다".into(),
+            );
+        } else {
+            lines.push("Enter 적용 · Esc 취소".into());
+        }
+        lines.push(self.message.clone());
+        lines
+    }
     pub fn lines(&self, height: u16) -> Vec<String> {
-        let mut lines=vec![format!("CORE VERSION | network: {} | mode: {}",self.network,if self.watch_only {"watch-only"} else {"node"}),"Up/Down select | P patches | N network | W wallet mode | D download | R recovery | Enter review | Esc back".into(),"Each version keeps separate Core data, electrs index and policy. Initial sync may be required.".into()];
+        let mut lines=vec![format!("CORE VERSION | network: {} | mode: {}",self.network,if self.watch_only {"watch-only"} else {"node"}),"Up/Down select | P patches | N network | W wallet mode | D download | R recovery | Enter review | Esc back".into(),"Different versions reset the current chain/index paths after explicit review. Selection/download changes no data.".into()];
         if self.state["transition"]["needs_recovery"] == true {
             lines.push(format!(
                 "INTERRUPTED VERSION CHANGE: {}. R reviews recovery.",

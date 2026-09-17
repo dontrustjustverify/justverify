@@ -2,7 +2,8 @@
 # Isolated Linux builder only. Creates a disposable copy; never edits the release artifact.
 set -euo pipefail
 umask 077
-[[ $EUID = 0 && $(hostname) = justverify-dev ]] || exit 1
+[[ $EUID = 0 ]] || exit 1
+case "$(hostname)" in justverify-dev|justverify-reset-test) ;; *) exit 1 ;; esac
 artifact=${1:?}; output=${2:?}
 [[ ${3:-} = "" || ${3:-} = --with-data ]] || exit 1
 [[ ! -e "$output" && "$output" = /var/tmp/jv-virt-probe-*.img ]] || exit 1

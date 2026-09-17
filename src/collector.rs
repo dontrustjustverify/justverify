@@ -126,6 +126,7 @@ pub fn start(
             let ibd = chain.value["initialblockdownload"] == true;
             let mainnet = chain.value["chain"] == "main";
             let start = Instant::now();
+            let mut fetched = 0;
             if chain.updated > 0
                 && chain.error.is_none()
                 && now().saturating_sub(chain.updated) <= 15
@@ -147,6 +148,11 @@ pub fn start(
                         || (status["status"] == "unavailable"
                             && now().saturating_sub(status["checked"].as_u64().unwrap_or(0)) >= 30);
                     let value = if retry {
+                        // During IBD, bound disk-heavy block/coinbase reads
+                        // independently of RPC latency. Finish a batch in
+                        // three passes without competing with chain import.
+                        if ibd && fetched >= 2 { break; }
+                        fetched += 1;
                         let result = coinbase(&miner_rpc, block, mainnet);
                         let mut value =
                             result.unwrap_or_else(|_| json!({"miner":{"status":"unavailable"}}));
@@ -184,7 +190,7 @@ pub fn start(
                         .is_some_and(|rows| rows.iter().any(|b| b["hash"] == hash.as_str()))
                 });
             }
-            thread::sleep(Duration::from_secs(if ibd { 3 } else { 1 }));
+            thread::sleep(Duration::from_secs(if ibd { 5 } else { 1 }));
         }
     });
     thread::spawn(move || {

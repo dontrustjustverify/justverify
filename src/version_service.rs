@@ -29,11 +29,11 @@ struct Config {
     allow_initial_selection: bool,
 }
 struct Native;
-fn bridge(request: Value) -> Result<()> {
+fn bridge_receipt(request: Value) -> Result<Value> {
     let mut child = Command::new("/usr/bin/sudo")
         .args(["-n", "/usr/libexec/justverify-profile"])
         .stdin(Stdio::piped())
-        .stdout(Stdio::null())
+        .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()?;
     child
@@ -41,9 +41,14 @@ fn bridge(request: Value) -> Result<()> {
         .take()
         .unwrap()
         .write_all(&serde_json::to_vec(&request)?)?;
-    if !child.wait()?.success() {
-        bail!("fixed profile bridge failed; check service state");
+    let result = child.wait_with_output()?;
+    if !result.status.success() {
+        bail!("registered profile, volume or fixed service bridge check failed");
     }
+    Ok(serde_json::from_slice(&result.stdout)?)
+}
+fn bridge(request: Value) -> Result<()> {
+    bridge_receipt(request)?;
     Ok(())
 }
 fn network(network: &str) -> Result<(u16, &'static str)> {
@@ -57,6 +62,9 @@ fn network(network: &str) -> Result<(u16, &'static str)> {
     })
 }
 impl Runtime for Native {
+    fn guard(&mut self, blocked: bool) -> Result<()> {
+        bridge(json!({"action":if blocked {"inhibit"} else {"release"}}))
+    }
     fn stop(&mut self) -> Result<()> {
         bridge(json!({"action":"stop"}))
     }
@@ -111,6 +119,16 @@ impl Runtime for Native {
         bail!("selected services did not become ready")
     }
 }
+pub fn ensure_no_reset() -> Result<()> {
+    let path = Path::new("/var/lib/justverify/versions/transition.json");
+    if path.exists() {
+        let j: Value = serde_json::from_slice(&fs::read(path)?)?;
+        if !matches!(j["phase"].as_str(), Some("committed" | "rolled_back")) {
+            bail!("finish version recovery before changing configuration");
+        }
+    }
+    Ok(())
+}
 pub fn operation_lock() -> Result<fs::File> {
     let file = fs::OpenOptions::new()
         .create(true)
@@ -138,7 +156,7 @@ pub fn serve(config_path: &Path, socket: &Path) -> Result<()> {
     }
     let listener = UnixListener::bind(socket)?;
     fs::set_permissions(socket, fs::Permissions::from_mode(0o600))?;
-    let mut previews: BTreeMap<String, (Preview, Instant)> = BTreeMap::new();
+    let mut previews: BTreeMap<String, (Preview, Instant, Value)> = BTreeMap::new();
     for stream in listener.incoming() {
         let mut stream = stream?;
         stream.set_read_timeout(Some(Duration::from_secs(3)))?;
@@ -160,14 +178,14 @@ pub fn serve(config_path: &Path, socket: &Path) -> Result<()> {
             let allowed = match method {
                 "state" | "recover" => vec!["method"],
                 "preview" => vec!["method", "version", "network", "watch_only"],
-                "apply" => vec!["method", "token"],
+                "apply" | "cancel" => vec!["method", "token"],
                 "download" => vec!["method", "version"],
                 _ => bail!("unknown method"),
             };
             if object.keys().any(|k| !allowed.contains(&k.as_str())) {
                 bail!("unknown request field");
             }
-            previews.retain(|_, (_, time)| time.elapsed() < Duration::from_secs(300));
+            previews.retain(|_, (_, time, _)| time.elapsed() < Duration::from_secs(300));
             match method {
                 "download" => downloads.start(
                     &config.catalog,
@@ -207,6 +225,11 @@ pub fn serve(config_path: &Path, socket: &Path) -> Result<()> {
                         Some(v) => v.as_bool().context("watch_only must be boolean")?,
                         None => false,
                     };
+                    let _operation = operation_lock()?;
+                    let binding = bridge_receipt(json!({"action":"check_prepared"}))?;
+                    if versions.active()?.is_some() {
+                        bridge(json!({"action":"check_registered"}))?;
+                    }
                     let preview = versions.preview_mode(
                         request["version"].as_str().context("version required")?,
                         request["network"].as_str().context("network required")?,
@@ -216,15 +239,25 @@ pub fn serve(config_path: &Path, socket: &Path) -> Result<()> {
                     fs::File::open("/dev/urandom")?.read_exact(&mut random)?;
                     let token: String = random.iter().map(|b| format!("{b:02x}")).collect();
                     let response = json!({"token":token,"preview":preview});
-                    previews.insert(token, (preview, Instant::now()));
+                    previews.insert(token, (preview, Instant::now(), binding));
                     Ok(response)
+                }
+                "cancel" => {
+                    let token = request["token"].as_str().context("token required")?;
+                    Ok(json!({"cancelled":previews.remove(token).is_some()}))
                 }
                 "apply" => {
                     let token = request["token"].as_str().context("token required")?;
-                    let (preview, _) = previews
+                    let (preview, _, binding) = previews
                         .remove(token)
                         .context("preview missing or expired")?;
                     let _lock = operation_lock()?;
+                    if bridge_receipt(json!({"action":"check_prepared"}))? != binding {
+                        bail!("registered configuration, catalog or indexer changed; review again");
+                    }
+                    if versions.active()?.is_some() {
+                        bridge(json!({"action":"check_registered"}))?;
+                    }
                     if versions.active()?.is_none() && !config.allow_initial_selection {
                         bridge(json!({"action":"check_initial"})).context(
                             "initial volume changed after preview; existing data preserved",
@@ -239,8 +272,45 @@ pub fn serve(config_path: &Path, socket: &Path) -> Result<()> {
                 _ => unreachable!(),
             }
         })();
+        fn public(value: &mut Value, data: &Path) {
+            match value {
+                Value::Object(map) => {
+                    for key in [
+                        "binary",
+                        "policy_file",
+                        "binary_sha256",
+                        "reset",
+                        "revision",
+                        "policy_revision",
+                    ] {
+                        map.remove(key);
+                    }
+                    for key in ["core_data", "electrs_data"] {
+                        if let Some(v) = map.get_mut(key) {
+                            if let Some(p) = v.as_str() {
+                                if let Ok(relative) = Path::new(p).strip_prefix(data) {
+                                    *v = json!(relative);
+                                }
+                            }
+                        }
+                    }
+                    for v in map.values_mut() {
+                        public(v, data);
+                    }
+                }
+                Value::Array(items) => {
+                    for item in items {
+                        public(item, data);
+                    }
+                }
+                _ => {}
+            }
+        }
         let response = match result {
-            Ok(value) => json!({"ok":true,"result":value}),
+            Ok(mut value) => {
+                public(&mut value, &config.data);
+                json!({"ok":true,"result":value})
+            }
             Err(error) => json!({"ok":false,"error":crate::clean(&error.to_string())}),
         };
         let _ = stream.write_all(&serde_json::to_vec(&response)?);

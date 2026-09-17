@@ -1,4 +1,4 @@
-//! Conservative data isolation: an unverified version never opens another version's state.
+//! Registered storage identity is independent of the executing Core version.
 use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -9,7 +9,11 @@ use std::{
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct Instance {
+    /// Legacy directory anchor; changing a binary never changes this identity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data_id: Option<String>,
     #[serde(default, skip_serializing_if = "is_false")]
     pub watch_only: bool,
     pub core_version: String,
@@ -90,6 +94,7 @@ pub fn instance_mode(
         }
     }
     Ok(Instance {
+        data_id: None,
         watch_only,
         core_version: version.into(),
         network: network.into(),
@@ -97,6 +102,39 @@ pub fn instance_mode(
         core_data: folder.join("core"),
         electrs_data: folder.join(format!("electrs-{electrs}")),
     })
+}
+
+/// Derive paths from a registered identity, never a client-supplied path.
+pub fn registered(root: &Path, target: &Instance) -> Result<Instance> {
+    let mut expected = instance_mode(
+        root,
+        &target.core_version,
+        &target.network,
+        &target.electrs_version,
+        target.watch_only,
+    )?;
+    if let Some(id) = &target.data_id {
+        let version = if target.watch_only {
+            id.strip_suffix("-watch-only")
+                .context("wallet identity mismatch")?
+        } else {
+            id.as_str()
+        };
+        if !valid_version(version) {
+            bail!("invalid registered data identity");
+        }
+        let folder = root.join(&target.network).join(id);
+        if fs::symlink_metadata(&folder).is_ok_and(|m| m.file_type().is_symlink()) {
+            bail!("linked registered profile refused");
+        }
+        expected.data_id = Some(id.clone());
+        expected.core_data = folder.join("core");
+        expected.electrs_data = folder.join(format!("electrs-{}", target.electrs_version));
+    }
+    if &expected != target {
+        bail!("unregistered profile paths");
+    }
+    Ok(expected)
 }
 
 pub fn prepare(target: &Instance) -> Result<()> {

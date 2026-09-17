@@ -5,9 +5,9 @@
 
 Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
 
-**0.1.0-beta7 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+**0.1.0-beta8 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
 
-Beta6 fixes Electrs progress before Core sync completes, simplifies Clearnet controls, adds a guarded bitcoin.conf editor, and shows clear sync indicators and recent-block sizes. New profiles disable arbitrary-data relay and use an 83-byte limit. [Changes and downloads](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta7).
+Beta8 improves explorer startup during indexing, database recovery, bounded cache/log storage and LAN wallet connections. Core version changes now require an explicit chain reset in the current data directories. [Release notes](docs/RELEASE_NOTES.md).
 
 
 **I2P peers:** beta3 includes i2pd. In Bitcoin Core → Mempool · Network settings, select I2P separately for incoming and outgoing peers. Both start off. Core 22 requires both directions for incoming; Core 23+ permits incoming-only. See [network settings](docs/SETTINGS.md).
@@ -16,7 +16,7 @@ The language defaults to **Automatic (browser language)**: Korean, English or Ja
 
 ## What is included
 
-- Official, signature-verified Bitcoin Core binaries. Select a supported release from Core 22 onward; incompatible versions use separate data directories.
+- Signature-verified Bitcoin Core; prepared version changes require explicit chain-reset confirmation and reuse the current paths. Wallet-bearing transitions are blocked before deletion.
 - A real non-root TUI and a responsive browser dashboard with live blocks, peers, fees and system information.
 - Tor and electrs, with distinct LAN/Tor connection details and QR codes.
 - The **mempool 3.3.1** explorer already installed at **http://justverify.local:3006**. Open **Mempool** beside Electrs in the top menu. When connected through Tor, it opens the same onion hostname on port3006.
@@ -51,15 +51,15 @@ One NVMe contains the OS and a separate data partition that expands at first boo
 
 ## Download and install
 
-1. Get [justverify-0.1.0-beta7.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7.img.xz), [justverify-0.1.0-beta7-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7-SHA256SUMS), [signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7-SHA256SUMS.asc), the manifest and release notes from the [**Releases** page](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta7). Use only an artifact listed in that release's manifest.
-2. Check the download against [justverify-0.1.0-beta7-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7-SHA256SUMS). On macOS: `shasum -a 256 justverify-0.1.0-beta7.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
+1. Download the [image (658 MB)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8.img.xz) and [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8-SHA256SUMS). The [beta8 release](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta8) also contains the signature, source code and validation report.
+2. Check the download against `justverify-0.1.0-beta8-SHA256SUMS`. On macOS: `shasum -a 256 justverify-0.1.0-beta8.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
 3. Extract the `.img.xz` with an XZ-capable archive tool, then select the resulting `.img` and your intended NVMe in **balenaEtcher**. Our macOS/Etcher 2.1.6 test failed validation with direct XZ input; the extracted IMG passed. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
 4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
 5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
 6. Create your web administrator password and confirm it. The node prepares its own identity and data volume, then starts the default Core profile automatically.
 7. Keep the Pi powered and connected while Core synchronizes. electrs and mempool need their own readiness checks after Core; an active service or a progress bar alone does not mean completion.
 
-Fresh profiles enable `txindex=1` for mempool transaction lookups. Existing profiles keep their settings. The explorer shows a preparation message until Core, txindex and electrs are ready. It uses your node; it does not replace unavailable results with a public explorer's data.
+Fresh profiles enable `txindex=1` for mempool transaction lookups. Existing profiles keep their settings. Core-backed explorer pages open while Electrs indexes. Address history and historical transactions become available when their required indexes are ready. It uses your node; it does not replace unavailable results with a public explorer's data.
 
 ## Everyday use
 

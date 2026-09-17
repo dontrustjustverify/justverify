@@ -18,8 +18,8 @@ Group=justverify
 ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
 ExecStart=/opt/justverify/core/bin/bitcoind -datadir=/srv/justverify/data/core -conf=/etc/justverify/bitcoin.conf
 Restart=on-failure
-RestartSec=5
-TimeoutStopSec=300
+RestartSec=30
+TimeoutStopSec=900
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict

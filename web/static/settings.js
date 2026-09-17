@@ -5,9 +5,9 @@ const SettingsView=(()=>{
  function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
  async function api(path,body){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:JSON.stringify(body)});if(!r.ok){if(r.status===401)showAuth();throw Error(await r.text());}return r.json();}
  function message(text){el('settings-status').textContent=text;}
- function clearReview(){preview=null;el('settings-review').hidden=true;}
+ function clearReview(){const token=kind==='versions'?preview?.token:null;preview=null;el('settings-review').hidden=true;if(token)api('/versions',{method:'cancel',token}).catch(()=>{});}
  function changed(){clearReview();message('변경한 값은 아직 적용되지 않았습니다. 변경 내용 확인 후 저장하세요.');}
- function stop(){generation++;clearTimeout(poll);}
+ function stop(){generation++;clearTimeout(poll);clearReview();}
  async function open(which){stop();kind=which;const g=generation;el('settings-view').hidden=false;el('settings-content').replaceChildren();clearReview();el('settings-title').textContent=which==='policy'?'Mempool · 네트워크 설정':'버전 변경';message('현재 설정을 불러오는 중…');busy=false;
   try{const s=await api('/'+which,{method:'state'});if(g!==generation)return;state=s;values={...(s.requested||{})};selection=s.active?{version:s.active.instance.core_version,network:s.active.instance.network,watch_only:!!s.active.instance.watch_only}:null;render();message(s.active_error||'');}catch(e){if(g===generation)message(e.message);}
  }
@@ -98,16 +98,36 @@ const SettingsView=(()=>{
   function choose(){detail.replaceChildren();clearReview();const release=state.releases.find(r=>r.version===selection?.version);if(!release)return;
    cards.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.version===selection.version)));
    const network=node('select');network.setAttribute('aria-label','Bitcoin 네트워크');for(const n of release.networks){const option=node('option',({main:'Mainnet',test:'Testnet3',testnet4:'Testnet4',signet:'Signet',regtest:'Regtest'})[n]||n);option.value=n;network.append(option);}if(!release.networks.includes(selection.network))selection.network='main';network.value=selection.network;network.onchange=()=>{selection.network=network.value;changed();choose();};
-   const notes=node('a','공식 릴리스 안내');notes.href=release.release_notes;notes.target='_blank';notes.rel='noopener noreferrer';detail.append(notes);detail.append(node('h4',`선택한 버전: ${release.version}`),node('label','Bitcoin 네트워크'),network,node('p','버전별 데이터와 electrs 인덱스를 별도로 유지합니다. 새 버전·네트워크에서는 다시 동기화할 수 있습니다. 기존 데이터는 보존됩니다.','hint'));
+   const notes=node('a','공식 릴리스 안내');notes.href=release.release_notes;notes.target='_blank';notes.rel='noopener noreferrer';detail.append(notes);detail.append(node('h4',`선택한 버전: ${release.version}`),node('label','Bitcoin 네트워크'),network,node('p','다른 버전으로 변경하면 현재 경로의 체인 데이터와 electrs 인덱스를 삭제하고 처음부터 동기화합니다. 선택하거나 다운로드하는 것만으로는 변경되지 않습니다.','hint'));
    detail.append(toggle('RPC 지갑 연동용 watch-only 모드',selection.watch_only,on=>{selection.watch_only=on;changed();choose();}));
    if(!release.downloaded){detail.append(button('검증된 바이너리 다운로드',()=>operation(async()=>{await api('/versions',{method:'download',version:selection.version});message('다운로드·서명 검증 진행 중…');watchDownload();})));}
-   else if(active&&selection.version===active.core_version&&selection.network===active.network&&selection.watch_only===!!active.watch_only)detail.append(node('p','현재 사용 중인 버전과 모드입니다.','hint'));else detail.append(button('이 버전으로 변경 내용 확인',()=>operation(async()=>{preview=await api('/versions',{method:'preview',...selection});review([`Bitcoin Core ${preview.preview.target.instance.core_version} · ${preview.preview.target.instance.network}`,preview.preview.explanation],['Core와 관련 서비스를 재시작합니다. 동기화와 electrs 준비 상태는 현황에서 별도로 확인합니다.']);}),'primary-action'));
+   else if(active&&selection.version===active.core_version&&selection.network===active.network&&selection.watch_only===!!active.watch_only)detail.append(node('p','현재 사용 중인 버전과 모드입니다.','hint'));else detail.append(button('이 버전으로 변경 내용 확인',()=>operation(async()=>{preview=await api('/versions',{method:'preview',...selection});versionReview();}),'primary-action'));
   }
   function list(){cards.replaceChildren();const major=new Map();for(const r of state.releases)major.set(r.version.split('.')[0],r);const entries=all.checked?state.releases:[...major.values()];for(const r of [...entries].reverse()){const b=button('',()=>{selection={version:r.version,network:selection?.network||'main',watch_only:selection?.watch_only||false};choose();message(`Bitcoin Core ${r.version} 선택됨 · 아래에서 변경 내용을 확인하세요.`);},'version-card');b.dataset.version=r.version;b.append(node('strong','Bitcoin Core '+r.version),node('small',(active?.core_version===r.version?'현재 사용 · ':'')+(r.downloaded?'다운로드됨':'다운로드 필요')),node('small',r.support_status?.includes('EOL')?'공식 유지보수 지원 종료':'공식 안정 릴리스'));b.disabled=r.availability!=='OFFICIAL_BINARY_VERIFIED';cards.append(b);}choose();}all.onchange=list;list();
   if(['downloading','installing'].includes(state.download?.phase)){host.append(node('p','바이너리 다운로드·서명 검증 진행 중…','hint'));watchDownload();}
  }
  async function watchDownload(){const g=generation;poll=setTimeout(async()=>{try{const s=await api('/versions',{method:'state'});if(g!==generation)return;state=s;if(s.releases.some(r=>r.version===selection.version&&r.downloaded)){render();message('다운로드·검증 완료. 변경 내용을 확인하세요.');}else if(['failed','interrupted'].includes(s.download?.phase)){message('다운로드가 완료되지 않았습니다. 다시 다운로드를 선택하세요.');}else{message('다운로드·서명 검증 진행 중…');watchDownload();}}catch(e){if(g===generation)message(e.message);}},3000);}
- async function operation(fn){if(busy)return;busy=true;const g=generation;el('controls').inert=true;el('settings-content').inert=true;el('settings-review').inert=true;message('검증·서비스 응답을 기다리는 중…');try{await fn();}catch(e){if(g===generation)message(e.message);}finally{busy=false;el('controls').inert=false;el('settings-content').inert=false;el('settings-review').inert=false;}}
+ async function operation(fn){if(busy)return;busy=true;const g=generation;el('controls').inert=true;el('settings-content').inert=true;el('settings-review').inert=true;message('검증·서비스 응답을 기다리는 중…');try{await fn();}catch(e){if(g===generation)message(e.message);}finally{busy=false;el('controls').inert=false;el('settings-content').inert=false;el('settings-review').inert=false;if(kind==='versions'&&preview&&!el('settings-review').hidden)el('settings-review').querySelector('button')?.focus();}}
+ function versionReview(){
+  const p=preview.preview,box=el('settings-review');
+  box.replaceChildren(node('h3',p.destructive?'체인 데이터 초기화 경고':'버전 변경 확인'));
+  box.setAttribute('role','region');box.setAttribute('aria-label','버전 변경 확인');
+  box.append(node('p',`Bitcoin Core ${p.previous?.instance.core_version||'—'} → ${p.target.instance.core_version} · ${p.target.instance.network}`));
+  box.append(node('p',p.explanation));
+  if(p.destructive){box.append(node('h4','삭제 대상 · 현재/대상 프로필이 같은 경로를 사용합니다.'));const list=node('ul');for(const path of p.delete_scope)list.append(node('li',path));box.append(list);}
+  box.append(node('h4','보존 대상'));const kept=node('ul');for(const line of p.preserved)kept.append(node('li',line));box.append(kept);
+  for(const line of p.warnings)box.append(node('p',line,'warning'));
+  const cancel=button('취소',()=>{clearReview();message('적용하지 않았습니다.');},'subtle');
+  const apply=button(p.destructive?'데이터 삭제 후 버전 변경':'저장하고 적용',()=>operation(async()=>{
+   const token=preview?.token;if(!token)return;preview=null;apply.disabled=true;
+   const result=await api('/versions',{method:'apply',token});await open('versions');
+   message(result.phase==='committed'?'대상 버전 시작을 확인했습니다. IBD와 electrs 인덱싱 완료 여부는 현황에서 확인하세요.':'변경이 완료되지 않았습니다. 복구 상태를 확인하세요.');
+  }),p.destructive?'danger-action':'primary-action');
+  // Enter never submits a destructive review, including repeated key events.
+  // Keyboard users deliberately focus the action and activate with Space.
+  if(p.destructive)apply.onkeydown=e=>{if(e.key==='Enter'||e.repeat){e.preventDefault();e.stopPropagation();}};
+  box.append(cancel,apply);box.hidden=false;box.scrollIntoView({block:'nearest'});message('삭제 범위를 확인하세요. 취소가 기본 선택입니다.');
+ }
  function review(changes,warnings){const box=el('settings-review');box.replaceChildren(node('h3','적용 전 확인'));const list=node('ul');for(const line of [...changes,...warnings])list.append(node('li',line));box.append(list);box.append(button('저장하고 적용',()=>operation(async()=>{await api('/'+kind,{method:'apply',token:preview.token});await open(kind);message('설정 저장·서비스 재시작·상태 확인을 마쳤습니다.');})),button('취소',()=>{clearReview();message('적용하지 않았습니다.');},'subtle'));box.hidden=false;box.scrollIntoView({block:'nearest'});message('변경 내용을 확인하세요. 아직 저장되지 않았습니다.');}
  return {open,stop,api};
 })();

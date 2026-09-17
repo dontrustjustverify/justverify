@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import signal
 import subprocess
 import time
 import urllib.error
@@ -63,19 +64,46 @@ try:
  address=cli('getnewaddress')
  cli('generatetoaddress',105,address)
  index_command=[a.electrs,'--skip-default-conf-files','--network=regtest','--daemon-dir='+str(a.state/'core'),'--db-dir='+str(a.state/'index'),'--daemon-rpc-addr=127.0.0.1:19643','--daemon-p2p-addr=127.0.0.1:19644','--electrum-rpc-addr=127.0.0.1:19601','--monitoring-addr=127.0.0.1:19624']
- index=start(index_command,'electrs')
+ index=None
  assert cli('getnetworkinfo')['subversion'].startswith('/Satoshi:'+a.version+'.')
- profile={'version':a.version,'network':'regtest','cookie':str(a.state/'core/regtest/.cookie'),'rpc_port':19643}
+ profile={'version':a.version,'data_id':'22.0','network':'regtest','cookie':str(a.state/'core/regtest/.cookie'),'rpc_port':19643}
  (a.state/'profile.json').write_text(json.dumps(profile))
  proxy=start(['/opt/justverify/venv/bin/python',ROOT/'web/mempool_proxy.py','--bundle',a.bundle,'--runtime',a.state/'runtime','--profile',a.state/'profile.json','--port','13006','--backend','http://127.0.0.1:18999'],'proxy')
  def service():return start(['/usr/bin/python3',ROOT/'scripts/mempool_service.py','--bundle',a.bundle,'--runtime',a.state/'runtime','--profile',a.state/'profile.json','--data',a.state/'mempool','--api-port','18999','--web-port','13006','--electrum-port','19601'],'service')
  runner=service()
+ # The genuine backend must serve Core-backed pages before Electrs exists.
+ wait(lambda:http('/justverify/status').get('api_available'),240)
+ assert http('/justverify/status')['state']=='electrs_waiting'
+ assert http('/api/v1/backend-info')['version']=='3.3.1'
+ wait(lambda:http('/api/blocks/tip/height')==105,60)
+ assert '<app-root' in http('/ko/')
+ async def while_index_unavailable():
+  import aiohttp
+  async with aiohttp.ClientSession() as client:
+   async with client.ws_connect('http://127.0.0.1:13006/api/v1/ws',origin='http://127.0.0.1:13006') as ws:
+    await ws.send_json({'action':'init'})
+    message=await ws.receive(timeout=15)
+    assert message.type==aiohttp.WSMsgType.TEXT and isinstance(json.loads(message.data),dict)
+ asyncio.run(while_index_unavailable())
+ result['checks']+=['real HTTP block data and WebSocket start with Electrs absent; frontend remains available']
+ index=start(index_command,'electrs')
  wait(lambda:http('/justverify/status')['state']=='running',240)
  assert http('/api/blocks/tip/height')==cli('getblockcount')==105
  assert http('/api/blocks/tip/hash')==cli('getbestblockhash')
  info=http('/api/v1/backend-info');assert info['version']=='3.3.1'
  result['versions']={'core':cli('getnetworkinfo')['subversion'],'mempool':info['version'],'mempool_commit':info['gitCommit']}
  result['checks']+=['actual SQL startup/migrations','Core/electrs-backed HTTP tip agreement']
+ # Kill only the actual Node child. MariaDB must retain its PID and socket.
+ database_pid=int((a.state/'runtime/mysql.pid').read_text())
+ children=Path('/proc/'+str(runner.pid)+'/task/'+str(runner.pid)+'/children').read_text().split()
+ backend_pid=next(int(pid) for pid in children if b'/usr/bin/node\0' in Path('/proc/'+pid+'/cmdline').read_bytes())
+ os.kill(backend_pid,signal.SIGKILL)
+ wait(lambda:http('/justverify/status').get('reason')=='backend_restart',30)
+ wait(lambda:http('/justverify/status')['state']=='running',180)
+ assert int((a.state/'runtime/mysql.pid').read_text())==database_pid
+ assert not Path('/proc/'+str(backend_pid)).exists()
+ assert {x.name for x in (a.state/'mempool').iterdir()}=={'regtest-22.0'}
+ result['checks']+=['actual backend SIGKILL recovers while healthy MariaDB PID/socket and stable data identity are preserved']
  receiver=cli('getnewaddress')
  raw=cli('createrawtransaction',[],{receiver:1})
  funded=cli('fundrawtransaction',raw,{'fee_rate':2})
@@ -125,7 +153,8 @@ try:
   index.terminate();index.wait(timeout=60)
  core=start(core_command,'core-restart')
  wait(lambda:cli('getblockchaininfo'))
- wait(lambda:http('/justverify/status')['state']=='waiting',30)
+ wait(lambda:http('/justverify/status')['state']=='electrs_waiting',30)
+ assert http('/api/v1/backend-info')['version']=='3.3.1'
  index=start(index_command,'electrs-restart')
  cli('loadwallet','mempool-integration')
  block=cli('generatetoaddress',1,address)[0]

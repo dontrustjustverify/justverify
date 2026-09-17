@@ -13,7 +13,8 @@ use std::{
     time::Duration,
 };
 pub(crate) fn request(socket: &Path, value: &Value) -> Result<Value> {
-    request_with_timeout(socket, value, Duration::from_secs(50))
+    let mutating = matches!(value["method"].as_str(), Some("apply" | "recover"));
+    request_with_timeout(socket, value, Duration::from_secs(if mutating { 2400 } else { 50 }))
 }
 pub(crate) fn request_with_timeout(
     socket: &Path,
@@ -176,13 +177,10 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                 vec!["RECOVER INTERRUPTED VERSION CHANGE — Enter recovers; Esc cancels".into(),
                     format!("Phase: {} | target Core {}",versions.state["transition"]["phase"],versions.state["transition"]["target"]["instance"]["core_version"]),
                     format!("Previous Core {} | network {}",versions.state["transition"]["previous"]["instance"]["core_version"],versions.state["transition"]["previous"]["instance"]["network"]),
-                    "Recovery restarts the previous binary with its separate data. Target data is preserved.".into(),
-                    "If there was no previous profile, recovery leaves node services stopped.".into(), versions.message.clone()]
+                    "After deletion starts, recovery resumes the same reset scope and retries ONLY the target binary.".into(),
+                    "Before deletion, recovery may restart the existing profile. IBD/indexing readiness is separate.".into(), versions.message.clone()]
             } else if page == 'w' {
-                vec!["REVIEW VERSION CHANGE — Enter applies; Esc cancels".into(),
-                     format!("Core {} | network {} | mode {}",versions.preview["preview"]["target"]["instance"]["core_version"],versions.network,if versions.watch_only {"watch-only"} else {"node"}),
-                     clean(versions.preview["preview"]["explanation"].as_str().unwrap_or("")),
-                     "Core and electrs restart together. Full synchronization may take substantial time and disk space.".into(),versions.message.clone()]
+                versions.review_lines()
             } else if page == 'm' {
                 editor.lines(size.height)
             } else if page == 'r' {
@@ -393,12 +391,27 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                         _ => {}
                     }
                 } else if page == 'w' {
+                    if key.kind != crossterm::event::KeyEventKind::Press {
+                        continue;
+                    }
+                    let destructive = versions.preview["preview"]["destructive"] == true;
                     match key.code {
+                        KeyCode::Down | KeyCode::PageDown => scroll = scroll.saturating_add(1),
+                        KeyCode::Up | KeyCode::PageUp => scroll = scroll.saturating_sub(1),
+                        KeyCode::Left if destructive => versions.confirm_delete = false,
+                        KeyCode::Right if destructive => versions.confirm_delete = true,
+                        KeyCode::Enter if destructive => {
+                            versions.confirm_delete = false;
+                        }
+                        KeyCode::Char(' ') if destructive && !versions.confirm_delete => {
+                            page = 'v';
+                            versions.cancel(version_socket);
+                        }
                         KeyCode::Esc => {
                             page = 'v';
-                            versions.preview = Value::Null;
+                            versions.cancel(version_socket);
                         }
-                        KeyCode::Enter => {
+                        KeyCode::Enter | KeyCode::Char(' ') => {
                             let result = request(
                                 version_socket,
                                 &json!({"method":"apply","token":versions.preview["token"]}),
@@ -409,7 +422,7 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                             };
                             let _ = versions.load(version_socket);
                             page = 'v';
-                            versions.preview = Value::Null;
+                            versions.cancel(version_socket);
                         }
                         _ => {}
                     }
@@ -440,6 +453,8 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                                 ) {
                                     Ok(value) => {
                                         versions.preview = value;
+                                        versions.confirm_delete = false;
+                                        scroll = 0;
                                         versions.message.clear();
                                         page = 'w';
                                     }

@@ -20,15 +20,17 @@ NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict
 ProtectHome=yes
-RestrictAddressFamilies=AF_INET AF_UNIX
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 IPAddressDeny=any
 IPAddressAllow=localhost
 IPAddressAllow=10.0.0.0/8
 IPAddressAllow=172.16.0.0/12
 IPAddressAllow=192.168.0.0/16
 IPAddressAllow=169.254.0.0/16
+IPAddressAllow=fc00::/7
+IPAddressAllow=fe80::/10
 Restart=on-failure
-RestartSec=5
+RestartSec=30
 UMask=0077
 
 [Install]

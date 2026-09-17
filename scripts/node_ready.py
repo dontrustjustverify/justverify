@@ -3,6 +3,19 @@
 import hashlib,json,os,pathlib,stat,subprocess
 
 def check(data=pathlib.Path('/srv/justverify/data'),etc=pathlib.Path('/etc/justverify'),active=pathlib.Path('/var/lib/justverify/versions/active.json')):
+ transition=active.parent/'transition.json'
+ if transition.exists():
+  journal=json.loads(transition.read_text())
+  if journal.get('reset') and journal['phase'] not in ('starting','committed','rolled_back','stop_failed') and not (journal['phase']=='restoring_previous' and not journal.get('deletion_started')):
+   raise ValueError('version reset recovery must finish before services start')
+ guard=etc/'version-reset-guard.json'
+ if guard.exists():
+  metadata=guard.lstat()
+  if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid!=0 or metadata.st_mode&0o022:raise ValueError('invalid reset guard')
+  blocked=json.loads(guard.read_text())
+  if not blocked.get('target_ready'):raise ValueError('root reset completion check required before startup')
+  if not transition.exists() or journal['phase'] not in ('starting','committed'):raise ValueError('version reset blocks automatic startup')
+  if json.loads(active.read_text())['instance']!=blocked['target']:raise ValueError('old binary start forbidden after reset')
  marker=etc/'node-ready.json';metadata=marker.lstat()
  if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid!=0 or metadata.st_mode&0o022:raise ValueError('untrusted registration marker')
  ready=json.loads(marker.read_text())
@@ -19,7 +32,13 @@ def check(data=pathlib.Path('/srv/justverify/data'),etc=pathlib.Path('/etc/justv
  if hashlib.sha256(binary.read_bytes()).hexdigest()!=ready['binary_sha256'] or selection['binary_sha256']!=ready['binary_sha256']:raise ValueError('registered binary changed')
  watch_only=profile.get('watch_only',False)
  if type(watch_only) is not bool or watch_only!=ready['instance'].get('watch_only',False):raise ValueError('wallet mode differs from registered profile')
- folder=data/'instances'/profile['network']/(profile['version']+'-watch-only' if watch_only else profile['version'])
+ import re
+ instance=ready['instance']
+ name=instance.get('data_id',profile['version']+('-watch-only' if watch_only else ''))
+ if profile.get('data_id',name)!=name:raise ValueError('explorer storage identity differs from registration')
+ if not re.fullmatch(r'[0-9]+\.[0-9]+(?:\.[0-9]+)?'+('-watch-only' if watch_only else ''),name):raise ValueError('invalid registered storage identity')
+ folder=data/'instances'/profile['network']/name
+ if instance['core_data']!=str(folder/'core') or instance['electrs_data']!=str(folder/'electrs-0.11.1'):raise ValueError('registered paths changed')
  current=data
  for part in folder.relative_to(data).parts:
   current=current/part

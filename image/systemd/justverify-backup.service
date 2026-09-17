@@ -7,7 +7,7 @@ Before=justverify-core.service justverify-electrs.service justverify-manager.ser
 [Service]
 Type=notify
 NotifyAccess=main
-TimeoutStartSec=180
+TimeoutStartSec=2100
 User=root
 Group=root
 ExecStart=/usr/bin/python3 /opt/justverify/scripts/backup_service.py

@@ -69,7 +69,7 @@ cp -a "$mempool" "$mountdir/opt/justverify/mempool"
 find "$mountdir/opt/justverify/web" -type d -name __pycache__ -prune -exec rm -rf {} +
 chown -R root:root "$mountdir/opt/justverify"
 chmod -R go-w "$mountdir/opt/justverify"
-install -m 0755 scripts/fetch_core.py scripts/web_identity.py scripts/owner_console.py scripts/disk_inventory.py scripts/storage_probe.py scripts/volume_setup.py scripts/storage_service.py scripts/device_service.py scripts/backup_bundle.py scripts/backup_service.py scripts/backup_guard.py scripts/wait_core_rpc.py scripts/node_ready.py scripts/publish_onions.py scripts/mempool_service.py scripts/mempool_data.py image/firstboot.sh "$mountdir/opt/justverify/scripts/"
+install -m 0755 scripts/fetch_core.py scripts/web_identity.py scripts/owner_console.py scripts/disk_inventory.py scripts/storage_probe.py scripts/volume_setup.py scripts/storage_service.py scripts/device_service.py scripts/backup_bundle.py scripts/backup_service.py scripts/backup_guard.py scripts/wait_core_rpc.py scripts/chain_reset.py scripts/node_ready.py scripts/publish_onions.py scripts/mempool_service.py scripts/mempool_data.py image/firstboot.sh "$mountdir/opt/justverify/scripts/"
 install -d "$mountdir/usr/libexec" "$mountdir/etc/sudoers.d"
 install -m 0440 image/justverify-admin.sudoers "$mountdir/etc/sudoers.d/00-justverify-admin"
 install -m 0755 image/restart-core.sh "$mountdir/usr/libexec/justverify-restart-core"

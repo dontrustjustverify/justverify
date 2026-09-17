@@ -28,7 +28,7 @@ impl BackupPage {
         self.pending = Some(receive);
         std::thread::spawn(move || {
             let result =
-                request_with_timeout(Path::new(SOCKET), &request, Duration::from_secs(240))
+                request_with_timeout(Path::new(SOCKET), &request, Duration::from_secs(2400))
                     .map_err(|error| clean(&format!("{error:#}")));
             let _ = send.send((action, result));
         });

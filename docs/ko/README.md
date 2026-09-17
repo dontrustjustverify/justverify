@@ -5,9 +5,9 @@
 
 내가 직접 검증하는 Bitcoin Core 노드입니다. NVMe에 이미지를 기록하고 Raspberry Pi 5를 켠 뒤 **http://justverify.local**을 여세요. 터미널 스타일의 대시보드, Tor, electrs와 로컬 mempool 탐색기가 함께 설치됩니다.
 
-**0.1.0-beta7은 시험 배포 버전입니다.** 설치 전에 [통과·미검증 항목](../TESTING.md)을 확인하세요. 빌드나 regtest 성공이 mainnet 전체 인덱싱, 실제 휴대폰 지갑 연결, 장시간 안정성 검증을 뜻하지 않습니다.
+**0.1.0-beta8은 시험 배포 버전입니다.** 설치 전에 [통과·미검증 항목](../TESTING.md)을 확인하세요. 빌드나 regtest 성공이 mainnet 전체 인덱싱, 실제 휴대폰 지갑 연결, 장시간 안정성 검증을 뜻하지 않습니다.
 
-beta6에서는 동기화 전 Electrs 진행률 표시를 수정하고 Clearnet 선택을 통합했습니다. bitcoin.conf 고급 편집기, 동기화 상태 아이콘과 최근 블록 크기를 추가했습니다. 새 프로필의 임의 데이터 거래 전파는 기본적으로 꺼지며 허용 크기는 83바이트입니다. [변경 사항과 다운로드](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta7).
+beta8은 Electrs 인덱싱 중 멤풀 화면 로딩, DB 복구, 로그·캐시 용량 제한과 LAN 지갑 연결을 개선했습니다. Core 버전을 바꿀 때는 현재 데이터 경로에서 체인 초기화 범위를 확인하고 전체 재동기화를 시작합니다. [변경 내용](../RELEASE_NOTES.md).
 
 
 **I2P 피어:** beta3에는 i2pd가 포함됩니다. 비트코인코어 → Mempool · 네트워크 설정에서 I2P 수신·송신을 선택하세요. 기본값은 모두 꺼짐입니다. Core 22에서 수신을 사용하려면 송신도 켜야 하며, Core 23부터 수신만 켤 수 있습니다. [네트워크 설정 안내](../SETTINGS.md)를 참고하세요.
@@ -16,7 +16,7 @@ beta6에서는 동기화 전 Electrs 진행률 표시를 수정하고 Clearnet �
 
 ## 포함 기능
 
-- 공식 서명을 검증한 Bitcoin Core. Core 22부터 지원 카탈로그의 버전을 선택하며, 호환성을 확인하지 않은 버전은 별도 데이터 경로를 사용합니다.
+- 공식 서명을 검증한 Bitcoin Core. 버전 변경은 사전 검증과 명시적 삭제 확인 후 현재 체인 경로에서 전체 재동기화합니다. 지갑 데이터가 있는 전환은 삭제 전에 차단합니다.
 - 실제 비권한 TUI와 모바일에서도 영역이 재배치되는 브라우저 화면. 블록·피어·수수료·시스템 상태를 실제 노드에서 수집합니다.
 - Tor와 electrs. LAN/Tor별 연결 주소·포트·TLS 정보와 QR을 제공합니다.
 - **mempool 3.3.1 기본 포함:** 상단 Electrs 옆 **멤풀**을 누르면 LAN에서는 **http://justverify.local:3006**, Tor에서는 현재 onion 주소의 3006 포트가 열립니다.
@@ -51,15 +51,15 @@ NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 �
 
 ## 다운로드와 설치
 
-1. 이 저장소의 [**Releases**](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta7)에 게시된 [justverify-0.1.0-beta7.img.xz](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7.img.xz), [justverify-0.1.0-beta7-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7-SHA256SUMS), 서명, manifest와 릴리스 안내를 받으세요. 해당 manifest에 기재된 이미지를 사용합니다.
-2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta7.img.xz`로 파일 해시를 계산해 [justverify-0.1.0-beta7-SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta7/justverify-0.1.0-beta7-SHA256SUMS)와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
+1. [이미지 (658 MB)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8.img.xz)와 [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8-SHA256SUMS)를 받으세요. [beta8 릴리스](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta8)에 서명, 소스코드와 검증 보고서도 있습니다.
+2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta8.img.xz`로 파일 해시를 계산해 `justverify-0.1.0-beta8-SHA256SUMS`와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
 3. XZ 압축을 지원하는 도구로 `.img.xz`를 풀고, **balenaEtcher**에서 나온 `.img`와 지정한 NVMe를 선택해 기록하세요. 실제 macOS/Etcher 2.1.6 시험에서 XZ 직접 기록은 검증에 실패했고, 압축을 푼 IMG는 통과했습니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
 4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
 5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.
 6. 앞으로 사용할 웹 관리자 암호와 확인 암호를 입력합니다. 기기별 신원과 데이터 영역이 준비되고 기본 Core 프로필이 자동 시작됩니다.
 7. 전원과 네트워크를 유지하며 Core 동기화를 기다리세요. electrs와 mempool의 준비 상태도 별도로 확인합니다. 서비스 실행 중 표시만으로 전체 완료를 판단하지 않습니다.
 
-새 프로필에는 거래 조회용 `txindex=1`이 기본 저장됩니다. 기존 프로필의 설정은 보존합니다. Core·txindex·electrs가 준비될 때까지 mempool에 준비 상태를 표시하며, 결과를 외부 탐색기 데이터로 대체하지 않습니다.
+새 프로필에는 거래 조회용 `txindex=1`이 기본 저장됩니다. 기존 프로필의 설정은 보존합니다. Electrs 동기화 중에도 Core 기반 멤풀 블록 화면을 열 수 있습니다. 주소 이력과 과거 거래 조회는 필요한 인덱스가 준비되면 제공하며, 외부 탐색기 데이터로 대체하지 않습니다.
 
 ## 평소 사용
 

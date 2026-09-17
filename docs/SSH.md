@@ -3,8 +3,10 @@
 From the same local network:
 
 ```sh
-ssh justverify@justverify.local
+ssh -4 justverify@justverify.local
 ```
+
+Use IPv4 for the default password login. If `.local` resolves to a globally routed IPv6 address, password authentication is deliberately unavailable on that address. Private/link-local IPv6 and SSH public-key authentication retain their existing rules.
 
 The initial SSH username and password are both `justverify`. Change the SSH password with `passwd` after first login. The web administrator password is separate.
 

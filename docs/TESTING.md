@@ -1,38 +1,21 @@
-# Release validation — 0.1.0-beta7
+# Release validation — 0.1.0-beta8
 
-Beta7 is a testing release. The application changes have been exercised on a Raspberry Pi 5; fresh installation of this exact beta6 image on physical hardware remains pending.
-
-| Check | Scope and result |
+| Check | Result |
 |---|---|
-| Browser language and presentation | PASS: Pi runtime; automatic/manual choices, fixed multilingual heading, refresh persistence, mobile320/390px, genuine encrypted backup restoration and unchanged request guards. Recent-block atomic replacement and desktop peer scrolling verified with actual Pi data. |
-| Core settings and editor | PASS (unchanged beta6 validation): 32 verified ARM Core releases22.0–31.1, 64 isolated starts; editor save/restart, actual failed-start recovery, version/protected-setting guards and signed regtest arbitrary-data boundaries |
-| Pi application | PASS (beta6 physical reboot; beta7 web changes verified with service restart): application update on Pi5/8GB/NVMe; authentication/CSRF/editor checks, retained settings/session after physical reboot, active Core RPC and continued mainnet IBD. Existing production data preserved. |
-| Electrs progress | PASS (unchanged beta6 regression; packaged beta7 tip/readiness also checked below): zero/unknown target and IBD guards; real Core/electrs tip and wallet query, delayed responses, timestamps, pause/resume, restart and fork recovery |
-| Core status and interface | PASS (retained status tests plus current presentation checks): real Core initial sync, caught-up tip, header-only lag, no-new-block waiting, RPC pause/recovery and HTTP stall; desktop/mobile, four themes and three languages. Reduced-motion CSS branch checked; actual OS preference switch not exercised. |
-| Recent block sizes | PASS (unchanged size collector; current batch display additionally tested on Pi): native/ARM Core31.1 regtest sizes match serialized bytes, including genesis; retained across refresh/reorg; six Pi mainnet blocks match RPC; desktop1280/mobile390/320px preserve pool and avoid overflow |
-| Packaged boot and reboot | PASS: initial generic ARM boot and reboot; factory policy defaults, actual editor preflight and block sizes, matching Core/electrs/mempool tips, login/settings/identity persistence, index pause/resume, and guarded encrypted backup restore, including Automatic language factory default, manual choices and restoration |
-| Image integrity | PASS: full transfer/decompression hashes, filesystem, ARM executables, runtime source hashes, service units and absence of provisioned device identities |
+| Core/electrs/Mempool/MariaDB integration | PASS: isolated ARM64 regtest; early HTTP/WebSocket, address queries, signed transaction broadcast, confirmation, outage/reconnect |
+| Explorer failure and storage | PASS: actual backend SIGKILL preserves SQL PID; separate watch-only profile, fixed storage identity, bounded logs/cache; saved height107 → fresh height2 recovery |
+| LAN Electrum TLS | PASS: actual IPv4/IPv6 headers and signed broadcasts, trusted certificate, idle expiry, ping and reconnect |
+| Services and backup | PASS: four native startup failures followed by real Core RPC; actual stop failure refuses backup writes and resumes services; strict policy API accepts registered storage identity |
+| Version changes | PASS: native Core31.1 →22.0 →31.1, same data paths and fresh genesis; earlier full pinned release matrix and interruption tests recorded separately |
+| Collector and configuration | PASS: actual RPC delays, pause/recovery/reorg; Rust tests and actual encrypted GPG backup/restore |
+| Image integrity | PASS: offline filesystem, runtime/source identity, pinned binary hashes, empty device identities and service definitions; complete transfer checks recorded in the manifest |
+| Packaged boot and reboot | PASS: both boots, real Core/electrs/explorer tip agreement, session/identity preservation, indexing pause/recovery and encrypted backup restore in disposable generic ARM image |
+| Physical Pi 5 / 2 TB NVMe installation and boot | PASS: Etcher verification, factory data-partition expansion, exact installed binary/runtime hashes, SSH/sudo, active services and continuing mainnet block download |
+| Explorer on physical Pi during IBD | PASS: real block list and WebSocket; Core 10,356 → 37,026 over 212 seconds; Electrs correctly waits for Core |
+| Full mainnet indexing and physical reboot | NOT RUN for beta8; generic ARM reboot was checked separately |
+| Physical hardware wallet and mobile wallet app combinations | NOT RUN; regtest signing is not physical-device testing |
+| Mainnet throughput/thermal comparison with Umbrel | NOT RUN; startup health observation is not a controlled throughput comparison |
 
-The title badge uses fresh Core IBD and block/header state. Rounded100% and time since the previous block do not establish synchronization. Electrs wallet readiness additionally requires fresh matching Core/Electrum tips and a usable index query. A shorter-chain test explicitly invokes electrs `--reindex-last-blocks=2` only on disposable regtest data.
+See the packaged test report for artifact hashes, exact checks and remaining limits. Generic ARM boot does not test Raspberry Pi firmware or the physical NVMe adapter.
 
-Run focused checks with the pinned executables in an isolated environment:
-
-```sh
-cargo test --locked
-node tests/core_status_view.cjs
-node tests/electrs_status_view.cjs
-node tests/recent_blocks_view.cjs
-node tests/language_selection.cjs
-node tests/mempool_links.js
-python3 tests/backup_device_compat.py
-python3 tests/collector_responsiveness.py --binary /path/to/justverify --core /path/to/bitcoin/bin
-python3 tests/electrs_status_live.py --binary /path/to/justverify --core /path/to/bitcoin/bin --electrs /path/to/electrs
-JV_CORE_BIN=/path/to/bitcoin/bin/bitcoind cargo test --test policy_integration -- --ignored
-JV_CORE_MATRIX=/path/to/verified-core-matrix cargo test --test config_editor -- --ignored
-```
-
-The image test `tests/image_mempool_tor_probe.py` runs only on a disposable generic ARM image copy using an external Debian kernel. It exercises installed services, not physical Pi firmware or public Tor transport. The source build procedure is in [BUILD.md](BUILD.md).
-
-Previous unchanged Core policy, collector, Tor explorer transport, I2P and backup evidence remains in [beta6](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta6) and its linked earlier releases. Core22 incoming-only I2P remains unsupported; Core22/23 reuse persistent outgoing identities. Pruning is incompatible with bundled electrs.
-
-Fresh physical beta6 installation/reboot, full public-network synchronization/indexing, physical mobile-wallet/camera use, long-duration operation, restore onto a new data UUID, OS update failure recovery and whole-image byte reproducibility remain pending. Earlier generic ARM onion-RPC timing failures are separate from the passing explorer checks and have not been proven to be VM-only.
+First-boot observations: the explorer frontend retried once while the protected Tor state directory was created. Tor initially reported clock skew, then reached bootstrap 100% after time synchronization. Both recovered automatically, and no further restarts occurred in the observation interval. No undervoltage, OOM, NVMe I/O or ext4 errors were found in that boot journal. Services, policies and chain data were not changed during observation.
