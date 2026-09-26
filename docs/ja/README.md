@@ -1,6 +1,6 @@
-# JustVerify
-
-YOUR BITCOIN NODE. No Knots, no Blake2B—nothing but Bitcoin. We are all Satoshi.
+<p align="center"><img src="../../web/static/favicon.svg" alt="JustVerify BTC" width="96"></p>
+<h1 align="center">JustVerify</h1>
+<p align="center">YOUR BITCOIN NODE.<br>No Knots, no Blake2B—nothing but Bitcoin.<br>We are all Satoshi.</p>
 
 Bitcoin Core、electrs、Tor、ローカルMempoolをまとめたRaspberry Pi用ノードです。`justverify.local`またはテキスト画面から管理できます。
 
@@ -37,3 +37,25 @@ Core31.1、electrs0.11.1、Mempool3.3.1、i2pd2.61.0を固定しています。�
 [設定](../SETTINGS.md) · [復旧](../RECOVERY.md) · [検証範囲](../TESTING.md) · [変更点](../RELEASE_NOTES.md) · [第三者ライセンス](../../licenses/THIRD_PARTY_NOTICES.md)
 
 検証報告書には実行済み試験と、未検証の実機ウォレット・機器の組み合わせを区別して記載しています。
+
+## 画面と動画
+
+Digital Rainを有効にした0.1.0の画面です。独立したregtestノードで撮影し、モバイル表示は幅390 pxのブラウザーを使用しています。
+
+**デスクトップの概要**
+
+![デスクトップの概要](../media/justverify-desktop.png)
+
+**モバイルの概要とElectrs接続**
+
+<p><img src="../media/justverify-mobile.png" alt="JustVerify mobile dashboard" width="300"> <img src="../media/justverify-mobile-electrs.png" alt="Electrs mobile connection" width="300"></p>
+
+**Digital Rainの設定**
+
+![Digital Rainの設定](../media/justverify-digital-rain.png)
+
+**30秒ツアー · 10画面を各3秒**
+
+https://github.com/user-attachments/assets/d26903d9-03a6-45cb-b740-3a5e81ee8407
+
+[MP4をダウンロード](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-tour.mp4)

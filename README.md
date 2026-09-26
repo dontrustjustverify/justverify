@@ -1,6 +1,6 @@
-# JustVerify
-
-YOUR BITCOIN NODE. No Knots, no Blake2B—nothing but Bitcoin. We are all Satoshi.
+<p align="center"><img src="web/static/favicon.svg" alt="JustVerify BTC" width="96"></p>
+<h1 align="center">JustVerify</h1>
+<p align="center">YOUR BITCOIN NODE.<br>No Knots, no Blake2B—nothing but Bitcoin.<br>We are all Satoshi.</p>
 
 JustVerify combines Bitcoin Core, electrs, Tor and a local Mempool explorer in an installable Raspberry Pi image. Manage your node from `justverify.local` or the text interface.
 
@@ -35,6 +35,28 @@ Initial SSH access is `justverify` / `justverify`; change it with `passwd` after
 - Seven-day renewable browser sessions, device/session management, logout and encrypted configuration backups.
 - Korean, English and Japanese; automatic browser-language selection and four color themes.
 - Optional genesis-block **Digital Rain** in Settings: brightness40% (maximum100%), speed1.60× (maximum4.00×), density140% (maximum300%). It starts off on a new installation; saved preferences are preserved. Animation runs in the browser and stops when hidden; reduced-motion uses a static background.
+
+## See JustVerify
+
+Version 0.1.0, with Digital Rain enabled. Captured from a running node in an isolated regtest environment; mobile views use a 390 px browser viewport.
+
+**Desktop dashboard**
+
+![Desktop dashboard](docs/media/justverify-desktop.png)
+
+**Mobile dashboard and Electrs wallet connection**
+
+<p><img src="docs/media/justverify-mobile.png" alt="JustVerify mobile dashboard" width="300"> <img src="docs/media/justverify-mobile-electrs.png" alt="Electrs mobile connection" width="300"></p>
+
+**Digital Rain settings**
+
+![Digital Rain settings](docs/media/justverify-digital-rain.png)
+
+**30-second tour · ten views, three seconds each**
+
+https://github.com/user-attachments/assets/d26903d9-03a6-45cb-b740-3a5e81ee8407
+
+[Download MP4](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-tour.mp4)
 
 ## Documentation
 
