@@ -110,7 +110,7 @@ impl Runtime for Native {
                 if chain["initialblockdownload"] == true {
                     return Ok(());
                 }
-                if crate::electrs_height(50001).is_ok_and(|h| chain["blocks"].as_u64() == Some(h)) {
+                if crate::electrs_height(50003).is_ok_and(|h| chain["blocks"].as_u64() == Some(h)) {
                     return Ok(());
                 }
             }

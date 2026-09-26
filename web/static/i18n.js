@@ -1,6 +1,19 @@
 'use strict';
 const I18n=(()=>{
 const messages={
+ "Digital Rain 배경":{"en":"Digital Rain background","ja":"Digital Rainの背景"},
+ "제네시스 블록의 헥사코드가 배경에서 흐릅니다.":{"en":"The genesis block's hexadecimal data flows in the background.","ja":"ジェネシスブロックの16進データが背景を流れます。"},
+ "밝기":{"en":"Brightness","ja":"明るさ"},
+ "속도":{"en":"Speed","ja":"速度"},
+ "밀도":{"en":"Density","ja":"密度"},
+ "미리보기 후 저장하세요. 기기의 동작 줄이기 설정에서는 정적으로 표시됩니다.":{"en":"Preview your changes, then save. Reduced motion shows a static background.","ja":"プレビューしてから保存してください。視差効果を減らす設定では静止表示になります。"},
+ "블록 인덱싱 중":{"en":"Indexing blocks","ja":"ブロックのインデックス作成中"},
+ "DB 정리 중":{"en":"Finalizing database","ja":"DB整理中"},
+ "최신 블록 반영 중":{"en":"Catching up to latest blocks","ja":"最新ブロックを反映中"},
+ "Electrum 수신 연결 오류":{"en":"Electrum listener error","ja":"Electrum待受接続エラー"},
+ "파일·소켓 한도 오류":{"en":"File/socket limit error","ja":"ファイル・ソケット上限エラー"},
+ "블록 크기·채굴 풀은 초기 동기화 완료 후 표시합니다.":{"en":"Block sizes and mining pools appear after initial synchronization.","ja":"ブロックサイズとマイニングプールは初期同期完了後に表示されます。"},
+"TCP · SSL 끄기 (기본)": {"en": "TCP · SSL off (default)", "ja": "TCP · SSLオフ（標準）"}, "TLS · SSL 켜기 (선택)": {"en": "TLS · SSL on (optional)", "ja": "TLS · SSLオン（任意）"}, "사용 안 함 · 지갑에서 SSL/TLS 끄기": {"en": "Off · disable SSL/TLS in your wallet", "ja": "不使用 · ウォレットのSSL/TLSをオフ"}, "SSL/TLS를 켜고 기기 인증서를 확인하세요. 인증서는 자동 갱신되지 않습니다.": {"en": "Enable SSL/TLS and verify the device certificate. Certificates do not renew automatically.", "ja": "SSL/TLSをオンにして端末の証明書を確認してください。証明書は自動更新されません。"}, "SSL/TLS를 끄세요. 인증서가 필요하지 않습니다. 암호화되지 않으므로 신뢰하는 로컬 네트워크에서만 사용하세요.": {"en": "Disable SSL/TLS. No certificate is required. Use only on a trusted local network: this connection is not encrypted.", "ja": "SSL/TLSをオフにしてください。証明書は不要です。暗号化されないため、信頼できるローカルネットワークでのみ使用してください。"},
  "인덱스 정리 중":{"en":"Finalizing index","ja":"インデックス整理中"},
 "지갑·watch-only 정보: 지갑 데이터가 있는 버전 전환은 삭제 전에 차단합니다.":{"en": "Wallet/watch-only data (transitions containing wallets are blocked)", "ja": "ウォレット・watch-only情報：ウォレットデータがある場合、削除前にバージョン変更を中止します。"},"RPC 인증정보, Tor/I2P 개인키, 기기·접속 설정":{"en": "RPC authentication, Tor/I2P identities and device/access settings", "ja": "RPC認証情報、Tor/I2P秘密鍵、端末・接続設定"},"다른 네트워크, 무관한 프로필, 과거 버전별 폴더":{"en": "Other networks, unrelated profiles and historical version folders", "ja": "他のネットワーク、無関係なプロファイル、過去のバージョン別フォルダー"},"Bitcoin 전체 IBD와 electrs 인덱싱이 필요합니다. 재시작 중에는 노드·Electrs·멤풀을 사용할 수 없으며 동기화 중에는 이용이 제한됩니다.":{"en": "Full Bitcoin IBD and electrs indexing are required. Node, Electrs and Mempool are unavailable during restart and limited during synchronization.", "ja": "Bitcoinの完全なIBDとelectrsのインデックス作成が必要です。再起動中はノード・Electrs・Mempoolを利用できず、同期中は利用が制限されます。"},"삭제 후 즉시 되돌릴 수 없습니다. 삭제가 시작된 뒤 실패해도 이전 바이너리로 자동 복귀하지 않습니다.":{"en": "Deletion cannot be immediately undone. A failure after deletion never automatically starts the previous binary.", "ja": "削除後はすぐに元に戻せません。削除開始後に失敗しても以前のバイナリへ自動復帰しません。"},"Core와 electrs의 현재 디렉토리 경로를 그대로 사용합니다. 과거 대상 버전 폴더는 재사용하거나 정리하지 않습니다.":{"en": "Core and electrs retain the SAME directory paths. Historical target-version folders are not reused or cleaned.", "ja": "Coreとelectrsの現在のディレクトリパスをそのまま使用します。過去の変更先バージョンのフォルダーは再利用・削除しません。"},"네트워크·노드 모드 변경은 기존 프로필을 보존하며 체인 데이터를 초기화하지 않습니다.":{"en": "Network/mode selection preserves existing profiles; it does not reset chain data.", "ja": "ネットワーク・ノードモードの変更では既存プロファイルを保持し、チェーンデータを初期化しません。"},"현재 프로필에서 아래 체인·인덱스 데이터만 삭제한 뒤, 검증된 대상 버전을 시작하고 처음부터 동기화합니다.":{"en": "Delete allowlisted chain/index data in the active profile, then start the verified target version and synchronize from genesis.", "ja": "現在のプロファイル内の以下のチェーン・インデックスデータだけを削除し、検証済みの変更先バージョンで最初から同期します。"},"체인 데이터를 삭제하지 않고 별도의 네트워크·노드 모드 프로필을 선택합니다.":{"en": "Select a separate network/mode profile without deleting chain data.", "ja": "チェーンデータを削除せずに別のネットワーク・ノードモードのプロファイルを選択します。"},"체인 데이터 초기화 경고":{"en": "Chain data reset warning", "ja": "チェーンデータ初期化の警告"},"버전 변경 확인":{"en": "Review version change", "ja": "バージョン変更の確認"},"삭제 대상 · 현재/대상 프로필이 같은 경로를 사용합니다.":{"en": "Delete scope · Current and target profiles use the same paths.", "ja": "削除範囲 · 現在と変更先のプロファイルは同じパスを使用します。"},"보존 대상":{"en": "Preserved data", "ja": "保持されるデータ"},"데이터 삭제 후 버전 변경":{"en": "Delete data and change version", "ja": "データを削除してバージョンを変更"},"삭제 범위를 확인하세요. 취소가 기본 선택입니다.":{"en": "Review the deletion scope. Cancel is selected by default.", "ja": "削除範囲を確認してください。初期選択はキャンセルです。"},"대상 버전 시작을 확인했습니다. IBD와 electrs 인덱싱 완료 여부는 현황에서 확인하세요.":{"en": "The target version has started. Check the dashboard for IBD and electrs indexing progress.", "ja": "変更先のバージョンが起動しました。IBDとelectrsのインデックス進捗はダッシュボードで確認してください。"},"변경이 완료되지 않았습니다. 복구 상태를 확인하세요.":{"en": "The change is incomplete. Check recovery status.", "ja": "変更は完了していません。復旧状態を確認してください。"},"다른 버전으로 변경하면 현재 경로의 체인 데이터와 electrs 인덱스를 삭제하고 처음부터 동기화합니다. 선택하거나 다운로드하는 것만으로는 변경되지 않습니다.":{"en": "Changing versions deletes chain data and the electrs index at the current paths and starts a full resync. Selecting or downloading a version makes no changes.", "ja": "バージョンを変更すると現在のパスのチェーンデータとelectrsインデックスが削除され、最初から同期します。選択やダウンロードだけでは変更されません。"},
  "자동 (브라우저 언어)":{"en":"Automatic (browser language)","ja":"自動（ブラウザーの言語）"},
@@ -508,6 +521,22 @@ const messages={
   "en": "Get started",
   "ja": "始める"
  },
+ "관리": {"en": "Manage", "ja": "管理"},
+ "로그인된 기기": {"en": "Active logins", "ja": "ログイン中の端末"},
+ "접속 중인 브라우저를 확인하고 로그아웃합니다.": {"en": "View signed-in browsers and log them out.", "ja": "ログイン中のブラウザーを確認してログアウトできます。"},
+ "로그인은 7일간 유지되며, 사용 중에는 자동 연장됩니다.": {"en": "Stay signed in for 7 days, renewed while in use.", "ja": "ログインは7日間有効で、使用中は自動延長されます。"},
+ "로그인 기기 목록을 갱신하지 못했습니다.": {"en": "Could not refresh active logins.", "ja": "ログイン中の端末を更新できませんでした。"},
+ "브라우저 정보 없음": {"en": "Unknown browser", "ja": "ブラウザー情報なし"},
+ "현재 접속": {"en": "This session", "ja": "現在の接続"},
+ "로그인 시간": {"en": "Signed in", "ja": "ログイン日時"},
+ "마지막 활동": {"en": "Last active", "ja": "最終利用"},
+ "현재 접속에서 로그아웃할까요?": {"en": "Log out of this session?", "ja": "現在の接続からログアウトしますか？"},
+ "이 기기를 로그아웃할까요?": {"en": "Log out this device?", "ja": "この端末をログアウトしますか？"},
+ "다른 기기 모두 로그아웃": {"en": "Log out other devices", "ja": "他の端末をすべてログアウト"},
+ "다른 기기에서 모두 로그아웃할까요?": {"en": "Log out all other devices?", "ja": "他の端末をすべてログアウトしますか？"},
+ "현재 접속은 유지됩니다.": {"en": "This session will stay signed in.", "ja": "現在の接続は維持されます。"},
+ "로그인 상태가 변경되었습니다. 다시 시도하세요.": {"en": "Login state changed. Please try again.", "ja": "ログイン状態が変更されました。もう一度お試しください。"},
+ "로그인이 제한되었습니다. 잠시 후 다시 시도하세요.": {"en": "Login is temporarily limited. Please try again later.", "ja": "ログインが一時的に制限されています。後でもう一度お試しください。"},
  "로그인": {
   "en": "Sign in",
   "ja": "ログイン"
@@ -1128,7 +1157,9 @@ function text(value){
  const trimmed=value.trim(),entry=messages[trimmed];
  if(entry)return value.replace(trimmed,entry[language]);
  // Dynamic dashboard labels preserve numeric values and data; never translate hashes or addresses.
- const patterns=[[/^마지막 확인 · (\d+)초 전$/,language==='en'?'Last observed · $1s ago':'最終取得・$1秒前'],[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
+ const loginWait=value.match(/^시도가 많아 잠시 제한됐습니다\. (\d+)초 후 다시 시도하세요\.$/);
+ if(loginWait)return language==='en'?`Too many attempts. Try again in ${loginWait[1]} seconds.`:`試行回数が多すぎます。${loginWait[1]}秒後にもう一度お試しください。`;
+ const patterns=[[/^약 (\d+\.\d{2})%$/,language==='en'?'≈ $1%':'約 $1%'],[/^마지막 확인 · (\d+)초 전$/,language==='en'?'Last observed · $1s ago':'最終取得・$1秒前'],[/^● 실시간 · (\d+)초 전$/,language==='en'?'● Live · $1s ago':'● リアルタイム・$1秒前'],[/^블록 ([\d,]+)$/,language==='en'?'Block $1':'ブロック $1']];
  for(const [pattern,replacement] of patterns)if(pattern.test(value))return value.replace(pattern,replacement);
  if(/\d(?:일|시간|분|초)/.test(value))value=value.replace(/(\d+)일/g,language==='en'?'$1d':'$1日').replace(/(\d+)시간/g,language==='en'?'$1h':'$1時間').replace(/(\d+)분/g,language==='en'?'$1m':'$1分').replace(/(\d+)초/g,language==='en'?'$1s':'$1秒').replace(/ 전$/,language==='en'?' ago':'前');
  for(const [source,translations] of Object.entries({"참고용 기본값: ": ["Preference default: ", "参考用の初期値: "], "JustVerify 기본값: ": ["JustVerify default: ", "JustVerify初期値: "], "Core 기본값: ": ["Core default: ", "Core既定値: "], "기본값: ": ["Default: ", "既定値: "], "지정값: ": ["Custom: ", "指定値: "], "저장된 요청값: ": ["Saved request: ", "保存された要求値: "], "입력 범위: ": ["Range: ", "入力範囲: "], "현재 실행: ": ["Running: ", "実行中: "], "선택한 버전: ": ["Selected version: ", "選択したバージョン: "], "현재 사용 · ": ["Active · ", "使用中・"], "저장하면 Core와 관련 서비스를 재시작합니다.": ["Saving restarts Core and related services.", "保存するとCoreと関連サービスを再起動します。"], " 선택됨 · 아래에서 변경 내용을 확인하세요.": [" selected · review the changes below.", " 選択済み・以下で変更内容を確認してください。"], "인증서 SHA256: ": ["Certificate SHA256: ", "証明書SHA256: "]}))value=value.split(source).join(translations[language==='en'?0:1]);

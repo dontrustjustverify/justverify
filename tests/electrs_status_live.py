@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Actual Core/electrs regtest, delayed forwarded responses, process outage and recovery."""
-import argparse, contextlib, hashlib, http.server, json, pathlib, signal, socket, socketserver, subprocess, tempfile, threading, time, urllib.request
+import argparse, contextlib, hashlib, http.server, json, pathlib, select, signal, socket, socketserver, subprocess, tempfile, threading, time, urllib.request
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--core',type=pathlib.Path,required=True)
@@ -13,22 +13,23 @@ rpcport,p2pport,ep,mp=[port() for _ in range(4)]
 delay=threading.Event();metrics_delay=threading.Event()
 class TCP(socketserver.ThreadingTCPServer):
     allow_reuse_address=True;daemon_threads=True
+connections=0
 class Forward(socketserver.BaseRequestHandler):
     def handle(self):
+        global connections
+        connections+=1
         try:
-            self.request.settimeout(5);raw=b''
-            while raw.count(b'\n')<2:
-                chunk=self.request.recv(4096)
-                if not chunk:return
-                raw+=chunk
             with socket.create_connection(('127.0.0.1',ep),5) as remote:
-                remote.sendall(raw);raw=b''
-                while raw.count(b'\n')<2:
-                    chunk=remote.recv(4096)
-                    if not chunk:break
-                    raw+=chunk
-                if delay.is_set():time.sleep(3)
-                self.request.sendall(raw)
+                self.request.settimeout(5);remote.settimeout(5)
+                while True:
+                    readable,_,_=select.select([self.request,remote],[],[],1)
+                    for source in readable:
+                        data=source.recv(4096)
+                        if not data:return
+                        if source is remote:
+                            while delay.is_set():time.sleep(.05)
+                            self.request.sendall(data)
+                        else:remote.sendall(data)
         except OSError:pass
 class Metrics(http.server.BaseHTTPRequestHandler):
     def log_message(self,*_):pass
@@ -95,9 +96,13 @@ with tempfile.TemporaryDirectory(prefix='jv-electrs-status-') as tmp:
         assert e['height']==106 and e['height_stale'] and not e['wallet_ready']
         time.sleep(4);assert snapshot()['host']['electrs']['height_updated']==stamp
         delay.clear();metrics_delay.clear();wait(ready)
+        before_connections=connections;before_fds=len(list(pathlib.Path("/proc" ,str(index.pid),"fd").iterdir()))
         index.send_signal(signal.SIGSTOP);paused=True
         s=wait(lambda:state_is('STALE'));assert s['host']['electrs']['height']==106 and s['host']['electrs']['height_stale']
         assert time.time()-s['host']['updated']<5 and time.time()-s['rpc']['getblockchaininfo']['updated']<5
+        time.sleep(30)
+        assert connections==before_connections, 'Slow RPC must retain its connection'
+        assert len(list(pathlib.Path('/proc',str(index.pid),'fd').iterdir()))==before_fds, 'Paused indexer acquired new descriptors'
         index.send_signal(signal.SIGCONT);paused=False;wait(ready)
         index.terminate();index.wait(timeout=30)
         s=wait(lambda:state_is('UNAVAILABLE'));assert s['host']['electrs']['height']==106 and not s['host']['electrs']['wallet_ready']
@@ -113,7 +118,7 @@ with tempfile.TemporaryDirectory(prefix='jv-electrs-status-') as tmp:
         index.terminate();index.wait(timeout=30);index=start(index_command+['--reindex-last-blocks=2'],'electrs-shorter-chain')
         s=wait(ready);assert s['host']['electrs']['height']==105
         cli('generatetoaddress',2,address);wait(ready)
-        print(json.dumps({'status':'PASS','core':cli('getnetworkinfo')['subversion'],'electrs':subprocess.check_output([str(args.electrs),'--version'],text=True).strip(),'binary_sha256':hashlib.sha256(args.binary.read_bytes()).hexdigest(),'height':107,'tip':cli('getbestblockhash'),'checks':['actual Core/electrs tip and wallet query','3s forwarded Electrum response does not block metrics or host collection','timeout preserves last height/timestamp with stale flag','actual SIGSTOP and SIGCONT','actual process stop/restart and unavailable state','shorter chain mismatch is not READY; explicit regtest reindex-last-blocks=2 recovers height105','new fork grows and tips agree']}))
+        print(json.dumps({'status':'PASS','core':cli('getnetworkinfo')['subversion'],'electrs':subprocess.check_output([str(args.electrs),'--version'],text=True).strip(),'binary_sha256':hashlib.sha256(args.binary.read_bytes()).hexdigest(),'height':107,'tip':cli('getbestblockhash'),'checks':['actual Core/electrs tip and wallet query','held real Electrum replies do not block metrics or host collection','timeout preserves last height/timestamp with stale flag','actual extended SIGSTOP retains one connection without FD growth, SIGCONT restores readiness','actual process stop/restart and unavailable state','shorter chain mismatch is not READY; explicit regtest reindex-last-blocks=2 recovers height105','new fork grows and tips agree']}))
     finally:
         if paused:index.send_signal(signal.SIGCONT)
         for p in reversed(processes):

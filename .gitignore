@@ -4,7 +4,3 @@
 /dist/
 *.pyc
 __pycache__/
-
-.DS_Store
-/docs/evidence/*
-!/docs/evidence/.gitkeep

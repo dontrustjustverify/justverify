@@ -23,7 +23,7 @@ async def main():
   for theme,language in [('amber','en'),('green','ja'),('ice','ko')]:
    result=await post('/device-settings',{'action':'preferences','theme':theme,'language':language});assert result['preferences']['theme']==theme and result['preferences']['language']==language
   await post('/device-settings',{'action':'name','name':'검증 노드'})
-  state=await post('/device-settings',{'action':'state'});assert state['preferences']=={'schema':1,'name':'검증 노드','theme':'ice','language':'ko'}
+  state=await post('/device-settings',{'action':'state'});assert state['preferences']=={'schema':2,'name':'검증 노드','theme':'ice','language':'ko','background':{'enabled':False,'brightness':18,'speed':70,'density':75}}
   await post('/device-settings',{'action':'password','current_password':'wrong-password','password':'Replacement-Test-2026!','password_confirm':'Replacement-Test-2026!'},401)
   async with c.get(ORIGIN+'/session') as r:assert r.status==200,'wrong current password must not log out the owner'
   oldcsrf=headers['X-CSRF-Token']

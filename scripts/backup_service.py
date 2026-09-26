@@ -4,7 +4,6 @@ import base64
 import contextlib
 import fcntl
 import http.client
-import ssl
 import hashlib
 import json
 import os
@@ -91,28 +90,26 @@ def health():
             if response.status!=200 or value.get("error"):raise ValueError("restored Core RPC failed")
             return value["result"]
         finally:connection.close()
-    context=ssl.create_default_context(cafile="/var/lib/justverify/web/certificate.pem")
     deadline=time.monotonic()+60
     while time.monotonic()<deadline:
         try:
-            with socket.create_connection(("127.0.0.1",50002),timeout=3) as transport:
-                with context.wrap_socket(transport,server_hostname="justverify.local") as client:
-                    client.sendall(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n')
-                    data=bytearray()
-                    while b"\n" not in data and len(data)<65536:
-                        chunk=client.recv(4096)
-                        if not chunk:raise ValueError("restored Electrum disconnected")
-                        data.extend(chunk)
-                    result=json.loads(data.split(b"\n",1)[0])["result"]
-                    header=bytes.fromhex(result["hex"]);height=result["height"]
-                    if len(header)!=80 or type(height) is not int or height<0:raise ValueError("invalid restored Electrum header")
-                    digest=hashlib.sha256(hashlib.sha256(header).digest()).digest()[::-1].hex()
-                    if rpc("getblockhash",[height])!=digest:raise ValueError("restored Core and Electrum chain mismatch")
-                    # Indexing may legitimately still be underway. Verify the real
-                    # indexed block against Core without labeling this full sync.
-                    return {"electrs_height":height,"core_height":rpc("getblockchaininfo",[])["blocks"],"indexed_hash":digest}
+            with socket.create_connection(("127.0.0.1",50001),timeout=3) as client:
+                client.sendall(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n')
+                data=bytearray()
+                while b"\n" not in data and len(data)<65536:
+                    chunk=client.recv(4096)
+                    if not chunk:raise ValueError("restored Electrum disconnected")
+                    data.extend(chunk)
+                result=json.loads(data.split(b"\n",1)[0])["result"]
+                header=bytes.fromhex(result["hex"]);height=result["height"]
+                if len(header)!=80 or type(height) is not int or height<0:raise ValueError("invalid restored Electrum header")
+                digest=hashlib.sha256(hashlib.sha256(header).digest()).digest()[::-1].hex()
+                if rpc("getblockhash",[height])!=digest:raise ValueError("restored Core and Electrum chain mismatch")
+                # Indexing may legitimately still be underway. Verify the real
+                # indexed block against Core without labeling this full sync.
+                return {"electrs_height":height,"core_height":rpc("getblockchaininfo",[])["blocks"],"indexed_hash":digest}
         except (OSError,ValueError,KeyError,http.client.HTTPException):time.sleep(.5)
-    raise TimeoutError("restored Electrum TLS and Core header validation failed")
+    raise TimeoutError("restored Electrum TCP and Core header validation failed")
 
 def schedule_web_restart():
     subprocess.run([

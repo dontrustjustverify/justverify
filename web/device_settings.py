@@ -3,24 +3,35 @@ import asyncio, hmac, json, pathlib, secrets, time, unicodedata
 from aiohttp import web
 from node_admin import call
 
-DEFAULTS = {'schema': 1, 'name': 'justverify', 'theme': 'teal', 'language': 'auto'}
+BACKGROUND = {'enabled': False, 'brightness': 40, 'speed': 160, 'density': 140}
+DEFAULTS = {'schema': 2, 'name': 'justverify', 'theme': 'teal', 'language': 'auto', 'background': BACKGROUND}
+
+def background(value):
+    if not isinstance(value, dict) or set(value) != set(BACKGROUND) or type(value['enabled']) is not bool:
+        raise ValueError('Invalid background preferences')
+    for key, low, high in (('brightness', 3, 100), ('speed', 15, 400), ('density', 30, 300)):
+        if type(value[key]) is not int or not low <= value[key] <= high:
+            raise ValueError('Invalid background range')
+    return dict(value)
 
 def validate(value):
-    if not isinstance(value, dict) or set(value) != set(DEFAULTS) or type(value['schema']) is not int or value['schema'] != 1:
+    if isinstance(value, dict) and set(value) == {'schema', 'name', 'theme', 'language'} and type(value['schema']) is int and value['schema'] == 1:
+        value = {**value, 'schema': 2, 'background': dict(BACKGROUND)}
+    if not isinstance(value, dict) or set(value) != set(DEFAULTS) or type(value['schema']) is not int or value['schema'] != 2:
         raise ValueError('잘못된 설정 형식입니다.')
     if value['theme'] not in ('teal', 'amber', 'green', 'ice') or value['language'] not in ('auto', 'ko', 'en', 'ja'):
         raise ValueError('지원하지 않는 색상 또는 언어입니다.')
     name = value['name']
     if not isinstance(name, str) or not 1 <= len(name) <= 40 or name != name.strip() or any(unicodedata.category(c).startswith('C') for c in name):
         raise ValueError('계정명은 제어문자 없이 1~40자로 입력하세요.')
-    return value
+    return {**value, 'background': background(value['background'])}
 
 class DeviceSettings:
     def __init__(self, bridge, atomic, password_hash):
         self.bridge=bridge; self.atomic=atomic; self.password_hash=password_hash
         self.path=bridge.state/'preferences.json'; self.plans={}; self.lock=asyncio.Lock()
     def preferences(self):
-        return validate(json.loads(self.path.read_text())) if self.path.exists() else dict(DEFAULTS)
+        return validate(json.loads(self.path.read_text())) if self.path.exists() else validate(DEFAULTS)
     def verify_password(self, request, password):
         self.bridge.limited(request)
         if not isinstance(password, str) or not 12 <= len(password) <= 256: raise web.HTTPUnauthorized()
@@ -32,6 +43,7 @@ class DeviceSettings:
         self.bridge.same_origin(request); self.bridge.read_session(request)
         try:
             body=await request.json()
+            self.bridge.read_session(request)
             if not isinstance(body,dict): raise ValueError('잘못된 요청입니다.')
             async with self.lock:
                 result=await self.manage(request,body)
@@ -47,6 +59,9 @@ class DeviceSettings:
         if set(body)=={'action','theme','language'} and body['action']=='preferences':
             value=self.preferences(); value.update(theme=body['theme'],language=body['language']);validate(value)
             self.atomic(self.path,json.dumps(value,ensure_ascii=False));return {'preferences':self.preferences()}
+        if set(body)=={'action','background'} and body['action']=='background':
+            value=self.preferences();value['background']=background(body['background']);validate(value)
+            self.atomic(self.path,json.dumps(value,ensure_ascii=False));return {'preferences':self.preferences()}
         if set(body)=={'action','name'} and body['action']=='name':
             value=self.preferences();value['name']=body['name'];validate(value)
             self.atomic(self.path,json.dumps(value,ensure_ascii=False));return {'preferences':self.preferences()}
@@ -56,8 +71,7 @@ class DeviceSettings:
             self.verify_password(request,body['current_password'])
             salt=secrets.token_hex(16)
             self.atomic(self.bridge.state/'admin.json',json.dumps({'salt':salt,'hash':self.password_hash(password,salt)}))
-            self.bridge.sessions.clear();self.bridge.save_sessions()
-            for ws in list(self.bridge.active): await ws.close()
+            await self.bridge.revoke_sessions(list(self.bridge.sessions),invalidate_pending=True)
             return {'reauthenticate':True}
         if set(body)=={'action','enabled'} and body['action']=='tor_preview' and type(body['enabled']) is bool:
             result=await self.bridge.remote_web.manage({'action':'preview','enabled':body['enabled']})

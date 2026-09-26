@@ -19,9 +19,14 @@ async def main():
     REPORT['boot']='second' if previous else 'first'
     password=previous['password'] if previous else secrets.token_urlsafe(32)
     boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']=='0.1.0-beta8'
-    assert '0.1.0-beta8' in subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True)
+    expected_version=sys.argv[1] if len(sys.argv)==2 else '0.1.0-beta9'
+    assert json.loads(Path('/etc/justverify/os-release.json').read_text())['version']==expected_version
+    assert subprocess.check_output(['/opt/justverify/bin/justverify','--version'],text=True).strip()=='justverify '+expected_version
     assert 'HiddenServicePort 3006 127.0.0.1:28445' in Path('/etc/justverify/torrc').read_text()
+    assert 'HiddenServicePort 50001 127.0.0.1:50001' in Path('/etc/justverify/torrc').read_text()
+    if not previous:
+        assert json.loads(Path('/etc/justverify/profile.json').read_text())['network']=='main'
+        REPORT['checks'].append('factory profile defaults to mainnet before isolated regtest selection')
     async def wait(check,seconds=120):
         deadline=time.monotonic()+seconds
         while time.monotonic()<deadline:
@@ -40,6 +45,22 @@ async def main():
             async with c.post('http://127.0.0.1'+path,headers={'Origin':'http://127.0.0.1','X-CSRF-Token':csrf},json=body) as r:
                 assert r.status==200,(path,r.status)
                 return await r.json()
+        if expected_version in ('0.1.0-beta10-test5','0.1.0'):
+            saved_rain={'enabled':True,'brightness':100,'speed':400,'density':300} if expected_version=='0.1.0' else {'enabled':True,'brightness':26,'speed':110,'density':95}
+            preferences=(await post('/device-settings',{'action':'state'}))['preferences']
+            assert preferences['schema']==2
+            if previous:
+                assert preferences['background']==saved_rain
+                REPORT['checks'].append('Digital Rain values survive actual VM reboot')
+            else:
+                assert preferences['background']==({'enabled':False,'brightness':40,'speed':160,'density':140} if expected_version=='0.1.0' else {'enabled':False,'brightness':18,'speed':70,'density':75})
+                saved=await post('/device-settings',{'action':'background','background':saved_rain})
+                assert saved['preferences']['background']==saved_rain
+                assert saved['preferences']['language']==preferences['language']
+                REPORT['checks'].append('factory Digital Rain off; authenticated save preserves language')
+            async with c.get('http://127.0.0.1/genesis-rain.js') as r:
+                assert r.status==200 and await r.read()==Path('/opt/justverify/web/static/genesis-rain.js').read_bytes()
+            REPORT['checks'].append('packaged Digital Rain asset is served intact')
         if not previous:
             assert (await post('/storage',{'action':'prepare_profile'}))['ok']
             review=await post('/versions',{'method':'preview','version':'31.1','network':'regtest','watch_only':False})
@@ -71,6 +92,13 @@ async def main():
             return index if index.get('wallet_ready') and index.get('height')==height and index.get('target_height')==height and index.get('tip')==tip else None
         current=await wait(status_ready)
         assert not current['height_stale'] and not current['target_stale']
+        if expected_version in ('0.1.0-beta10-test2','0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5'):
+            async def db_completed():
+                value=await dashboard()
+                return value.get('host',{}).get('electrs',{}).get('compaction_complete') is True
+            await wait(db_completed)
+            assert Path('/opt/justverify/scripts/electrs_compaction.py').is_file()
+            REPORT['checks'].append('packaged DB progress observer and finalization completion after boot')
         async with c.get('http://127.0.0.1/electrs_status.js') as r:
             assert r.status==200 and 'progress' in await r.text()
         REPORT['checks'].append('packaged live Electrs metrics, exact progress heights, fresh matching tip and wallet readiness')
@@ -87,6 +115,40 @@ async def main():
             assert response['height']==height and hashlib.sha256(hashlib.sha256(bytes.fromhex(response['hex'])).digest()).digest()[::-1].hex()==tip
             writer.close();await writer.wait_closed()
         REPORT['checks'].append('packaged stable explorer identity, retry cadence and actual IPv4/IPv6 Electrum TLS headers')
+        for ip in ('127.0.0.1','::1'):
+            reader,writer=await asyncio.open_connection(ip,50001)
+            writer.write(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n');await writer.drain()
+            response=json.loads(await asyncio.wait_for(reader.readline(),5))['result']
+            assert response['height']==height and hashlib.sha256(hashlib.sha256(bytes.fromhex(response['hex'])).digest()).digest()[::-1].hex()==tip
+            writer.close();await writer.wait_closed()
+        for query,tls in (('network=lan',False),('network=lan&transport=tls',True)):
+            async with c.get('http://127.0.0.1/electrum?'+query,headers={'X-CSRF-Token':csrf}) as r:
+                assert r.status==200;endpoint=await r.json()
+                assert endpoint['payload']==('justverify.local:50002' if tls else 'justverify.local:50001')
+                assert endpoint['tls']==tls and endpoint['service_active'] and endpoint['backend_active']
+                assert bool(endpoint['certificate_sha256'])==tls
+        assert 'electrum_rpc_addr = "127.0.0.1:50003"' in Path('/etc/justverify/electrs.toml').read_text()
+        REPORT['checks'].append('packaged default LAN TCP50001 on both IP families, optional TLS50002 API/QR, fixed internal50003 and Tor50001 route')
+
+        async def features(ip,port,tls=False):
+            options={'ssl':context,'server_hostname':'justverify.local'} if tls else {}
+            reader,writer=await asyncio.open_connection(ip,port,**options)
+            writer.write(b'{"id":50003,"method":"server.features","params":[]}\n');await writer.drain()
+            reply=json.loads(await asyncio.wait_for(reader.readline(),5))
+            writer.close();await writer.wait_closed()
+            assert reply['id']==50003 and not reply.get('error')
+            return reply['result']
+        upstream=await features('127.0.0.1',50003)
+        assert upstream['hosts']=={'tcp_port':50003}
+        expected_features=json.loads(json.dumps(upstream));expected_features['hosts']['tcp_port']=50001
+        for ip in ('127.0.0.1','::1'):
+            for port,tls in ((50001,False),(50002,True)):
+                assert await features(ip,port,tls)==expected_features
+        tor_line=next(line for line in Path('/etc/justverify/torrc').read_text().splitlines() if line.startswith('HiddenServicePort 50001 '))
+        tor_host,tor_port=tor_line.split()[2].split(':')
+        assert await features(tor_host,int(tor_port))==expected_features
+        REPORT['checks'].append('packaged feature metadata: internal50003; IPv4/IPv6 TCP/TLS and Tor local destination advertise50001, IDs and other fields unchanged')
+
         policy=await post('/policy',{'method':'state'})
         assert policy['requested']['datacarrier']=='0' and policy['requested']['datacarriersize']=='83'
         assert (await rpc('getmempoolinfo'))['maxdatacarriersize']==0
@@ -115,7 +177,10 @@ async def main():
         else:assert (await toggle(True))['running']
         async def tor_login():
             async with c.post('http://127.0.0.1:28444/login',headers={'Host':host,'Origin':'http://'+host},json={'password':password}) as r:
-                assert r.status==200;return r.cookies['jv_tor_session'].value
+                assert r.status==200;issued=r.cookies['jv_tor_session'].value
+                # Keep explicit saved-cookie probes independent of the newest login.
+                c.cookie_jar.clear(lambda cookie:cookie.key=='jv_tor_session')
+                return issued
         token=previous['token'] if previous else await tor_login()
         headers={'Host':host+':3006','Origin':'http://'+host+':3006','Cookie':'jv_tor_session='+token}
         async def explorer(path,expected=200):
@@ -136,18 +201,52 @@ async def main():
                             found=True;break
             assert found
         REPORT['checks']+=['packaged version and Tor mapping','actual Core/electrs/LAN explorer tip','Tor login shared by authenticated packaged explorer and real WebSocket']
+        if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5'):
+            for _ in range(18):await tor_login()
+            assert await explorer('/api/blocks/tip/hash')==tip
+            async with c.get('http://127.0.0.1/sessions',headers={'X-CSRF-Token':csrf}) as r:
+                assert r.status==200;listed=(await r.json())['sessions']
+            assert len(listed)>16 and sum(s['current'] for s in listed)==1
+            assert all(set(s)=={'id','created_at','last_seen_at','expires_at','browser','platform','current','connection'} for s in listed)
+            extra_token=await tor_login()
+            auth={'Host':host,'Origin':'http://'+host,'Cookie':'jv_tor_session='+extra_token}
+            async with c.get('http://127.0.0.1:28444/session',headers=auth) as r:
+                assert r.status==200;extra_csrf=(await r.json())['csrf']
+            async with c.get('http://127.0.0.1:28444/sessions',headers={**auth,'X-CSRF-Token':extra_csrf}) as r:
+                assert r.status==200;extra_id=next(s['id'] for s in (await r.json())['sessions'] if s['current'])
+            async with c.ws_connect('http://127.0.0.1:28445/api/v1/ws',headers={**headers,'Cookie':'jv_tor_session='+extra_token}) as ws:
+                result=await post('/sessions',{'action':'revoke','id':extra_id})
+                assert result=={'revoked_count':1,'revoked_current':False}
+                async with asyncio.timeout(10):
+                    while True:
+                        message=await ws.receive()
+                        if message.type in (aiohttp.WSMsgType.CLOSE,aiohttp.WSMsgType.CLOSED):break
+            async with c.get('http://127.0.0.1:28444/session',headers=auth) as r:assert r.status==401
+            assert await explorer('/api/blocks/tip/hash')==tip
+            REPORT['checks'].append('over16 actual logins preserve earlier browser; private device list and selective revocation close real explorer WebSocket')
         if not previous:
             subprocess.run(['systemctl','restart','justverify-web'],check=True)
             async def restored():return await explorer('/api/blocks/tip/hash')==tip
             await wait(restored,30)
+            if expected_version in ('0.1.0-beta10-test5','0.1.0'):
+                assert (await post('/device-settings',{'action':'state'}))['preferences']['background']==saved_rain
+                REPORT['checks'].append('Digital Rain preferences survive real web service restart')
             REPORT['checks'].append('web systemd restart preserves Tor explorer login')
             with os.fdopen(os.open(checkpoint,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'w') as f:
                 json.dump({'password':password,'token':token,'onion':host,'tip':tip,'boot_id':boot_id},f)
         else:
             REPORT['checks'].append('real reboot preserves Tor identity/login, opt-in setting and three matching node tips')
             import signal
-            pid=int(subprocess.check_output(['systemctl','show','justverify-electrs','--property=MainPID','--value'],text=True))
-            assert pid>1
+            supervisor=int(subprocess.check_output(['systemctl','show','justverify-electrs','--property=MainPID','--value'],text=True))
+            assert supervisor>1
+            children=Path(f'/proc/{supervisor}/task/{supervisor}/children').read_text().split()
+            upstream=[int(child) for child in children if Path(f'/proc/{child}/exe').resolve()==Path('/opt/justverify/bin/electrs')]
+            assert len(upstream)==1, 'Expected the packaged supervisor to own one actual electrs process'
+            pid=upstream[0]
+            limits=Path(f'/proc/{pid}/limits').read_text()
+            open_files=next(line.split() for line in limits.splitlines() if line.startswith('Max open files'))
+            assert open_files[3:5]==['65536','65536']
+            REPORT['checks'].append('packaged supervisor owns actual electrs with FD soft/hard limits65536')
             os.kill(pid,signal.SIGSTOP)
             try:
                 async def stale_index():
@@ -181,7 +280,10 @@ async def main():
             bundle=production_bundle();bundle.state=STATE/'backup';bundle.destination=STATE/'legacy.jvb'
             bundle.prepare_state();values=bundle.snapshot()
             canonical=values['etc/torrc']
-            values['etc/torrc']=canonical.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n')
+            electrs_config=values['etc/electrs.toml']
+            values['etc/electrs.toml']=electrs_config.replace(b'127.0.0.1:50003',b'127.0.0.1:50001')
+            ready=json.loads(values['etc/node-ready.json']);ready['configs']['electrs.toml']=hashlib.sha256(values['etc/electrs.toml']).hexdigest();values['etc/node-ready.json']=json.dumps(ready).encode()
+            values['etc/torrc']=canonical.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n').replace(b'HiddenServicePort 50001 127.0.0.1:50001',b'HiddenServicePort 50001 127.0.0.1:50003')
             assert values['etc/torrc']!=canonical
             plain=STATE/'legacy.tar';cipher=STATE/'legacy.gpg';passphrase=secrets.token_urlsafe(32)
             bundle._write_tar(plain,values)
@@ -194,6 +296,7 @@ async def main():
             try:assert bundle.restore(passphrase,reviewed['sha256'],health_check=recovered)['phase']=='committed'
             finally:resume()
             assert Path('/etc/justverify/torrc').read_bytes()==canonical
+            assert Path('/etc/justverify/electrs.toml').read_bytes()==electrs_config
             # The restore restarts the web process. A pooled connection can
             # close while synchronous restore work has paused this event loop.
             # Require a successful authenticated response after restart.
@@ -208,7 +311,13 @@ async def main():
             await wait(lan_ready,120)
             await wait(status_ready,120)
             assert await explorer('/api/blocks/tip/hash')==tip
-            REPORT['checks'].append('actual GPG legacy backup passes installed data-volume guard; restore upgrades fixed Tor route and preserves identity/tip; explorer recovers')
+            REPORT['checks'].append('actual GPG legacy backup passes installed data-volume guard; restore upgrades fixed Tor and Electrum routes and preserves identity/tip; explorer recovers')
+            if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4'):
+                result=await post('/sessions',{'action':'revoke_others'})
+                assert result['revoked_count']>0 and not result['revoked_current']
+                await explorer('/api/blocks/tip/hash',401)
+                async with c.get('http://127.0.0.1/session') as r:assert r.status==200
+                REPORT['checks'].append('other-device logout revokes Tor explorer access while current LAN login remains usable')
         REPORT.update(status='PASS',height=height,tip=tip)
 
 try:asyncio.run(main())

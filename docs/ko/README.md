@@ -1,87 +1,39 @@
-<p align="center"><img src="../../web/static/favicon.svg" alt="JustVerify BTC" width="96"></p>
-<h1 align="center">JustVerify</h1>
-<p align="center">YOUR BITCOIN NODE.<br>No Knots, no Blake2B—nothing but Bitcoin.<br>We are all Satoshi.</p>
-<p align="center"><a href="../../README.md">English</a> · 한국어 · <a href="../ja/README.md">日本語</a></p>
+# JustVerify
 
-내가 직접 검증하는 Bitcoin Core 노드입니다. NVMe에 이미지를 기록하고 Raspberry Pi 5를 켠 뒤 **http://justverify.local**을 여세요. 터미널 스타일의 대시보드, Tor, electrs와 로컬 mempool 탐색기가 함께 설치됩니다.
+YOUR BITCOIN NODE. No Knots, no Blake2B—nothing but Bitcoin. We are all Satoshi.
 
-**0.1.0-beta8은 시험 배포 버전입니다.** 설치 전에 [통과·미검증 항목](../TESTING.md)을 확인하세요. 빌드나 regtest 성공이 mainnet 전체 인덱싱, 실제 휴대폰 지갑 연결, 장시간 안정성 검증을 뜻하지 않습니다.
+Bitcoin Core·electrs·Tor·로컬 Mempool 탐색기를 함께 제공하는 Raspberry Pi 노드입니다. `justverify.local` 또는 실제 텍스트 인터페이스에서 관리합니다.
 
-beta8은 Electrs 인덱싱 중 멤풀 화면 로딩, DB 복구, 로그·캐시 용량 제한과 LAN 지갑 연결을 개선했습니다. Core 버전을 바꿀 때는 현재 데이터 경로에서 체인 초기화 범위를 확인하고 전체 재동기화를 시작합니다. [변경 내용](../RELEASE_NOTES.md).
+[English](../../README.md) · [日本語](../ja/README.md) · [소스로 이미지 만들기](BUILD.md)
 
+## 정식 버전 0.1.0 다운로드
 
-**I2P 피어:** beta3에는 i2pd가 포함됩니다. 비트코인코어 → Mempool · 네트워크 설정에서 I2P 수신·송신을 선택하세요. 기본값은 모두 꺼짐입니다. Core 22에서 수신을 사용하려면 송신도 켜야 하며, Core 23부터 수신만 켤 수 있습니다. [네트워크 설정 안내](../SETTINGS.md)를 참고하세요.
+[Pi 이미지 IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS) · [서명](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS.asc) · [공개 서명키](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-signing-key.asc) · [소스](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-source.tar.gz) · [릴리스](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0)
 
-언어 기본값은 **자동 (브라우저 언어)**입니다. 한국어·영어·일본어 중 브라우저 선호 언어를 사용하며, 지원 언어가 없으면 영어로 표시합니다. 직접 선택한 언어는 유지됩니다.
+## 설치
 
-## 포함 기능
+기준 장비는 Raspberry Pi5, RAM8GB,2TB SSD/NVMe, 유선 LAN과 적절한 전원·냉각입니다. Pi4·x86용 이미지는 아닙니다.
 
-- 공식 서명을 검증한 Bitcoin Core. 버전 변경은 사전 검증과 명시적 삭제 확인 후 현재 체인 경로에서 전체 재동기화합니다. 지갑 데이터가 있는 전환은 삭제 전에 차단합니다.
-- 실제 비권한 TUI와 모바일에서도 영역이 재배치되는 브라우저 화면. 블록·피어·수수료·시스템 상태를 실제 노드에서 수집합니다.
-- Tor와 electrs. LAN/Tor별 연결 주소·포트·TLS 정보와 QR을 제공합니다.
-- **mempool 3.3.1 기본 포함:** 상단 Electrs 옆 **멤풀**을 누르면 LAN에서는 **http://justverify.local:3006**, Tor에서는 현재 onion 주소의 3006 포트가 열립니다.
-- 한국어·영어·일본어와 Teal·Amber·Green·Ice 글자색 테마.
-- 변경 내용 확인 후 설정 적용, 암호화 설정 백업 및 복원 도구.
+1. 이미지와 체크섬·서명을 내려받고 [설치 안내](../INSTALL.md)에 따라 검증합니다.
+2. XZ를 풀어 나온 `.img`를 balenaEtcher에서 선택합니다. **선택한 디스크의 모든 데이터가 삭제됩니다.** 기록 후 검증을 생략하지 마세요.
+3. 저장장치를 Pi에 연결하고 부팅한 뒤 같은 LAN에서 `http://justverify.local/`을 열어 웹 관리자 암호를 설정합니다.
+4. Core IBD, Electrs 인덱싱·DB 정리·최신 블록 확인 완료를 기다립니다. 멤풀의 Core 기반 블록 화면은 Electrs 인덱싱 중에도 사용할 수 있습니다.
 
-OP_RETURN·네트워크 설정과 로그인 유지 방식은 [노드 설정 안내](../SETTINGS.md)를 참고하세요.
+지갑 앱에는 신뢰하는 LAN에서 **`justverify.local:50001`, SSL/TLS 끄기**를 사용하세요. 선택 TLS는50002이며 Tor 주소·QR은 Electrs 메뉴에 있습니다. [지갑 연결](../MOBILE_CONNECTIONS.md)을 참고하세요.
 
-## 화면과 사용 영상
+최초 SSH 계정·암호는 `justverify` / `justverify`입니다. 접속 후 `passwd`로 변경하세요. 웹 암호와 별개이며 SSH 암호로 sudo 인증을 합니다. [SSH 관리](../SSH.md).
 
-메뉴 클릭과 스크롤을 담은 **30초 영상**입니다. 10개 화면을 각각 3초씩 보여줍니다.
+## 기능
 
-https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+- 블록·피어·수수료·서비스 상태, Electrs 블록 인덱싱/DB 정리/최신 블록 반영/완료 표시.
+- 공식 서명 검증을 거친 Core22.x–31.1 버전 선택과 버전별 정책 설정. 다른 버전으로 실제 전환하면 사전 검사와 삭제 범위 확인 후 같은 데이터 경로의 체인·인덱스를 초기화하고 전체 재동기화합니다. 단순 선택·다운로드는 데이터를 바꾸지 않습니다.
+- Clearnet·Tor·I2P 피어 선택, 선택형 Tor 원격 웹 접속.
+- 7일 로그인 유지·사용 중 연장, 접속 브라우저 관리·개별/다른 기기 로그아웃, 암호화 설정 백업.
+- 한국어·영어·일본어 및 자동 브라우저 언어,4개 색상 테마.
+- **설정 → Digital Rain 배경**: 새 설치에서는 꺼짐. 밝기 기본40%/최대100%, 속도 기본1.60×/최대4.00×, 밀도 기본140%/최대300%. 미리보기 후 저장/취소하며 기존 저장값을 유지합니다. 브라우저에서만 실행하고 숨겨진 탭에서는 멈춥니다.
 
-[30초 영상 다운로드 (MP4)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+Core31.1·electrs0.11.1·Mempool3.3.1·i2pd2.61.0을 고정합니다. 기본 노드는 지갑 개인키를 보관하지 않습니다. 재기록은 기존 데이터를 보존하는 업데이트가 아닙니다.
 
-**데스크톱 현황**
+[노드 설정](../SETTINGS.md) · [복구](../RECOVERY.md) · [검증 범위](../TESTING.md) · [변경 내용](../RELEASE_NOTES.md) · [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)
 
-![JustVerify 데스크톱 현황](../media/justverify-desktop.png)
-
-**모바일 현황과 Electrs**
-
-<p><img src="../media/justverify-mobile.png" alt="JustVerify 모바일 현황" width="280"> <img src="../media/justverify-mobile-electrs.png" alt="JustVerify 모바일 Electrs 연결과 QR" width="280"></p>
-
-실제 beta1 앱과 Bitcoin Core·electrs·mempool을 격리 ARM VM의 **regtest**에서 실행해 촬영했습니다. 모바일 화면은 브라우저 폭 390 px에서 확인한 반응형 레이아웃이며, 실제 휴대폰이나 공개 네트워크 검증 결과를 뜻하지 않습니다. 표시된 주소·QR은 폐기 가능한 시험 환경용입니다. 연결할 때는 본인 노드에 표시되는 정보를 사용하세요.
-
-## 준비할 장비
-
-현재 이미지는 **Raspberry Pi 5, 64비트, 유선 LAN, NVMe**용입니다. 실기 검증 기준은 **RAM 8 GB와 NVMe 2 TB**, 호환되는 NVMe HAT·부트로더입니다. 적절한 전원 공급 장치와 냉각 장치를 사용하세요. Pi 4와 x86 PC용 이미지가 아닙니다.
-
-NVMe 한 개에 OS와 데이터 파티션을 나눕니다. 데이터 영역은 첫 부팅에 자동 확장되며 A/B OS는 필요하지 않습니다. 전체 체인·txindex·electrs·탐색기 데이터가 저장되므로 압축 이미지 크기와 실제 필요한 저장공간은 다릅니다.
-
-## 다운로드와 설치
-
-1. [이미지 (658 MB)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8.img.xz)와 [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8-SHA256SUMS)를 받으세요. [beta8 릴리스](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta8)에 서명, 소스코드와 검증 보고서도 있습니다.
-2. macOS에서는 `shasum -a 256 justverify-0.1.0-beta8.img.xz`로 파일 해시를 계산해 `justverify-0.1.0-beta8-SHA256SUMS`와 비교하세요. 실험용 서명키의 확인 방법과 한계는 [설치 안내](../INSTALL.md)에 있습니다.
-3. XZ 압축을 지원하는 도구로 `.img.xz`를 풀고, **balenaEtcher**에서 나온 `.img`와 지정한 NVMe를 선택해 기록하세요. 실제 macOS/Etcher 2.1.6 시험에서 XZ 직접 기록은 검증에 실패했고, 압축을 푼 IMG는 통과했습니다. 선택한 드라이브 내용은 지워집니다. 검증을 건너뛰지 말고 성공 표시까지 기다리세요.
-4. 안전하게 추출한 NVMe를 Pi 5에 장착하고 LAN과 전원을 연결합니다.
-5. 같은 네트워크에서 **http://justverify.local**을 여세요. 이름으로 접속할 수 없으면 공유기에서 확인한 Pi IP 주소를 사용하세요.
-6. 앞으로 사용할 웹 관리자 암호와 확인 암호를 입력합니다. 기기별 신원과 데이터 영역이 준비되고 기본 Core 프로필이 자동 시작됩니다.
-7. 전원과 네트워크를 유지하며 Core 동기화를 기다리세요. electrs와 mempool의 준비 상태도 별도로 확인합니다. 서비스 실행 중 표시만으로 전체 완료를 판단하지 않습니다.
-
-새 프로필에는 거래 조회용 `txindex=1`이 기본 저장됩니다. 기존 프로필의 설정은 보존합니다. Electrs 동기화 중에도 Core 기반 멤풀 블록 화면을 열 수 있습니다. 주소 이력과 과거 거래 조회는 필요한 인덱스가 준비되면 제공하며, 외부 탐색기 데이터로 대체하지 않습니다.
-
-## 평소 사용
-
-| 접속·메뉴 | 용도 |
-|---|---|
-| `http://justverify.local` | 현황, Core 버전 변경·정책 설정, Electrs, 기기 설정 |
-| `http://justverify.local:3006` | 내 노드의 mempool 탐색기 |
-| Electrs → 로컬 네트워크 / Tor | 실제 주소·포트·프로토콜·TLS 지문·QR |
-| 설정 | 계정, 글자색, 언어, Remote Tor access, 재시작·종료 |
-| 설정 → 백업 및 복원 | 암호화된 설정 보관·복원 |
-| 설정 → 문제 해결 | 서비스 상태와 고급 저장장치 관리 |
-
-웹 관리자 암호와 SSH 암호는 별개입니다. 요청에 따라 최초 SSH 계정은 **`justverify` / `justverify`**입니다. 처음 SSH에 접속한 뒤 `passwd`로 변경하세요. beta2에서는 SSH 암호를 입력하면 `sudo`로 OS 관리자 작업을 할 수 있습니다. [SSH 관리 안내](../SSH.md)를 참고하세요. 공개 이미지에는 개발자의 root SSH 키나 미리 생성한 기기 개인키를 포함하지 않습니다.
-
-관리 HTTP와 탐색기는 신뢰하는 LAN에서 사용하며 인터넷 포트 포워딩을 하지 마세요. Core RPC는 로컬에 제한하고, 지갑용 원격 RPC는 별도 인증·보호된 연결 경로를 사용합니다. Remote Tor access를 켜면 관리 화면과 멤풀이 같은 web onion 주소의 80·3006 포트를 사용합니다. Electrs와 지갑 RPC는 별도 주소를 사용합니다. QR 사용 전 [지갑 연결 안내](../MOBILE_CONNECTIONS.md)를 확인하세요.
-
-## 백업과 복구
-
-재설치 전에 암호화 설정 백업과 암호를 **Pi 외부에** 보관하세요. 백업은 설정과 기기 신원을 포함하며 전체 블록체인이나 지갑 개인키는 포함하지 않습니다. NVMe나 전원을 분리하기 전에 설정에서 종료하세요. 이미지 재기록은 디스크를 교체하는 새 설치이며 기존 설치에 적용하는 업데이트가 아닙니다. [설치](../INSTALL.md)와 [복구](../RECOVERY.md) 안내를 따르세요.
-
-## 빌드·검증·라이선스
-
-이미지 조립은 격리된 **ARM64 Linux** 환경에서 실행합니다. [GitHub 소스·라이브러리 받기부터 이미지 생성까지](BUILD.md), [검증 결과와 남은 항목](../TESTING.md), [릴리스 안내](../RELEASE_NOTES.md)를 함께 제공합니다.
-
-JustVerify와 각 구성요소에는 각각의 라이선스가 적용됩니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)를 확인하세요. mempool은 upstream AGPL 조건으로 별도 포함하며, 탐색기의 **소스 · AGPL**에서 원본 소스·빌드 수정·잠금 파일을 받을 수 있습니다. Umbrel은 설치 안내와 앱 구성 비교에 참고했으며 코드를 복사하지 않았습니다. 각 upstream 프로젝트의 공식 제품이나 승인을 의미하지 않습니다.
+릴리스에는 실제 실행한 시험과 미검증 실물 지갑·장비 조합을 구분한 검증 보고서가 포함됩니다.

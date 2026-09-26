@@ -4,7 +4,7 @@
 
 This guide compiles JustVerify, electrs and mempool, downloads their locked libraries, and assembles a Raspberry Pi 5 ARM64 image. Bitcoin Core comes from its official **signature-verified binary archive**; Pi OS and Debian packages are prebuilt upstream inputs. This is not a source build of every OS package or Bitcoin Core.
 
-Use the corresponding source archive delivered with the beta8 release. For published releases, use their matching tag; record the commit when building `main`. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
+Use the corresponding source archive delivered with the 0.1.0 release. For published releases, use their matching tag; record the commit when building `main`. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
 
 ## 1. Prepare an isolated builder
 
@@ -38,19 +38,19 @@ If apt cannot find the pinned Node/MariaDB versions, stop. Use a repository snap
 
 ## 2. Clone source and install toolchains
 
-Start this block in the directory containing the beta8 source archive and verified checksum file supplied with the package. See [signature verification](INSTALL.md) first. This archive is the exact beta8 release source; GitHub main may differ. A local Git baseline records subsequent build changes.
+Start this block in the directory containing the 0.1.0 source archive and verified checksum file supplied with the package. See [signature verification](INSTALL.md) first. This archive is the exact 0.1.0 release source; GitHub main may differ. A local Git baseline records subsequent build changes.
 
 ```bash
-export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-beta8-source.tar.gz"
+export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-source.tar.gz"
 test -f "$JV_SOURCE_ARCHIVE"
-sha256sum --ignore-missing -c justverify-0.1.0-beta8-SHA256SUMS
+sha256sum --ignore-missing -c justverify-0.1.0-SHA256SUMS
 export JV_WORK="$(mktemp -d /var/tmp/justverify-source.XXXXXX)"
 chmod 755 "$JV_WORK"
 mkdir "$JV_WORK/repo"
 tar -xzf "$JV_SOURCE_ARCHIVE" --strip-components=1 -C "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0-beta8-local1
+export JV_TAG=0.1.0
 git init -b local-build
 git add .
 git -c user.name='Local builder' -c user.email='builder@localhost' commit -qm 'Imported verified source archive'
@@ -232,14 +232,14 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | Output | Purpose |
 |---|---|
-| `dist/justverify-0.1.0-beta8-local1.img` | Extracted image to select in balenaEtcher |
-| `dist/justverify-0.1.0-beta8-local1.img.xz` | Compressed image for download/storage |
-| `dist/justverify-0.1.0-beta8-local1-SHA256SUMS` | Both file hashes; check from `dist/` |
-| `dist/justverify-0.1.0-beta8-local1.layout.json` / `.size-audit.json` | Partition layout and size audit |
+| `dist/justverify-0.1.0.img` | Extracted image to select in balenaEtcher |
+| `dist/justverify-0.1.0.img.xz` | Compressed image for download/storage |
+| `dist/justverify-0.1.0-SHA256SUMS` | Both file hashes; check from `dist/` |
+| `dist/justverify-0.1.0.layout.json` / `.size-audit.json` | Partition layout and size audit |
 | `dist/os-packages.tsv` | Actual image package inventory |
 | `.state/build-guide/` | Source commit/patch, logs, local component/test evidence |
 
-A different `JV_TAG` changes the filenames. SHA256 is an integrity check, not a publisher signature. This example creates an unsigned local build. Redistribution also requires your exact source/patches, corresponding component sources/licenses, support/test report and your own signing process. See [third-party notices](../licenses/THIRD_PARTY_NOTICES.md) and the [release source assets](https://github.com/dontrustjustverify/justverify/releases). Do not reuse the official signature for a changed file.
+`JV_TAG` must match the package version in `Cargo.toml`; the offline verifier checks it against the installed OS version. Use a fresh checkout/output directory for another assembly of the same version. SHA256 is an integrity check, not a publisher signature. This example creates an unsigned local build. Redistribution also requires your exact source/patches, corresponding component sources/licenses, support/test report and your own signing process. See [third-party notices](../licenses/THIRD_PARTY_NOTICES.md) and the [release source assets](https://github.com/dontrustjustverify/justverify/releases). Do not reuse the official signature for a changed file.
 
 Follow [installation](INSTALL.md) with Etcher validation enabled. Direct XZ input failed checksum validation on the tested macOS/Etcher 2.1.6 setup; the **extracted IMG** passed. Then test initial setup, Core/electrs/Tor, mempool port 3006, LAN/onion wallets, reboot and recovery on a physical Pi 5. Mark unexecuted tests `NOT RUN`/`BLOCKED`. [TESTING.md](TESTING.md) lists the remaining release gates.
 
@@ -253,7 +253,7 @@ Follow [installation](INSTALL.md) with Etcher validation enabled. Direct XZ inpu
 | Test permission denied | Check parent-directory traversal and public binary/source permissions for `justverify`; keep wallet/runtime directories private |
 | Port occupied / failed test state exists | Stop only your own test process, keep old evidence and retry in a new test path |
 | `electrs differs from tested build` | Run section 4 on that exact new binary and record local evidence |
-| Image output/intermediate exists | Keep failed logs/files; use a new `JV_TAG` or fresh checkout; never overwrite a release image |
+| Image output/intermediate exists | Keep failed logs/files; use a fresh checkout with empty output directories; never overwrite a release image |
 | Build killed / disk full | Check RAM and free disk including `/var/tmp`; reduce concurrency or enlarge the builder |
 
-To resume in a new shell, restore `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS` and `JV_MEMPOOL` to the paths used for that build, enable `set -euo pipefail`, and `cd "$JV_REPO"`. Reuse verified downloads/completed outputs; do not rerun commands requiring a new directory over existing output. For another test attempt use new `tests-...` and `jv-mempool-test-...` paths, then preserve both attempts' reports. For another assembly choose a new tag.
+To resume in a new shell, restore `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS` and `JV_MEMPOOL` to the paths used for that build, enable `set -euo pipefail`, and `cd "$JV_REPO"`. Reuse verified downloads/completed outputs; do not rerun commands requiring a new directory over existing output. For another test attempt use new `tests-...` and `jv-mempool-test-...` paths, then preserve both attempts' reports. For another assembly of this version, use a fresh checkout/output directory.

@@ -1,89 +1,43 @@
-<p align="center"><img src="web/static/favicon.svg" alt="JustVerify BTC" width="96"></p>
-<h1 align="center">JustVerify</h1>
-<p align="center">YOUR BITCOIN NODE.<br>No Knots, no Blake2B—nothing but Bitcoin.<br>We are all Satoshi.</p>
-<p align="center">English · <a href="docs/ko/README.md">한국어</a> · <a href="docs/ja/README.md">日本語</a></p>
+# JustVerify
 
-Your own Bitcoin Core node, with a compact terminal-style dashboard, Tor, electrs and a local mempool explorer. Flash one image to your NVMe, connect your Raspberry Pi 5, and open **http://justverify.local**.
+YOUR BITCOIN NODE. No Knots, no Blake2B—nothing but Bitcoin. We are all Satoshi.
 
-**0.1.0-beta8 is a testing release.** Check [tested and pending requirements](docs/TESTING.md) before installing. A successful build or regtest does not establish full mainnet indexing, physical mobile-wallet compatibility or long-term reliability.
+JustVerify combines Bitcoin Core, electrs, Tor and a local Mempool explorer in an installable Raspberry Pi image. Manage your node from `justverify.local` or the text interface.
 
-Beta8 improves explorer startup during indexing, database recovery, bounded cache/log storage and LAN wallet connections. Core version changes now require an explicit chain reset in the current data directories. [Release notes](docs/RELEASE_NOTES.md).
+[한국어](docs/ko/README.md) · [日本語](docs/ja/README.md) · [Build from source](docs/BUILD.md)
 
+## Download 0.1.0
 
-**I2P peers:** beta3 includes i2pd. In Bitcoin Core → Mempool · Network settings, select I2P separately for incoming and outgoing peers. Both start off. Core 22 requires both directions for incoming; Core 23+ permits incoming-only. See [network settings](docs/SETTINGS.md).
+- [Raspberry Pi image — IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0.img.xz)
+- [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS) · [Signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS.asc) · [Signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-signing-key.asc)
+- [Source archive](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-source.tar.gz) · [Release and component sources](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0)
 
-The language defaults to **Automatic (browser language)**: Korean, English or Japanese, with English fallback. Your manual selection is retained.
+## Install
 
-## What is included
+Use a Raspberry Pi 5 with 8 GB RAM, a suitable power supply, wired networking and a 2 TB SSD/NVMe for the default unpruned mainnet node.
 
-- Signature-verified Bitcoin Core; prepared version changes require explicit chain-reset confirmation and reuse the current paths. Wallet-bearing transitions are blocked before deletion.
-- A real non-root TUI and a responsive browser dashboard with live blocks, peers, fees and system information.
-- Tor and electrs, with distinct LAN/Tor connection details and QR codes.
-- The **mempool 3.3.1** explorer already installed at **http://justverify.local:3006**. Open **Mempool** beside Electrs in the top menu. When connected through Tor, it opens the same onion hostname on port3006.
-- Korean, English and Japanese; Teal, Amber, Green and Ice themes.
-- Reviewed settings changes, encrypted configuration backups and recovery tools.
+1. Download the image and verify its checksum and signature as described in [installation](docs/INSTALL.md).
+2. Extract the `.img.xz` and select the `.img` in balenaEtcher. Check the target device carefully: **flashing erases that disk**. Keep Etcher validation enabled.
+3. Attach the storage to the Pi, boot and open `http://justverify.local/` on the same LAN. Create the separate web administrator password.
+4. Wait for Core synchronization, Electrs indexing and DB cleanup to finish. The dashboard distinguishes indexing, cleanup, catching up and readiness.
 
-See the [node settings guide](docs/SETTINGS.md) for OP_RETURN, network settings and login persistence.
+For wallet applications, use **`justverify.local:50001`, SSL/TLS off**, on a trusted LAN. Optional TLS uses port50002; Electrs settings also provide the Tor address and QR codes. See [wallet connections](docs/MOBILE_CONNECTIONS.md).
 
-## See JustVerify
+Initial SSH access is `justverify` / `justverify`; change it with `passwd` after first login. This is separate from the web password. Password-authenticated sudo provides OS administration. See [SSH](docs/SSH.md).
 
-A **30-second tour**: ten views, three seconds each, with real menu clicks and scrolling.
+## Features
 
-https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+- Core status, recent blocks, fees, connected peers and service readiness.
+- Official signed Bitcoin Core releases from22.x through31.1, with version-specific settings and explicit confirmation before a version change clears chain/index data for full resynchronization. Merely selecting or downloading a version does not change it.
+- Clearnet, Tor and I2P peer controls; independent optional remote web access through Tor.
+- Electrum LAN TCP and optional TLS, plus Tor wallet connections. The default node holds no wallet private keys.
+- Core-backed Mempool pages during Electrs indexing; address history becomes available when the index is ready.
+- Seven-day renewable browser sessions, device/session management, logout and encrypted configuration backups.
+- Korean, English and Japanese; automatic browser-language selection and four color themes.
+- Optional genesis-block **Digital Rain** in Settings: brightness40% (maximum100%), speed1.60× (maximum4.00×), density140% (maximum300%). It starts off on a new installation; saved preferences are preserved. Animation runs in the browser and stops when hidden; reduced-motion uses a static background.
 
-[Download the video (MP4, 30 seconds)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+## Documentation
 
-**Desktop dashboard**
+[Install](docs/INSTALL.md) · [Settings](docs/SETTINGS.md) · [Appearance](docs/DEVICE_SETTINGS.md) · [Recovery](docs/RECOVERY.md) · [Release notes](docs/RELEASE_NOTES.md) · [Validation scope](docs/TESTING.md)
 
-![JustVerify desktop dashboard](docs/media/justverify-desktop.png)
-
-**Mobile dashboard and Electrs**
-
-<p><img src="docs/media/justverify-mobile.png" alt="JustVerify mobile dashboard" width="280"> <img src="docs/media/justverify-mobile-electrs.png" alt="JustVerify mobile Electrs connection and QR" width="280"></p>
-
-Captured from the actual beta1 application in an isolated ARM VM running Bitcoin Core, electrs and mempool on **regtest**. The mobile previews use a 390 px browser viewport. They demonstrate the responsive layout, not physical-phone or public-network acceptance. Displayed addresses and QR codes belong to the disposable test setup; use your own node's connection details.
-
-## Hardware
-
-The current image targets **Raspberry Pi 5, 64-bit, wired Ethernet and NVMe**. The hardware validation target is an **8 GB Pi 5 with a 2 TB NVMe SSD** and a compatible NVMe HAT/bootloader. Use a suitable power supply and cooling. Pi 4 and x86 machines are not covered by this image.
-
-One NVMe contains the OS and a separate data partition that expands at first boot. There is no A/B OS requirement. A full Bitcoin chain, txindex, electrs index and explorer database need substantial free space; the compressed download size is not the storage requirement.
-
-## Download and install
-
-1. Download the [image (658 MB)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8.img.xz) and [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8-SHA256SUMS). The [beta8 release](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta8) also contains the signature, source code and validation report.
-2. Check the download against `justverify-0.1.0-beta8-SHA256SUMS`. On macOS: `shasum -a 256 justverify-0.1.0-beta8.img.xz`. See [signature verification](docs/INSTALL.md) for the project's experimental signing key and trust limits.
-3. Extract the `.img.xz` with an XZ-capable archive tool, then select the resulting `.img` and your intended NVMe in **balenaEtcher**. Our macOS/Etcher 2.1.6 test failed validation with direct XZ input; the extracted IMG passed. Flashing erases the selected drive. Keep validation enabled and wait for successful completion.
-4. Safely eject the NVMe, attach it to the Pi 5, connect Ethernet and power it on.
-5. Open **http://justverify.local** from the same network. If mDNS does not work, use the Pi's IP address from your router.
-6. Create your web administrator password and confirm it. The node prepares its own identity and data volume, then starts the default Core profile automatically.
-7. Keep the Pi powered and connected while Core synchronizes. electrs and mempool need their own readiness checks after Core; an active service or a progress bar alone does not mean completion.
-
-Fresh profiles enable `txindex=1` for mempool transaction lookups. Existing profiles keep their settings. Core-backed explorer pages open while Electrs indexes. Address history and historical transactions become available when their required indexes are ready. It uses your node; it does not replace unavailable results with a public explorer's data.
-
-## Everyday use
-
-| Open | Purpose |
-|---|---|
-| `http://justverify.local` | Dashboard, Core version and policy settings, Electrs, device settings |
-| `http://justverify.local:3006` | Your local mempool explorer |
-| Electrs → Local network / Tor | Actual host, port, protocol, TLS fingerprint and connection QR |
-| Settings | Account, text color, language, Remote Tor access, restart and shutdown |
-| Settings → Backup and restore | Encrypted configuration backup and recovery |
-| Settings → Troubleshoot | Service diagnosis and advanced storage tools |
-
-The browser administrator password and SSH password are separate. As requested for this appliance, initial SSH access is **`justverify` / `justverify`**; change it with `passwd` after your first SSH login. In beta2, `sudo` grants OS administrator access after authentication with the SSH password. See [SSH administration](docs/SSH.md). Public images do not include the developer's root SSH key or any pre-generated device private keys.
-
-Management HTTP and the explorer are intended for a trusted LAN. Do not forward these ports from the internet. Core RPC remains local; wallet RPC access uses the separately authenticated protected gateway. Remote Tor access is an explicit setting. The dashboard and explorer share the web onion hostname on ports80 and3006; Electrs and wallet RPC use their separate addresses. Read [wallet connection details](docs/MOBILE_CONNECTIONS.md) before importing a QR.
-
-## Backup, shutdown and recovery
-
-Save an encrypted configuration backup and its password **off the Pi** before reinstalling. It contains configuration and device identities, not the full blockchain or wallet private keys. Use Settings to restart or shut down before removing power or the NVMe. Reflashing is a fresh installation and replaces the disk contents; it is not an in-place update. Follow the [installation guide](docs/INSTALL.md) and [recovery guide](docs/RECOVERY.md).
-
-## Build and verification
-
-Source, pinned component manifests and executable tests are included. Image assembly runs in an isolated **ARM64 Linux** builder; see [source-to-image guide](docs/BUILD.md). macOS is used for development and flashing, not for running Linux systemd services directly. [Test results and remaining checks](docs/TESTING.md) and [release notes](docs/RELEASE_NOTES.md) distinguish actual hardware tests, VM tests and untested requirements.
-
-## Licenses and credits
-
-JustVerify's original code and separately packaged components retain their respective licenses. See [third-party notices](licenses/THIRD_PARTY_NOTICES.md). Bitcoin Core, Tor and electrs are upstream projects. The bundled mempool app is licensed under its upstream **AGPL** terms; its corresponding source and JustVerify build modifications are accessible from **Source · AGPL** in the explorer and included in the release materials. No affiliation or endorsement is implied. Umbrel's installation-guide structure and app integration were reviewed; Umbrel source/UI assets are not copied.
+Core31.1, electrs0.11.1, Mempool3.3.1 and i2pd2.61.0 are pinned. The release includes source bundles, package inventories and [third-party notices](licenses/THIRD_PARTY_NOTICES.md). Raspberry Pi firmware/NVMe behavior and individual physical wallet applications have separate validation requirements; see the validation report for tested and untested combinations.

@@ -136,14 +136,18 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
         }
         for b in recent.value.as_array().into_iter().flatten() {
             let hash = value(&b["hash"]);
-            blocks.push(format!(
-                "#{}  ·  {} (추정)",
-                value(&b["height"]),
-                b["miner"]["name"]
-                    .as_str()
-                    .map(crate::clean)
-                    .unwrap_or_else(|| "알 수 없음".into())
-            ));
+            if b["details_deferred"] == true {
+                blocks.push(format!("#{}", value(&b["height"])));
+            } else {
+                blocks.push(format!(
+                    "#{}  ·  {} (추정)",
+                    value(&b["height"]),
+                    b["miner"]["name"]
+                        .as_str()
+                        .map(crate::clean)
+                        .unwrap_or_else(|| "알 수 없음".into())
+                ));
+            }
             blocks.push(format!(
                 "{} tx · {}초 전 · {}",
                 value(&b["nTx"]),
@@ -192,8 +196,8 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
             value(&s.host["swap_mib"])
         ),
         format!(
-            "electrs {} / 높이 {}",
-            value(&s.host["electrs"]["state"]),
+            "electrs {} / {}",
+            crate::electrs_status::state_text(&s.host["electrs"]),
             crate::electrs_status::progress_text(&s.host["electrs"])
         ),
         format!("Tor {}", value(&s.host["tor"]["state"])),
@@ -273,7 +277,7 @@ pub fn draw(f: &mut Frame, s: &Snapshot, mono: bool) {
                 ),
                 format!(
                     "electrs {} / Tor {}",
-                    value(&s.host["electrs"]["state"]),
+                    crate::electrs_status::state_text(&s.host["electrs"]),
                     value(&s.host["tor"]["state"])
                 ),
             ],

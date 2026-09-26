@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real Electrum over trusted TLS on both IP families in isolated regtest."""
+"""Real Electrum over LAN TCP and trusted TLS on both IP families in isolated regtest."""
 import argparse,asyncio,hashlib,json,pathlib,ssl,subprocess,sys
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'web'))
@@ -18,11 +18,11 @@ async def main():
     server_tls.load_cert_chain(tlsdir/'cert.pem',tlsdir/'key.pem')
     trusted=ssl.create_default_context(cafile=str(tlsdir/'cert.pem'))
     bridge=ElectrumTLS(backend_port=19601,idle_seconds=3)
-    servers=[await asyncio.start_server(bridge.handle,host,0,ssl=server_tls) for host in ('127.0.0.1','::1')]
+    servers=[(await asyncio.start_server(bridge.handle,host,0,ssl=server_tls if tls else None),tls) for tls in (False,True) for host in ('127.0.0.1','::1')]
     try:
-        for server in servers:
+        for server,tls in servers:
             host,port,*_=server.sockets[0].getsockname()
-            reader,writer=await asyncio.open_connection(host,port,ssl=trusted,server_hostname='justverify.local')
+            reader,writer=await asyncio.open_connection(host,port,**({'ssl':trusted,'server_hostname':'justverify.local'} if tls else {}))
             async def call(method,params=[]):
                 writer.write(json.dumps({'id':1,'method':method,'params':params}).encode()+b'\n');await writer.drain()
                 while True:
@@ -43,16 +43,17 @@ async def main():
             assert txid in cli('getrawmempool')
             assert await asyncio.wait_for(reader.read(1),5)==b''
             writer.close();await writer.wait_closed()
-            reader,writer=await asyncio.open_connection(host,port,ssl=trusted,server_hostname='justverify.local')
+            reader,writer=await asyncio.open_connection(host,port,**({'ssl':trusted,'server_hostname':'justverify.local'} if tls else {}))
             writer.write(b'{"id":2,"method":"server.ping","params":[]}\n');await writer.drain()
             assert json.loads(await asyncio.wait_for(reader.readline(),5))['result'] is None
             writer.close();await writer.wait_closed()
-            try:await asyncio.open_connection(host,port,ssl=ssl.create_default_context(),server_hostname='justverify.local')
-            except ssl.SSLCertVerificationError:pass
-            else:raise AssertionError('untrusted TLS accepted')
+            if tls:
+                try:await asyncio.open_connection(host,port,ssl=ssl.create_default_context(),server_hostname='justverify.local')
+                except ssl.SSLCertVerificationError:pass
+                else:raise AssertionError('untrusted TLS accepted')
         for address in ('::1','fd00::2','fe80::2','::ffff:192.168.1.2'):assert lan_address(address)
         for address in ('2001:4860:4860::8888','198.51.100.2','::ffff:8.8.8.8'):assert not lan_address(address)
-        print('PASS actual IPv4/IPv6 TLS headers, signed broadcast into Core, ping persistence, idle closure/reconnect, certificate and LAN boundaries')
+        print('PASS actual IPv4/IPv6 TCP and TLS headers, signed broadcast into Core, ping persistence, idle closure/reconnect, certificate and LAN boundaries')
     finally:
-        for server in servers:server.close();await server.wait_closed()
+        for server,_ in servers:server.close();await server.wait_closed()
 asyncio.run(main())

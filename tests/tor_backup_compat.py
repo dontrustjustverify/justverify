@@ -20,7 +20,10 @@ with tempfile.TemporaryDirectory(prefix='jv-tor-backup-') as temporary:
     def bundle(guard=False):
         def validate(values):values['etc/torrc']=canonical_tor_config(values['etc/torrc'],template,8333)
         return BackupBundle(specs,root/'backup-state',destination,cleanup=cleanup,barriers=barriers,validate_context=validate if guard else None)
-    for layout in (legacy,old,canonical):
+    layouts=(legacy,old,canonical)
+    historical=tuple(v.replace(b'HiddenServicePort 50001 127.0.0.1:50001\n',b'HiddenServicePort 50001 127.0.0.1:50003\n') for v in layouts)
+    assert len(set((*layouts,*historical)))==6
+    for layout in (*layouts,*historical):
         tor.write_bytes(layout);plain=bundle();made=plain.create(password)
         tor.write_bytes(canonical)
         guarded=bundle(True);guarded.inspect(destination,password)
@@ -32,4 +35,4 @@ with tempfile.TemporaryDirectory(prefix='jv-tor-backup-') as temporary:
         except ValueError:pass
         else:raise AssertionError('Noncanonical encrypted Tor configuration accepted')
         assert tor.read_bytes()==canonical
-    print(json.dumps({'status':'PASS','checks':['three historical/current Tor layouts restored through actual GPG to fixed current template','three noncanonical encrypted configurations rejected before write'],'scope':'isolated files with real crypto; production data-volume guard tested by image probe'}))
+    print(json.dumps({'status':'PASS','checks':['six historical/current Tor layouts restored through actual GPG to fixed current template','three noncanonical encrypted configurations rejected before write'],'scope':'isolated files with real crypto; production data-volume guard tested by image probe'}))

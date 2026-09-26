@@ -118,3 +118,78 @@ fn verified_rpc_tip_overrides_older_metrics_and_headers_after_ibd() {
     status.electrum.error = Some("Electrum response delayed".into());
     assert_ne!(status.view(&chain, 50001, 102)["state"], "READY");
 }
+
+#[test]
+fn dead_listener_is_not_hidden_by_live_metrics_or_existing_connection() {
+    let mut status = Status::default();
+    status.progress = sample(json!({"height":99,"db_error":false}));
+    status.electrum.error = Some("Electrum connection unavailable".into());
+    assert_eq!(status.view(&core(), 50003, 101)["state"], "UNAVAILABLE");
+    status.runtime =
+        sample(json!({"listener_error":true,"resource_error":true,"phase":"compacting"}));
+    assert_eq!(status.view(&core(), 50003, 101)["state"], "RESOURCE_ERROR");
+    status.electrum = sample(json!({"height":100,"tip":"tip","index_ready":true}));
+    assert_eq!(status.view(&core(), 50003, 101)["wallet_ready"], false);
+    status.runtime.value["resource_error"] = json!(false);
+    assert_eq!(
+        status.view(&core(), 50003, 101)["state"],
+        "CONNECTION_ERROR"
+    );
+    status.runtime.value = json!({"phase":"compacting","compaction":"funding"});
+    status.electrum.error = Some("Electrum response delayed".into());
+    assert_eq!(status.view(&core(), 50003, 101)["state"], "FINALIZING");
+    assert_eq!(status.view(&core(), 50003, 101)["compaction"], "funding");
+    status.runtime.updated = 80;
+    assert_eq!(status.view(&core(), 50003, 101)["state"], "INDEXING");
+}
+
+#[test]
+fn whole_db_work_is_separate_from_height_and_catchup_is_not_ready() {
+    let mut status = Status::default();
+    status.progress = sample(json!({"height":99,"db_error":false}));
+    status.electrum.error = Some("Electrum response delayed".into());
+    status.runtime = sample(
+        json!({"running":true,"phase":"compacting","compaction":"spending",
+        "compaction_progress":{"basis":"estimated_records","percent_basis_points":6400,"complete":false}}),
+    );
+    let view = status.view(&core(), 50003, 101);
+    assert_eq!(view["state"], "FINALIZING");
+    assert_eq!(view["height"], 99);
+    assert_eq!(view["compaction_percent_basis_points"], 6400);
+    assert_eq!(justverify::electrs_status::progress_text(&view), "~64.00%");
+    assert_eq!(justverify::electrs_status::state_text(&view), "DB 정리 중");
+    for invalid in [json!(10000), json!(-1), json!("6400"), Value::Null] {
+        status.runtime.value["compaction_progress"]["percent_basis_points"] = invalid;
+        assert!(status.view(&core(), 50003, 101)["compaction_percent_basis_points"].is_null());
+    }
+    status.runtime.value["compaction_progress"]["percent_basis_points"] = json!(6400);
+    assert!(status.view(&core(), 50003, 116)["compaction_percent_basis_points"].is_null());
+    status.runtime.value["phase"] = json!("indexing");
+    status.runtime.value["compacted"] = json!(true);
+    let view = status.view(&core(), 50003, 101);
+    assert_eq!(view["state"], "CATCHING_UP");
+    assert_eq!(view["wallet_ready"], false);
+    assert!(view["compaction_percent_basis_points"].is_null());
+    status.electrum = sample(json!({"height":100,"tip":"tip","index_ready":true}));
+    let view = status.view(&core(), 50003, 101);
+    assert_eq!(view["state"], "READY");
+    assert_eq!(
+        justverify::electrs_status::progress_text(&view),
+        "100.00% (100/100)"
+    );
+}
+
+#[test]
+fn block_details_require_actual_ibd_completion_and_caught_up_headers() {
+    use justverify::collector::details_ready;
+    assert!(!details_ready(
+        &json!({"blocks":99,"headers":100,"initialblockdownload":false,"verificationprogress":0.99999999})
+    ));
+    assert!(!details_ready(
+        &json!({"blocks":100,"headers":100,"initialblockdownload":true,"verificationprogress":1})
+    ));
+    assert!(!details_ready(&json!({"initialblockdownload":false})));
+    assert!(details_ready(
+        &json!({"blocks":100,"headers":100,"initialblockdownload":false})
+    ));
+}

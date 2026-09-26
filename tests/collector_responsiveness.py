@@ -3,7 +3,7 @@
 import argparse,base64,hashlib,http.client,http.server,json,os,pathlib,signal,socket,subprocess,tempfile,threading,time
 R=pathlib.Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--core',type=pathlib.Path,default=R/'.cache/core/31.1/arm64-apple-darwin/bitcoin-31.1/bin');p.add_argument('--binary',type=pathlib.Path,default=R/'target/debug/justverify');p.add_argument('--observations',type=pathlib.Path);a=p.parse_args()
-observations=[];started=time.monotonic();result_status='NOT COMPLETE'
+detail_requests=[];observations=[];started=time.monotonic();result_status='NOT COMPLETE'
 def port():
  with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
@@ -12,7 +12,13 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   def log_message(self,*args):pass
   def do_POST(self):
    body=self.rfile.read(int(self.headers['Content-Length']));request=json.loads(body)
-   if request['method'] in ('getblock','getrawtransaction') and hold.is_set():entered.set();release.wait(9)
+   if request['method'] in ('getblock','getrawtransaction'):
+    actual=json.loads(cli('getblockchaininfo'));assert actual['initialblockdownload'] is False
+    digest=request['params'][0 if request['method']=='getblock' else 2]
+    height=json.loads(cli('getblockheader',digest))['height']
+    assert 0<=actual['blocks']-height<6,'Detail lookup outside the currently displayed six blocks'
+    detail_requests.append((request['method'],height))
+    if hold.is_set():entered.set();release.wait(9)
    c=http.client.HTTPConnection('127.0.0.1',rpcport,timeout=15)
    try:
     c.request('POST',self.path,body,{'Authorization':self.headers['Authorization']});r=c.getresponse();raw=r.read()
@@ -44,8 +50,13 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   core=subprocess.Popen([str(a.core/'bitcoind'),'-regtest',f'-datadir={d}',f'-rpcport={rpcport}','-listen=0','-networkactive=0','-server=1'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   cli('createwallet','delay-test');address=cli('getnewaddress')
   manager=subprocess.Popen([str(a.binary),'daemon','--cookie',str(d/'regtest/.cookie'),'--rpc-port',str(proxy.server_port),'--socket',str(d/'manager.sock')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  genesis=wait(lambda s:s['rpc']['recentblocks']['value'][0].get('size',0)>0)
-  assert genesis['rpc']['recentblocks']['value'][0]['size']==len(cli('getblock',cli('getbestblockhash'),0))//2
+  initial=wait(lambda s:s['rpc']['recentblocks']['value'][0].get('details_deferred') is True)
+  assert json.loads(cli('getblockchaininfo'))['initialblockdownload'] is True
+  time.sleep(18);assert detail_requests==[], 'IBD must never fetch full blocks or coinbase transactions'
+  cli('generatetoaddress',2,address)
+  settled=wait(lambda s:len(s['rpc']['recentblocks']['value'])==3 and all(b.get('size',0)>0 for b in s['rpc']['recentblocks']['value']))
+  genesis=settled['rpc']['recentblocks']['value'][-1]
+  assert genesis['height']==0 and genesis['size']==len(cli('getblock',genesis['hash'],0))//2
   cli('generatetoaddress',8,address)
   wait(tip_is(cli('getbestblockhash')))
   hold.set();cli('generatetoaddress',1,address);assert entered.wait(10),'coinbase read was not intercepted'
@@ -67,7 +78,7 @@ with tempfile.TemporaryDirectory(prefix='jv-collector-') as tmp:
   core.send_signal(signal.SIGCONT);paused=False;s=wait(tip_is(newtip),20)
   assert not s['rpc']['getblockchaininfo']['error']
   result_status='PASS'
-  print(json.dumps({'status':'PASS','binary_sha256':hashlib.sha256(a.binary.read_bytes()).hexdigest(),'core':cli('-version').splitlines()[0],'network':'isolated regtest','chain_and_headers_seconds_while_coinbase_held':latency,'tip':newtip,'checks':['real forwarded RPC responses only','genesis and all six block sizes match serialized block bytes','block sizes retained across header refresh and keyed by hash after reorg','blocked coinbase read does not block chain/headers/network','hash-linked reorg replacement','Core SIGSTOP retains stale last value while host refreshes','SIGCONT restores real status without manager restart']}))
+  print(json.dumps({'status':'PASS','binary_sha256':hashlib.sha256(a.binary.read_bytes()).hexdigest(),'core':cli('-version').splitlines()[0],'network':'isolated regtest','chain_and_headers_seconds_while_coinbase_held':latency,'tip':newtip,'checks':['real forwarded RPC responses only','real Core IBD makes zero block body/coinbase requests','each detail request is within the latest six blocks after IBD','genesis and all six block sizes match serialized block bytes','block sizes retained across header refresh and keyed by hash after reorg','blocked coinbase read does not block chain/headers/network','hash-linked reorg replacement','Core SIGSTOP retains stale last value while host refreshes','SIGCONT restores real status without manager restart']}))
  finally:
   release.set()
   if paused:core.send_signal(signal.SIGCONT)

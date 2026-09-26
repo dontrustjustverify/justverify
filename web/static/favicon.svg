@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<title>JustVerify — BTC circle</title>
+<title>JustVerify — BTC magnifying glass</title>
+<path d="M53 53L61 61" fill="none" stroke="#FFB000" stroke-width="4" stroke-linecap="round"/>
 <circle cx="32" cy="32" r="29.5" fill="#080d10" stroke="#FFB000" stroke-width="3"/>
 <path d="M10 19L10 45L17 45L22 41L22 36L18 32L10 32" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M10 19L17 19L21 22L21 28L18 32" fill="none" stroke="#FFB000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>

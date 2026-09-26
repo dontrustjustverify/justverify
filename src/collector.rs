@@ -95,6 +95,7 @@ pub fn start(
                     let current = block_cache.read().unwrap();
                     let old = current.rpc.get("recentblocks").map(|s| &s.value);
                     for block in blocks.as_array_mut().unwrap() {
+                        block["details_deferred"] = json!(!details_ready(&chain.value));
                         if let Some(cached) = old
                             .and_then(|v| v.as_array())
                             .into_iter()
@@ -126,10 +127,10 @@ pub fn start(
             let ibd = chain.value["initialblockdownload"] == true;
             let mainnet = chain.value["chain"] == "main";
             let start = Instant::now();
-            let mut fetched = 0;
             if chain.updated > 0
                 && chain.error.is_none()
                 && now().saturating_sub(chain.updated) <= 15
+                && details_ready(&chain.value)
             {
                 for block in state
                     .rpc
@@ -138,6 +139,28 @@ pub fn start(
                     .into_iter()
                     .flatten()
                 {
+                    // Recheck between requests: a reorg/new tip can replace the
+                    // displayed batch while this independent worker is waiting.
+                    let current_state = miner_cache.read().unwrap();
+                    let current_chain = current_state.rpc.get("getblockchaininfo");
+                    if !current_chain.is_some_and(|s| {
+                        s.error.is_none()
+                            && now().saturating_sub(s.updated) <= 15
+                            && details_ready(&s.value)
+                            && s.value["bestblockhash"] == chain.value["bestblockhash"]
+                    }) || !current_state
+                        .rpc
+                        .get("recentblocks")
+                        .and_then(|s| s.value.as_array())
+                        .is_some_and(|rows| {
+                            rows.first()
+                                .is_some_and(|row| row["hash"] == chain.value["bestblockhash"])
+                                && rows.iter().any(|row| row["hash"] == block["hash"])
+                        })
+                    {
+                        break;
+                    }
+                    drop(current_state);
                     let Some(hash) = block["hash"].as_str() else {
                         continue;
                     };
@@ -148,12 +171,19 @@ pub fn start(
                         || (status["status"] == "unavailable"
                             && now().saturating_sub(status["checked"].as_u64().unwrap_or(0)) >= 30);
                     let value = if retry {
-                        // During IBD, bound disk-heavy block/coinbase reads
-                        // independently of RPC latency. Finish a batch in
-                        // three passes without competing with chain import.
-                        if ibd && fetched >= 2 { break; }
-                        fetched += 1;
-                        let result = coinbase(&miner_rpc, block, mainnet);
+                        let result = coinbase(&miner_rpc, block, mainnet, || {
+                            miner_cache
+                                .read()
+                                .unwrap()
+                                .rpc
+                                .get("getblockchaininfo")
+                                .is_some_and(|s| {
+                                    s.error.is_none()
+                                        && now().saturating_sub(s.updated) <= 15
+                                        && details_ready(&s.value)
+                                        && s.value["bestblockhash"] == chain.value["bestblockhash"]
+                                })
+                        });
                         let mut value =
                             result.unwrap_or_else(|_| json!({"miner":{"status":"unavailable"}}));
                         value["miner"]["checked"] = json!(now());
@@ -176,7 +206,7 @@ pub fn start(
                         }
                     }
                     drop(shared);
-                    if start.elapsed() >= Duration::from_secs(if ibd { 2 } else { 5 }) {
+                    if start.elapsed() >= Duration::from_secs(5) {
                         break;
                     }
                 }
@@ -190,7 +220,7 @@ pub fn start(
                         .is_some_and(|rows| rows.iter().any(|b| b["hash"] == hash.as_str()))
                 });
             }
-            thread::sleep(Duration::from_secs(if ibd { 5 } else { 1 }));
+            thread::sleep(Duration::from_secs(if ibd { 2 } else { 1 }));
         }
     });
     thread::spawn(move || {
@@ -220,6 +250,14 @@ pub fn start(
         }
     });
     Ok(())
+}
+
+pub fn details_ready(chain: &Value) -> bool {
+    chain["initialblockdownload"] == false
+        && chain["blocks"]
+            .as_u64()
+            .zip(chain["headers"].as_u64())
+            .is_some_and(|(blocks, headers)| blocks == headers)
 }
 
 fn headers(rpc: &Rpc, tip: &str, cached: &Value) -> Result<Value> {
@@ -260,7 +298,12 @@ fn merge_details(block: &mut Value, details: &Value) {
         }
     }
 }
-fn coinbase(rpc: &Rpc, block: &Value, mainnet: bool) -> Result<Value> {
+fn coinbase(
+    rpc: &Rpc,
+    block: &Value,
+    mainnet: bool,
+    still_ready: impl Fn() -> bool,
+) -> Result<Value> {
     let hash = block["hash"].as_str().context("block hash missing")?;
     // One txid list and only its coinbase; never decode the entire block.
     let body = rpc.call("getblock", json!([hash, 1]))?;
@@ -273,6 +316,9 @@ fn coinbase(rpc: &Rpc, block: &Value, mainnet: bool) -> Result<Value> {
         .as_u64()
         .filter(|n| *n > 0)
         .context("block size unavailable")?;
+    if !still_ready() {
+        return Ok(json!({"size":size,"miner":{"status":"pending"}}));
+    }
     let pool = if block["height"] == 0 {
         json!({"status":"unknown"})
     } else {

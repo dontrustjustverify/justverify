@@ -189,7 +189,7 @@ def render_profile(checked):
     else:core_config+=f'bind=0.0.0.0:{p2p}\nbind=[::]:{p2p}\n'
     core_config+=f'bind=127.0.0.1:{p2p+1}=onion\nwhitebind=download,noban@127.0.0.1:{p2p+2}\n'
     files={'etc/bitcoin.conf':core_config}
-    files['etc/electrs.toml']=f'network = "{electrum_network}"\ndaemon_dir = "{folder}/core"\ncookie_file = "{cookie}"\ndb_dir = "{folder}/electrs-0.11.1"\ndaemon_rpc_addr = "127.0.0.1:{rpc}"\ndaemon_p2p_addr = "127.0.0.1:{p2p+2}"\nelectrum_rpc_addr = "127.0.0.1:50001"\nmonitoring_addr = "127.0.0.1:4224"\nno_auto_reindex = true\nlog_filters = "INFO"\n'
+    files['etc/electrs.toml']=f'network = "{electrum_network}"\ndaemon_dir = "{folder}/core"\ncookie_file = "{cookie}"\ndb_dir = "{folder}/electrs-0.11.1"\ndaemon_rpc_addr = "127.0.0.1:{rpc}"\ndaemon_p2p_addr = "127.0.0.1:{p2p+2}"\nelectrum_rpc_addr = "127.0.0.1:50003"\nmonitoring_addr = "127.0.0.1:4224"\nno_auto_reindex = true\nlog_filters = "INFO"\n'
     profile={'version':version,'network':network,'binary':str(binary),'catalog':str(CATALOG),'managed_config':str(policy),'staging':'/var/lib/justverify/preflight','cookie':str(cookie),'rpc_port':rpc,'p2p_backend_port':p2p+2,'watch_only':watch_only}
     profile['data_id']=folder.name
     files['etc/profile.json']=json.dumps(profile,indent=2)+'\n'
@@ -211,6 +211,7 @@ def activate(checked):
     # Keep existing Tor identities; only the selected chain's P2P target changes.
     tor=(ETC/'torrc').read_text()
     old_tor=tor
+    tor=tor.replace("HiddenServicePort 50001 127.0.0.1:50003\n","HiddenServicePort 50001 127.0.0.1:50001\n")
     tor=re.sub(r'(?m)^HiddenServicePort 8333 127\.0\.0\.1:[0-9]+$',f'HiddenServicePort 8333 127.0.0.1:{p2p+1}',tor)
     atomic(ETC/'torrc',tor)
     system('daemon-reload')

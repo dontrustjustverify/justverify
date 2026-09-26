@@ -4,7 +4,7 @@
 
 GitHub에서 JustVerify·electrs·mempool 소스와 잠금된 라이브러리를 받아 컴파일하고 Raspberry Pi 5 ARM64 설치 이미지를 만드는 안내입니다. Bitcoin Core는 **공식 서명과 체크섬을 검증한 바이너리**를 사용하며 Pi OS·Debian 패키지도 upstream 배포물을 사용합니다. OS의 모든 패키지와 Bitcoin Core까지 소스에서 컴파일하는 과정은 아닙니다.
 
-beta8은 릴리스에 포함된 소스 압축파일을 사용하세요. 최신 변경을 빌드하려면 `main`의 commit을 기록하세요. 직접 만든 이미지는 자체 체크섬을 가지며 프로젝트 서명을 이어받지 않습니다. OS 이미지 전체의 바이트 단위 재현성은 아직 입증되지 않았습니다.
+0.1.0은 릴리스에 포함된 소스 압축파일을 사용하세요. 최신 변경을 빌드하려면 `main`의 commit을 기록하세요. 직접 만든 이미지는 자체 체크섬을 가지며 프로젝트 서명을 이어받지 않습니다. OS 이미지 전체의 바이트 단위 재현성은 아직 입증되지 않았습니다.
 
 ## 1. 격리된 Linux 빌드 환경 준비
 
@@ -38,19 +38,19 @@ apt에서 고정한 Node/MariaDB 버전을 찾지 못하면 중단합니다. 정
 
 ## 2. 소스와 컴파일러 받기
 
-beta8 소스 압축파일과 검증한 체크섬 파일이 있는 폴더에서 아래 블록을 시작하세요. 먼저 [서명 검증](../INSTALL.md)을 확인하세요. 이 압축파일은 beta8 릴리스의 정확한 소스이며 GitHub main과 다를 수 있습니다. 로컬 Git 기준점은 이후 빌드 변경을 기록하기 위한 것입니다.
+0.1.0 소스 압축파일과 검증한 체크섬 파일이 있는 폴더에서 아래 블록을 시작하세요. 먼저 [서명 검증](../INSTALL.md)을 확인하세요. 이 압축파일은 0.1.0 릴리스의 정확한 소스이며 GitHub main과 다를 수 있습니다. 로컬 Git 기준점은 이후 빌드 변경을 기록하기 위한 것입니다.
 
 ```bash
-export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-beta8-source.tar.gz"
+export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-source.tar.gz"
 test -f "$JV_SOURCE_ARCHIVE"
-sha256sum --ignore-missing -c justverify-0.1.0-beta8-SHA256SUMS
+sha256sum --ignore-missing -c justverify-0.1.0-SHA256SUMS
 export JV_WORK="$(mktemp -d /var/tmp/justverify-source.XXXXXX)"
 chmod 755 "$JV_WORK"
 mkdir "$JV_WORK/repo"
 tar -xzf "$JV_SOURCE_ARCHIVE" --strip-components=1 -C "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0-beta8-local1
+export JV_TAG=0.1.0
 git init -b local-build
 git add .
 git -c user.name='Local builder' -c user.email='builder@localhost' commit -qm 'Imported verified source archive'
@@ -220,14 +220,14 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | 산출물 | 용도 |
 |---|---|
-| `dist/justverify-0.1.0-beta8-local1.img` | balenaEtcher에서 선택할 압축 해제 이미지 |
-| `dist/justverify-0.1.0-beta8-local1.img.xz` | 보관·다운로드용 압축 이미지 |
-| `dist/justverify-0.1.0-beta8-local1-SHA256SUMS` | 두 파일의 체크섬; `dist/`에서 검증 |
-| `dist/justverify-0.1.0-beta8-local1.layout.json` / `.size-audit.json` | 파티션 구성·용량 분석 |
+| `dist/justverify-0.1.0.img` | balenaEtcher에서 선택할 압축 해제 이미지 |
+| `dist/justverify-0.1.0.img.xz` | 보관·다운로드용 압축 이미지 |
+| `dist/justverify-0.1.0-SHA256SUMS` | 두 파일의 체크섬; `dist/`에서 검증 |
+| `dist/justverify-0.1.0.layout.json` / `.size-audit.json` | 파티션 구성·용량 분석 |
 | `dist/os-packages.tsv` | 이미지 안에 실제 설치한 OS 패키지 |
 | `.state/build-guide/` | 소스 commit·수정 내역·로그·로컬 구성요소 검증 근거 |
 
-`JV_TAG`를 바꾸면 파일명도 바뀝니다. SHA256은 파일 무결성 검사이며 배포자 서명이 아닙니다. 이 예제는 서명되지 않은 로컬 이미지를 만듭니다. 다른 사람에게 재배포하려면 정확한 소스·수정 내역, 각 구성요소의 대응 소스·라이선스, 지원 범위·시험 보고서와 자체 서명 절차를 갖춰야 합니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)와 [릴리스의 대응 소스 자료](https://github.com/dontrustjustverify/justverify/releases)를 참고하세요. 수정한 파일에 공식 릴리스 서명을 재사용할 수 없습니다.
+`JV_TAG`는 `Cargo.toml`의 패키지 버전과 일치해야 합니다. 오프라인 검사에서 설치된 OS 버전과 비교합니다. 같은 버전을 다시 조립할 때는 새 checkout과 비어 있는 출력 폴더를 사용하세요. SHA256은 파일 무결성 검사이며 배포자 서명이 아닙니다. 이 예제는 서명되지 않은 로컬 이미지를 만듭니다. 다른 사람에게 재배포하려면 정확한 소스·수정 내역, 각 구성요소의 대응 소스·라이선스, 지원 범위·시험 보고서와 자체 서명 절차를 갖춰야 합니다. [제3자 고지](../../licenses/THIRD_PARTY_NOTICES.md)와 [릴리스의 대응 소스 자료](https://github.com/dontrustjustverify/justverify/releases)를 참고하세요. 수정한 파일에 공식 릴리스 서명을 재사용할 수 없습니다.
 
 [설치 안내](../INSTALL.md)에 따라 Etcher의 검증을 켜고 기록하세요. 실제 macOS/Etcher 2.1.6 시험에서는 XZ 직접 입력이 체크섬 검증에 실패했고 **압축을 푼 IMG** 기록은 통과했습니다. 이후 실제 Pi 5에서 최초 설정, Core·electrs·Tor, 3006 포트 mempool, LAN·onion 지갑, 재부팅·복구를 확인합니다. 실행하지 않은 검증은 `NOT RUN`/`BLOCKED`로 기록하세요. 남은 배포 기준은 [TESTING.md](../TESTING.md)에 있습니다.
 
@@ -241,7 +241,7 @@ git diff --binary > .state/build-guide/local-source.patch
 | 통합시험 권한 오류 | `justverify`가 소스·바이너리와 상위 경로를 읽고 통과할 수 있는지 확인; 지갑·runtime은 비공개 유지 |
 | 포트 사용 중·시험 폴더 중복 | 자신의 시험 프로세스만 정지; 이전 근거를 남기고 새 경로로 재시험 |
 | `electrs differs from tested build` | 해당 바이너리로 4단계 시험과 로컬 검증 기록 완료 |
-| 이미지·중간 파일 중복 | 실패 파일·로그 보존, 새 `JV_TAG` 또는 새 checkout 사용; 릴리스 덮어쓰기 금지 |
+| 이미지·중간 파일 중복 | 실패 파일·로그 보존, 비어 있는 출력 폴더의 새 checkout 사용; 릴리스 덮어쓰기 금지 |
 | 빌드 강제 종료·디스크 부족 | RAM과 `/var/tmp`를 포함한 여유 공간 확인; 동시 작업 수 감소 또는 빌드 VM 확장 |
 
-새 셸에서 재개할 때는 기존 빌드의 `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS`, `JV_MEMPOOL` 값을 복원하고 `set -euo pipefail`, `cd "$JV_REPO"`를 실행합니다. 검증한 다운로드·완성된 출력은 재사용하되 새 폴더가 필요한 명령을 기존 출력 위에 다시 실행하지 마세요. 재시험은 새 `tests-...` 및 `jv-mempool-test-...` 경로를 쓰고 두 시도의 보고서를 보존합니다. 재조립은 새 태그를 사용합니다.
+새 셸에서 재개할 때는 기존 빌드의 `JV_WORK`, `JV_REPO`, `JV_TAG`, `JV_BASE`, `JV_CORE`, `JV_ELECTRS`, `JV_MEMPOOL` 값을 복원하고 `set -euo pipefail`, `cd "$JV_REPO"`를 실행합니다. 검증한 다운로드·완성된 출력은 재사용하되 새 폴더가 필요한 명령을 기존 출력 위에 다시 실행하지 마세요. 재시험은 새 `tests-...` 및 `jv-mempool-test-...` 경로를 쓰고 두 시도의 보고서를 보존합니다. 같은 버전의 재조립은 새 checkout과 출력 폴더를 사용합니다.

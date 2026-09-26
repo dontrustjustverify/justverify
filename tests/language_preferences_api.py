@@ -22,7 +22,7 @@ async def main():
    await post('/device-settings',{'action':'name','name':'Language Test'})
    assert (await post('/device-settings',{'action':'state'}))['preferences']['language']==language
   await post('/device-settings',{'action':'preferences','theme':'amber','language':'auto'})
-  assert (await post('/device-settings',{'action':'state'}))['preferences']=={'schema':1,'name':'Language Test','theme':'amber','language':'auto'}
+  assert (await post('/device-settings',{'action':'state'}))['preferences']=={'schema':2,'name':'Language Test','theme':'amber','language':'auto','background':{'enabled':False,'brightness':18,'speed':70,'density':75}}
   await post('/logout',{})
   auth=await post('/login',{'password':'Language-Test-2026!'});headers['X-CSRF-Token']=auth['csrf']
   assert (await post('/device-settings',{'action':'state'}))['preferences']['language']=='auto'

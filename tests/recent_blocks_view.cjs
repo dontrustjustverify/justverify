@@ -15,7 +15,7 @@ value=view.update(snapshot([row('b'),row('a')]),300);assert.deepEqual(hashes(val
 value=view.update(snapshot([row('b',false),row('a',false)]),400);assert(!value.waiting);assert.equal(value.list[0].size,1234567);
 view.update(snapshot([row('c',false)]),1000);
 assert.deepEqual(hashes(view.update(snapshot([row('d',false)]),30999)),['b','a']);
-value=view.update(snapshot([row('e',false)]),31000);assert.deepEqual(hashes(value),['e']);assert(value.partial); // Advancing IBD cannot postpone the bound.
+value=view.update(snapshot([row('e',false)]),31000);assert.deepEqual(hashes(value),['e']);assert(value.partial); // Advancing tips cannot postpone the bound.
 value=view.update(snapshot([row('e')]),31001);assert(!value.partial);assert.equal(value.list[0].size,1234567);
 value=view.update(snapshot([{hash:'failed',miner:{status:'unavailable'}}]),31002);assert.deepEqual(hashes(value),['failed']);assert.equal(value.list[0].size,undefined);
 view.update(snapshot([row('fork',false)]),32000);
@@ -34,7 +34,7 @@ if(process.argv[2]){
   if(output.waiting&&previous.length&&JSON.stringify(current)===JSON.stringify(previous))held++;
   if(current.length&&JSON.stringify(current)!==JSON.stringify(previous)){
    swaps++;assert(!output.partial,'Real delayed RPC should resolve before the fallback bound');
-   for(const b of output.list)assert(Number.isSafeInteger(b.size)&&b.size>0,'Published live batch must contain actual sizes');
+   for(const b of output.list)assert(b.details_deferred||(Number.isSafeInteger(b.size)&&b.size>0),'Published live batch must contain actual sizes');
   }
   previous=current;
  }
@@ -42,3 +42,9 @@ if(process.argv[2]){
  console.log(JSON.stringify({status:'PASS',observations:trace.observations.length,complete_batch_swaps:swaps,retained_pending_observations:held}));
 }
 console.log('PASS: atomic details, first load, bounded wait across changing tips, failed lookup, recovery, hash retention, reorg and network isolation');
+
+view=create();const ibd=snapshot([row('ibd',false)]);ibd.rpc.getblockchaininfo.value.initialblockdownload=true;
+value=view.update(ibd,0);assert.deepEqual(hashes(value),['ibd']);assert(!value.waiting&&!value.partial);assert(value.list[0].details_deferred);
+const deferred=snapshot([{...row('deferred',false),details_deferred:true}]);value=view.update(deferred,1);assert(!value.waiting&&!value.partial);
+value=view.update(snapshot([row('synced')]),2);assert.deepEqual(hashes(value),['synced']);assert(!value.list[0].details_deferred);
+console.log('PASS: IBD headers render immediately without missing-size or pending-miner placeholders, details resume after IBD');

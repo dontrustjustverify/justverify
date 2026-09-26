@@ -56,7 +56,7 @@ class RemoteWeb(RemoteRPC):
             response.headers.update({'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY'})
             return response
         return make_app(self.mempool_bundle,self.mempool_runtime,self.mempool_profile,self.mempool_backend,
-                        middleware=guard,authorize=self.authorize_mempool,streams=self.bridge.tor_streams)
+                        middleware=guard,authorize=self.authorize_mempool,streams=self.bridge.tor_streams,session_streams=self.bridge.session_streams)
     async def manage(self,body):
         if isinstance(body,dict) and body.get('action')=='preview' and body.get('enabled') is True:
             if not self.status()['onion_host']:raise ValueError('Tor web address is not ready')
@@ -69,8 +69,7 @@ class RemoteWeb(RemoteRPC):
         # close streams first, then drain this listener outside that request.
         self.enabled=False
         if revoke:
-            self.bridge.sessions={k:v for k,v in self.bridge.sessions.items() if not v.get('tor_web')}
-            self.bridge.save_sessions()
+            await self.bridge.revoke_sessions([k for k,s in self.bridge.sessions.items() if s.get('tor_web')],invalidate_pending=True)
         for stream in list(getattr(self.bridge,'tor_streams',set())):await stream.close()
         runners=(self.runner,self.mempool_runner)
         self.runner=self.mempool_runner=None

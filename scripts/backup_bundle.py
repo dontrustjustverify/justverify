@@ -309,8 +309,17 @@ class BackupBundle:
             # Backup service uses system Python without aiohttp: validate data here.
             value = _json(preferences)
             import unicodedata
-            if set(value) != {"schema", "name", "theme", "language"} or value["schema"] != 1 or value["theme"] not in ("teal", "amber", "green", "ice") or value["language"] not in ("auto", "ko", "en", "ja") or not isinstance(value["name"], str) or not 1 <= len(value["name"]) <= 40 or value["name"] != value["name"].strip() or any(unicodedata.category(c).startswith("C") for c in value["name"]):
+            keys={"schema", "name", "theme", "language"}
+            legacy=set(value)==keys and type(value.get('schema')) is int and value['schema']==1
+            current=set(value)==keys|{'background'} and type(value.get('schema')) is int and value['schema']==2
+            if not (legacy or current) or value["theme"] not in ("teal", "amber", "green", "ice") or value["language"] not in ("auto", "ko", "en", "ja") or not isinstance(value["name"], str) or not 1 <= len(value["name"]) <= 40 or value["name"] != value["name"].strip() or any(unicodedata.category(c).startswith("C") for c in value["name"]):
                 raise ValueError("invalid owner preferences")
+            if current:
+                rain=value['background']
+                if not isinstance(rain,dict) or set(rain)!={'enabled','brightness','speed','density'} or type(rain['enabled']) is not bool:
+                    raise ValueError('invalid background preferences')
+                for key,low,high in (('brightness',3,100),('speed',15,400),('density',30,300)):
+                    if type(rain[key]) is not int or not low<=rain[key]<=high:raise ValueError('invalid background range')
         remote_web = values.get("web/remote-web.json")
         if remote_web is not None:
             value = _json(remote_web)

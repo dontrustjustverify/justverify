@@ -14,8 +14,15 @@ def canonical_tor_config(value,template,p2p):
     tor=re.sub(rb'(?m)^HiddenServicePort 8333 127\.0\.0\.1:[0-9]+$',f'HiddenServicePort 8333 127.0.0.1:{p2p+1}'.encode(),template)
     before_explorer=tor.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n')
     before_web=before_explorer.removesuffix(b'HiddenServiceDir /var/lib/justverify-tor/web\nHiddenServiceVersion 3\nHiddenServicePort 80 127.0.0.1:28444\n')
-    if value not in (tor,before_explorer,before_web):raise ValueError('backup Tor config is not canonical')
+    layouts=(tor,before_explorer,before_web)
+    historical=tuple(v.replace(b'HiddenServicePort 50001 127.0.0.1:50001\n',b'HiddenServicePort 50001 127.0.0.1:50003\n') for v in layouts)
+    if value not in (*layouts,*historical):raise ValueError('backup Tor config is not canonical')
     return tor
+
+def canonical_electrs_config(value,expected):
+    historical=expected.replace(b'electrum_rpc_addr = "127.0.0.1:50003"\n',b'electrum_rpc_addr = "127.0.0.1:50001"\n')
+    if value not in (expected,historical):raise ValueError('backup Electrum configuration is not canonical')
+    return expected
 
 class Guard:
     def __init__(self,helper,checked,context,template,validator):
@@ -57,8 +64,10 @@ class Guard:
         self.check_volume()
         ready=json.loads(values['etc/node-ready.json'])
         if any(ready.get(k)!=v for k,v in self.context.items()):raise ValueError('backup cannot change selected data UUID, version or wallet profile')
+        electrs=None
         for key,expected in self.helper.render_profile(self.checked).items():
-            if values.get(key)!=expected:raise ValueError('backup privileged configuration is not canonical')
+            if key=='etc/electrs.toml':electrs=canonical_electrs_config(values.get(key),expected)
+            elif values.get(key)!=expected:raise ValueError('backup privileged configuration is not canonical')
         p2p=self.helper.NETWORKS[self.checked[1]][3]
         tor=canonical_tor_config(values['etc/torrc'],self.template,p2p)
         versions={'catalog':str(self.helper.CATALOG),'binaries':str(self.helper.BINARIES),'data':str(self.helper.DATA/'instances'),'state':'/var/lib/justverify/versions'}
@@ -74,3 +83,6 @@ class Guard:
         # layouts are accepted; listener destinations come from the installed
         # template. Rollback snapshots bypass normalization and preserve bytes.
         values['etc/torrc']=tor
+        values['etc/electrs.toml']=electrs
+        ready['configs']['electrs.toml']=hashlib.sha256(electrs).hexdigest()
+        values['etc/node-ready.json']=(json.dumps(ready)+'\n').encode()

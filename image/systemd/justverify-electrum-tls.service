@@ -1,7 +1,7 @@
 [Unit]
 Requires=justverify-backup.service
 After=justverify-backup.service
-Description=JustVerify LAN Electrum TLS transport
+Description=JustVerify LAN Electrum TCP and optional TLS transport
 After=justverify-firstboot.service justverify-electrs.service
 Requires=justverify-firstboot.service
 PartOf=justverify-electrs.service

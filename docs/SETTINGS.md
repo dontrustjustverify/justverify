@@ -1,6 +1,6 @@
 # Node settings
 
-This guide applies to JustVerify 0.1.0-beta8.
+This guide applies to JustVerify 0.1.0.
 
 ## OP_RETURN and transaction policy
 
@@ -34,7 +34,7 @@ Choose **Review changes → Save and apply**. The service validates the version,
 
 Incoming and outgoing controls are separate. A single **Clearnet** outgoing toggle controls IPv4 and IPv6 together. Incoming Clearnet also covers both IP families, subject to the device network and firewall. Tor outgoing uses Core's onion network. **Route clearnet through Tor** controls the proxy for ordinary internet destinations; onion connections always use Tor.
 
-**I2P incoming and outgoing** are available in beta3. The image bundles i2pd 2.61.0 and starts it when either I2P selector is enabled. Both are off by default. Saving both off stops the router; ordinary policy changes preserve a running router and its tunnels.
+**I2P incoming and outgoing** are available. The image bundles i2pd 2.61.0 and starts it when either I2P selector is enabled. Both are off by default. Saving both off stops the router; ordinary policy changes preserve a running router and its tunnels.
 
 | Selection | Generated Core settings |
 |---|---|
@@ -54,15 +54,15 @@ The incoming selector preserves a private loopback P2P connection for electrs. P
 
 ## Addresses and sessions
 
-Electrs offers separate **Local network** and **Tor** tabs. The copy icon on the right copies the complete address even when the input shows only part of it. LAN is `justverify.local:50002` with TLS; onion uses port 50001 with Tor on the wallet device. The address and QR are plain `host:port`; select the displayed protocol in the wallet. QR scanning is not a claim of automatic wallet configuration.
+Electrs offers separate **Local network** and **Tor** tabs. The copy icon on the right copies the complete address even when the input shows only part of it. LAN defaults to `justverify.local:50001` with SSL/TLS disabled; optional TLS uses port 50002. Onion uses port 50001 with Tor on the wallet device. The address and QR are plain `host:port`; select the displayed protocol in the wallet. QR scanning is not a claim of automatic wallet configuration.
 
 Device settings also provide copy buttons for local IPs and the enabled remote web onion address. Remote web access uses onion HTTP port 80, independently of the Electrs and RPC services. Browser clipboard support differs; if automatic copying fails, the address is selected for manual copying.
 
-Browser login lasts seven days and renews during authenticated use. Refresh and a web-service restart preserve the session. Logout, password changes, and successful backup restoration revoke it. Disabling remote web access revokes its Tor sessions. LAN, HTTPS and Tor cookies remain separate. Session bearer tokens are not stored in plaintext or included in installation images and backups.
+Browser login lasts seven days and renews during authenticated use. Valid sessions have no fixed count limit and are not evicted when another browser logs in. Expired sessions are removed automatically. In **Settings → Logged-in devices → Manage**, review the browser, operating system, LAN/HTTPS/Tor connection, login time and last activity. Log out one session or all other sessions while keeping the current browser signed in. A browser that clears its cookies may leave a separate session in the list until it expires or is revoked. Device labels are descriptive, not proof of a physical device; some privacy browsers report generic Safari details. Refresh and a web-service restart preserve the session. Logout, password changes, and successful backup restoration revoke it. Disabling remote web access revokes its Tor sessions. LAN, HTTPS and Tor cookies remain separate. Session bearer tokens are not stored in plaintext or included in installation images and backups.
 
 ## Dashboard freshness
 
-Core status, network data, block headers, mining-pool identification and host metrics are collected separately. The browser makes one status request at a time. During initial sync, the recent-block list is sampled every 15 seconds; the last complete list remains visible until the next size/pool batch is ready. An ongoing lookup has a bounded wait so unavailable data cannot freeze the list indefinitely.
+Core status, network data, block headers, mining-pool identification and host metrics are collected separately. The browser makes one status request at a time. During initial sync, the recent-block header list is sampled every 15 seconds without fetching block sizes or miner details. After Core finishes IBD, detail lookups cover only the displayed recent blocks; the previous list remains visible during a bounded lookup.
 
 The title badge shows syncing, waiting for a response, or synchronized. Fresh Core data with IBD=false and equal block/header heights is required for synchronized status. Delayed data takes precedence, even after a previous completion; waiting for the next block keeps completion visible. Rounded percentages are not used to decide completion. Icons respect reduced-motion preferences. Previously collected values keep their original timestamps, and the duplicate delay banners are omitted.
 
@@ -74,9 +74,7 @@ The Bitcoin Core overview shows Electrs progress as a percentage followed by **p
 
 While Core is in initial sync, the known header height is used as the target when higher than its validated block height. An unknown or zero target shows no percentage; 0/0 does not become 100%.
 
-**100% is height completion.** Index finalization and wallet readiness are checked separately. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. While waiting for a response, the last observed height is retained and marked as previous progress. Routine query-age and wallet-probe rows are omitted from the overview. A connection failure or index error is shown separately instead of clearing progress to a dash.
-
-These corrections are included in beta6.
+**Synchronization complete requires actual readiness.** The existing progress area distinguishes block indexing, DB finalization and catching up with new blocks. During DB finalization it shows an approximate whole-DB record-weighted percentage, without internal stage numbers or an estimated finish time. Unknown DB progress is omitted. A rounded height percentage alone never marks completion. Ready requires a fresh matching Core/Electrum tip, completed Core synchronization and a successful index readiness query. While waiting for a response, the last observed height is retained and marked as previous progress. Routine query-age and wallet-probe rows are omitted from the overview. A connection failure or index error is shown separately instead of clearing progress to a dash.
 
 ## Advanced bitcoin.conf editor
 

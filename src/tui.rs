@@ -334,8 +334,11 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                 if matches!(key.code, KeyCode::Char('l' | 'L')) {
                     electrum_qr.load_lan();
                 }
+                if matches!(key.code, KeyCode::Char('s' | 'S')) {
+                    electrum_qr.load_tls();
+                }
                 if matches!(key.code, KeyCode::Char('t' | 'T')) {
-                    electrum_qr.load();
+                    electrum_qr.load_tor();
                 }
                 if key.code == KeyCode::Esc {
                     page = ' ';

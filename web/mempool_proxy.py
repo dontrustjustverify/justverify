@@ -26,7 +26,7 @@ async def boundary(request, handler):
     return await handler(request)
 
 
-def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authorize=None, streams=None):
+def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authorize=None, streams=None, session_streams=None):
     app = web.Application(middlewares=[middleware], client_max_size=10*1024*1024)
     async def lifecycle(app):
         async with ClientSession(timeout=ClientTimeout(total=30), trust_env=False) as client:
@@ -62,9 +62,11 @@ def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authoriz
         except (ClientError, asyncio.TimeoutError):
             raise web.HTTPServiceUnavailable(text='Explorer backend is reconnecting')
         async with upstream:
+            if authorize is not None:authorize(request)
             downstream=web.WebSocketResponse(heartbeat=30, max_msg_size=1024*1024)
             await downstream.prepare(request)
             if streams is not None: streams.add(downstream)
+            if session_streams is not None:session_streams[downstream]=request['session_key']
             async def copy(source,target):
                 async for message in source:
                     if message.type==WSMsgType.TEXT: await target.send_str(message.data)
@@ -84,6 +86,7 @@ def make_app(bundle, runtime, profile, backend, *, middleware=boundary, authoriz
                 await asyncio.gather(*tasks,return_exceptions=True)
                 await downstream.close()
                 if streams is not None: streams.discard(downstream)
+                if session_streams is not None:session_streams.pop(downstream,None)
             return downstream
     async def api(request):
         if not backend_available():

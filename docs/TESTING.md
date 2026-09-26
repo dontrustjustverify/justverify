@@ -1,21 +1,24 @@
-# Release validation — 0.1.0-beta8
+# Validation — 0.1.0
 
-| Check | Result |
-|---|---|
-| Core/electrs/Mempool/MariaDB integration | PASS: isolated ARM64 regtest; early HTTP/WebSocket, address queries, signed transaction broadcast, confirmation, outage/reconnect |
-| Explorer failure and storage | PASS: actual backend SIGKILL preserves SQL PID; separate watch-only profile, fixed storage identity, bounded logs/cache; saved height107 → fresh height2 recovery |
-| LAN Electrum TLS | PASS: actual IPv4/IPv6 headers and signed broadcasts, trusted certificate, idle expiry, ping and reconnect |
-| Services and backup | PASS: four native startup failures followed by real Core RPC; actual stop failure refuses backup writes and resumes services; strict policy API accepts registered storage identity |
-| Version changes | PASS: native Core31.1 →22.0 →31.1, same data paths and fresh genesis; earlier full pinned release matrix and interruption tests recorded separately |
-| Collector and configuration | PASS: actual RPC delays, pause/recovery/reorg; Rust tests and actual encrypted GPG backup/restore |
-| Image integrity | PASS: offline filesystem, runtime/source identity, pinned binary hashes, empty device identities and service definitions; complete transfer checks recorded in the manifest |
-| Packaged boot and reboot | PASS: both boots, real Core/electrs/explorer tip agreement, session/identity preservation, indexing pause/recovery and encrypted backup restore in disposable generic ARM image |
-| Physical Pi 5 / 2 TB NVMe installation and boot | PASS: Etcher verification, factory data-partition expansion, exact installed binary/runtime hashes, SSH/sudo, active services and continuing mainnet block download |
-| Explorer on physical Pi during IBD | PASS: real block list and WebSocket; Core 10,356 → 37,026 over 212 seconds; Electrs correctly waits for Core |
-| Full mainnet indexing and physical reboot | NOT RUN for beta8; generic ARM reboot was checked separately |
-| Physical hardware wallet and mobile wallet app combinations | NOT RUN; regtest signing is not physical-device testing |
-| Mainnet throughput/thermal comparison with Umbrel | NOT RUN; startup health observation is not a controlled throughput comparison |
+The attached release test report contains exact image hashes and executed checks.
 
-See the packaged test report for artifact hashes, exact checks and remaining limits. Generic ARM boot does not test Raspberry Pi firmware or the physical NVMe adapter.
+## Executed for this release
 
-First-boot observations: the explorer frontend retried once while the protected Tor state directory was created. Tor initially reported clock skew, then reached bootstrap 100% after time synchronization. Both recovered automatically, and no further restarts occurred in the observation interval. No undervoltage, OOM, NVMe I/O or ext4 errors were found in that boot journal. Services, policies and chain data were not changed during observation.
+- Digital Rain: authenticated HTTP, schema and range validation, defaults of40% /1.60× /140%, maxima of100% /4.00× /300%, explicit save/cancel and reloading. Chromium exercises three languages, four themes, mobile390px and desktop1440px, reduced motion and page hiding/freezing. No extra node requests are introduced by the animation.
+- Encrypted preferences: actual Linux GPG restores legacy and current settings, including the new maxima, and rejects out-of-range values. The full backup regression covers wrong passwords, tampering, certificate/key consistency, path protections and interrupted restoration.
+- ARM64 release compilation, filesystem and ownership checks, fresh-device identity absence, complete compressed/uncompressed hashes and matching source inputs.
+- Packaged generic ARM VM boot and reboot: real Core31.1/electrs0.11.1 regtest, matching tips, Mempool, IPv4/IPv6 TCP and optional TLS, public50001 versus private50003 metadata, local Tor forwarding configuration, session persistence/revocation and Digital Rain persistence across service restart and reboot. The companion report records the result; the VM uses an external Debian kernel.
+- An existing synchronized Pi received only the appearance-related update. Core/electrs process identities stayed unchanged and LAN50001 answered with the same latest block hash as Core. This is separate from installing the complete0.1.0 image.
+
+## Earlier checks of unchanged components
+
+Actual isolated Core/electrs tests exercised four signed regtest transactions, lookup and new-block subscriptions over TCP/TLS. Session tests covered412 logins, expiration/renewal, device-specific logout and restarts. Earlier mainnet observation verified initial Electrs DB cleanup followed by catch-up and subsequent new-block updates without a restart. These results are retained as prior evidence, not new full-suite executions for0.1.0.
+
+## Not yet executed for this complete image
+
+- Physical Raspberry Pi5/NVMe installation, firmware boot and reboot of the exact0.1.0 image.
+- Physical iPhone/Safari/Onion Browser rendering, battery use and external Tor transport.
+- Actual BlueWallet/Nunchuk/hardware-wallet end-to-end interaction on the new image.
+- Long-duration mainnet soak testing and whole-image byte-for-byte rebuild reproducibility.
+
+Generic ARM tests do not establish Pi firmware or adapter compatibility. Browser viewport tests do not establish physical phone performance. No real-user wallet funds or chain data were used for destructive or transaction tests. Consult [installation](INSTALL.md), [wallet connections](MOBILE_CONNECTIONS.md) and [recovery](RECOVERY.md) before deployment.

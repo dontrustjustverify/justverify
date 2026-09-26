@@ -9,7 +9,8 @@ paths=[[(10,19),(10,45),(17,45),(22,41),(22,36),(18,32),(10,32)],
        [(27,19),(39,19)],[(33,19),(33,45)],
        [(54,22),(51,19),(46,19),(43,22),(43,42),(46,45),(51,45),(54,42)]]
 svg=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">',
-     '<title>JustVerify — BTC circle</title>',
+     '<title>JustVerify — BTC magnifying glass</title>',
+     f'<path d="M53 53L61 61" fill="none" stroke="{color}" stroke-width="4" stroke-linecap="round"/>',
      f'<circle cx="32" cy="32" r="29.5" fill="#080d10" stroke="{color}" stroke-width="3"/>']
 for path in paths:
     d='M'+'L'.join(f'{x} {y}' for x,y in path)
@@ -17,6 +18,9 @@ for path in paths:
 svg.append('</svg>');(root/'favicon.svg').write_text('\n'.join(svg)+'\n')
 scale=16
 im=Image.new('RGBA',(64*scale,64*scale));draw=ImageDraw.Draw(im)
+draw.line([(53*scale,53*scale),(61*scale,61*scale)],fill=color,width=4*scale)
+for x,y in [(53,53),(61,61)]:
+    draw.ellipse(((x-2)*scale,(y-2)*scale,(x+2)*scale,(y+2)*scale),fill=color)
 draw.ellipse((1*scale,1*scale,63*scale,63*scale),fill=color)
 draw.ellipse((4*scale,4*scale,60*scale,60*scale),fill='#080d10')
 for path in paths:

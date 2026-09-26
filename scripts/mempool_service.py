@@ -133,36 +133,79 @@ def rpc(profile, method, params=None):
     return result['result']
 
 
+class ElectrumProbe:
+    """One connection and one outstanding pair, including during long compaction."""
+    def __init__(self, port):
+        self.port=port;self.sock=None;self.pending=None;self.buffer=b''
+        self.sequence=0;self.size=0;self.retry_at=0;self.backoff=10
+
+    def close(self):
+        if self.sock is not None:self.sock.close()
+        self.sock=None;self.pending=None;self.buffer=b''
+
+    def poll(self):
+        if self.sock is None and time.monotonic()<self.retry_at:raise OSError('Electrum reconnect pending')
+        try:return self.receive()
+        except TimeoutError:
+            # Keep the request and partial response; do not accumulate new sockets.
+            if self.sock is not None and self.pending is not None:raise
+            self.failed();raise
+        except (OSError,ValueError,KeyError,TypeError):
+            self.failed();raise
+
+    def failed(self):
+        self.close();self.retry_at=time.monotonic()+self.backoff;self.backoff=min(60,self.backoff*2)
+
+    def receive(self):
+        if self.sock is None:self.sock=socket.create_connection(('127.0.0.1',self.port),.5)
+        if self.pending is None:
+            self.sequence+=2;self.size=0
+            request=''.join(json.dumps({'id':self.sequence+i,'method':method,'params':[]})+'\n' for i,method in enumerate(('blockchain.headers.subscribe','server.ping')))
+            try:self.sock.settimeout(.5);self.sock.sendall(request.encode())
+            except OSError:
+                raise OSError('Electrum write failed') from None
+            self.pending={}
+        deadline=time.monotonic()+3
+        while len(self.pending)<2:
+            while b'\n' in self.buffer:
+                line,self.buffer=self.buffer.split(b'\n',1);self.size+=len(line)+1
+                if self.size>16384:raise ValueError('Electrum response exceeds limit')
+                value=json.loads(line)
+                if not isinstance(value,dict):raise ValueError('Invalid Electrum reply')
+                identity=value.get('id')
+                if identity in (self.sequence,self.sequence+1):
+                    if identity in self.pending:raise ValueError('Duplicate Electrum reply')
+                    self.pending[identity]=value
+                elif identity is not None or value.get('method')!='blockchain.headers.subscribe':raise ValueError('Invalid Electrum reply id')
+                if len(self.pending)==2:break
+            if len(self.pending)==2:break
+            left=deadline-time.monotonic()
+            if left<=0:raise TimeoutError('Electrum response pending')
+            self.sock.settimeout(left);chunk=self.sock.recv(4096)
+            if not chunk:raise OSError('Electrum disconnected')
+            self.buffer+=chunk
+            if self.size+len(self.buffer)>16384:raise ValueError('Electrum response exceeds limit')
+        response=self.pending[self.sequence]
+        if response.get('error'):raise ValueError('Invalid Electrum header')
+        header=response['result']
+        if not isinstance(header,dict) or not isinstance(header.get('hex'),str):raise ValueError('Invalid Electrum header')
+        raw=bytes.fromhex(header['hex'])
+        if len(raw)!=80 or type(header['height']) is not int or header['height']<0:raise ValueError('Invalid Electrum header')
+        ping=self.pending[self.sequence+1]
+        ready='result' in ping and ping['result'] is None and not ping.get('error')
+        if not ready and ping.get('error')!={'code':-32603,'message':'unavailable index'}:raise ValueError('Invalid Electrum readiness reply')
+        self.pending=None;self.backoff=10
+        tip=hashlib.sha256(hashlib.sha256(raw).digest()).digest()[::-1].hex()
+        return {'height':header['height'],'tip':tip,'ready':ready}
+
+
+_probes={}
 def electrs_status(port):
-    deadline = time.monotonic() + 3
-    with socket.create_connection(('127.0.0.1', port), .5) as sock:
-        sock.sendall(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n{"id":2,"method":"server.ping","params":[]}\n')
-        replies, pending, size = {}, b'', 0
-        while len(replies) < 2:
-            left = deadline - time.monotonic()
-            if left <= 0: raise TimeoutError('Electrum response pending')
-            sock.settimeout(left)
-            chunk = sock.recv(4096)
-            if not chunk: raise OSError('Electrum disconnected')
-            size += len(chunk)
-            if size > 16384: raise ValueError('Electrum response exceeds limit')
-            pending += chunk
-            while b'\n' in pending:
-                line, pending = pending.split(b'\n', 1)
-                value = json.loads(line)
-                if not isinstance(value, dict): raise ValueError('Invalid Electrum reply')
-                if value.get('id') in (1, 2):
-                    if value['id'] in replies: raise ValueError('Duplicate Electrum reply')
-                    replies[value['id']] = value
-        header = replies[1]['result']
-        if not isinstance(header, dict) or not isinstance(header.get('hex'), str): raise ValueError('Invalid Electrum header')
-        raw = bytes.fromhex(header['hex'])
-        if len(raw) != 80 or type(header['height']) is not int or header['height'] < 0: raise ValueError('Invalid Electrum header')
-        ping = replies[2]
-        ready = 'result' in ping and ping['result'] is None and not ping.get('error')
-        if not ready and ping.get('error') != {'code':-32603,'message':'unavailable index'}: raise ValueError('Invalid Electrum readiness reply')
-    tip = hashlib.sha256(hashlib.sha256(raw).digest()).digest()[::-1].hex()
-    return {'height':header['height'], 'tip':tip, 'ready':ready}
+    if port not in _probes:
+        # Production uses one fixed backend. Bound cached clients for administrative callers.
+        if len(_probes)>=4:_probes.pop(next(iter(_probes))).close()
+        _probes[port]=ElectrumProbe(port)
+    return _probes[port].poll()
 
 
 def atomic(path, data):
@@ -181,7 +224,7 @@ def main():
     p.add_argument('--bundle', type=Path, default=Path('/opt/justverify/mempool'))
     p.add_argument('--api-port', type=int, default=8999)
     p.add_argument('--web-port', type=int, default=3006)
-    p.add_argument('--electrum-port', type=int, default=50001)
+    p.add_argument('--electrum-port', type=int, default=50003)
     a = p.parse_args()
     assert os.geteuid() != 0, 'Explorer must run without root privileges'
     assert a.data.is_dir() and a.runtime.is_dir(), 'Prepared data volume and runtime required'
@@ -295,6 +338,8 @@ def main():
             # Credentials, URLs, Core response bodies and user addresses are never logged.
             atomic(status, {'state':'waiting', 'reason':type(error).__name__})
         finally:
+            for probe in _probes.values():probe.close()
+            _probes.clear()
             for process in reversed(processes):
                 if process.poll() is None:
                     process.terminate()

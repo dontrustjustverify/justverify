@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """TLS authenticated bridge to one fixed, nonprivileged JustVerify executable."""
-import argparse, ipaddress, asyncio, base64, contextlib, fcntl, hashlib, hmac, json, os, pathlib, pty, secrets, socket as sockets, ssl, stat, struct, termios, time, signal
+import argparse, ipaddress, asyncio, base64, contextlib, fcntl, hashlib, hmac, json, math, os, pathlib, pty, secrets, socket as sockets, ssl, stat, struct, termios, time, signal
 from aiohttp import web, WSMsgType
 from rpc_gateway import Clients, Gateway
+from browser_sessions import metadata, valid_metadata
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 SESSION_SECONDS=7*24*60*60
 SESSION_RENEW_AFTER=60*60
@@ -20,7 +21,8 @@ def password_hash(password,salt):
 class Bridge:
     def __init__(self,state,binary,socket,origin):
         self.state=state;self.binary=str(binary.resolve());self.socket=str(socket.resolve());self.origin=origin
-        self.sessions={};self.attempts={};self.active=set();self.load_sessions()
+        self.sessions={};self.attempts={};self.active=set();self.session_streams={};self.session_revision=0
+        self.session_apps=0;self.session_task=None;self.load_sessions()
         self.clients=Clients(state/'rpc-clients.json',atomic);self.gateway=Gateway(self.clients,origin=self.origin)
         from node_admin import Startup
         self.startup=Startup()
@@ -39,29 +41,36 @@ class Bridge:
         path=self.state/'sessions.json'
         try:
             info=path.lstat()
-            if not stat.S_ISREG(info.st_mode) or info.st_mode&0o077 or info.st_uid!=os.geteuid() or info.st_size>131072:return
+            if not stat.S_ISREG(info.st_mode) or info.st_mode&0o077 or info.st_uid!=os.geteuid():return
             saved=json.loads(path.read_text());now=time.time()
-            if saved.get('schema')!=1 or saved.get('admin_digest')!=self.admin_digest() or not self.admin_digest():return
+            if saved.get('schema') not in (1,2) or saved.get('admin_digest')!=self.admin_digest() or not self.admin_digest():return
             rows=saved['sessions']
-            if not isinstance(rows,dict) or len(rows)>16:return
+            if not isinstance(rows,dict):return
+            ids=set()
             for key,value in rows.items():
                 if not isinstance(key,str) or len(key)!=64 or any(c not in '0123456789abcdef' for c in key):continue
-                if not isinstance(value,dict) or set(value)!={'expires','renewed','csrf','audience','tor_web'}:continue
+                fields={'expires','renewed','csrf','audience','tor_web'}
+                if saved['schema']==2:fields|={'id','created','last_seen','browser','platform'}
+                if not isinstance(value,dict) or set(value)!=fields:continue
                 if not isinstance(value['expires'],(int,float)) or not now<value['expires']<=now+SESSION_SECONDS+300:continue
                 if not isinstance(value['renewed'],(int,float)) or not now-SESSION_SECONDS<=value['renewed']<=now+300:continue
                 if not isinstance(value['csrf'],str) or not 32<=len(value['csrf'])<=128:continue
                 if value['audience'] not in ('jv_session','jv_lan_session','jv_tor_session') or value['tor_web']!=(value['audience']=='jv_tor_session'):continue
+                if saved['schema']==1:
+                    value.update(metadata(value['renewed'],''));value['created']=None
+                if not valid_metadata(value,now) or value['id'] in ids:continue
+                ids.add(value['id'])
                 self.sessions[key]=value
         except (OSError,ValueError,TypeError,KeyError):self.sessions={}
     def save_sessions(self):
         self.sessions={k:v for k,v in self.sessions.items() if v['expires']>time.time()}
-        atomic(self.state/'sessions.json',json.dumps({'schema':1,'admin_digest':self.admin_digest(),'sessions':self.sessions}))
+        atomic(self.state/'sessions.json',json.dumps({'schema':2,'admin_digest':self.admin_digest(),'sessions':self.sessions}))
     def session(self,r):
         token=r.cookies.get(self.cookie_name(r),'');key=self.session_key(token);s=self.sessions.get(key)
         if not s or s['expires']<=time.time() or s['audience']!=self.cookie_name(r):
             if s and s['expires']<=time.time():self.sessions.pop(key,None)
             raise web.HTTPUnauthorized(text='인증이 필요합니다.')
-        r['authenticated_bridge']=self;r['authenticated_session']=s;r['session_token']=token
+        r['authenticated_bridge']=self;r['authenticated_session']=s;r['session_token']=token;r['session_key']=key
         return s
     def set_session_cookie(self,response,r,token):
         response.set_cookie(self.cookie_name(r),token,secure=r.scheme=='https',httponly=True,samesite='Strict',max_age=SESSION_SECONDS,path='/')
@@ -69,8 +78,64 @@ class Bridge:
         s=r.get('authenticated_session');token=r.get('session_token','')
         if response.prepared or response.status>=400 or not s or self.sessions.get(self.session_key(token)) is not s:return
         now=time.time()
+        changed=False
+        if now-s['last_seen']>=60:s['last_seen']=now;changed=True
         if now-s['renewed']>=SESSION_RENEW_AFTER and s['expires']>now:
-            s['expires']=now+SESSION_SECONDS;s['renewed']=now;self.save_sessions();self.set_session_cookie(response,r,token)
+            s['expires']=now+SESSION_SECONDS;s['renewed']=now;changed=True;self.set_session_cookie(response,r,token)
+        if changed:self.save_sessions()
+    async def close_revoked_streams(self):
+        now=time.time()
+        sockets=[ws for ws,key in list(self.session_streams.items()) if key not in self.sessions or self.sessions[key]['expires']<=now]
+        if sockets:await asyncio.gather(*(ws.close(code=1008,message=b'Session ended') for ws in sockets),return_exceptions=True)
+    async def revoke_sessions(self,keys,*,invalidate_pending=False):
+        if invalidate_pending:self.session_revision+=1
+        removed=set(keys)&self.sessions.keys()
+        if removed:
+            for key in removed:self.sessions.pop(key,None)
+            self.save_sessions()
+        await self.close_revoked_streams()
+        return len(removed)
+    async def session_lifecycle(self,app):
+        self.session_apps+=1
+        async def expire():
+            while True:
+                await asyncio.sleep(30)
+                try:
+                    expired=[k for k,s in self.sessions.items() if s['expires']<=time.time()]
+                    await self.revoke_sessions(expired)
+                except OSError:pass  # Requests still reject expired credentials if persistence fails.
+        if self.session_task is None:self.session_task=asyncio.create_task(expire())
+        try:yield
+        finally:
+            self.session_apps-=1
+            if not self.session_apps:
+                self.session_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):await self.session_task
+                self.session_task=None
+    async def browser_sessions(self,r):
+        self.read_session(r)
+        if r.method=='GET':
+            await self.revoke_sessions([k for k,s in self.sessions.items() if s['expires']<=time.time()])
+            current=self.session(r)
+            rows=[{'id':s['id'],'created_at':s['created'],'last_seen_at':s['last_seen'],'expires_at':s['expires'],
+                   'browser':s['browser'],'platform':s['platform'],'current':s is current,
+                   'connection':'Tor' if s['tor_web'] else 'HTTPS' if s['audience']=='jv_session' else 'LAN'} for s in self.sessions.values()]
+            rows.sort(key=lambda s:(not s['current'],-s['last_seen_at']))
+            return web.json_response({'sessions':rows})
+        self.same_origin(r)
+        try:body=await r.json()
+        except ValueError:raise web.HTTPBadRequest()
+        current=self.session(r)  # A body may arrive after another request revoked this session.
+        if isinstance(body,dict) and set(body)=={'action','id'} and body['action']=='revoke' and isinstance(body['id'],str):
+            if len(body['id'])!=32 or any(c not in '0123456789abcdef' for c in body['id']):raise web.HTTPBadRequest()
+            keys=[k for k,s in self.sessions.items() if s['id']==body['id']]
+        elif body=={'action':'revoke_others'}:keys=[k for k,s in self.sessions.items() if s is not current]
+        else:raise web.HTTPBadRequest()
+        current_key=r['session_key'];revoked_current=current_key in keys
+        count=await self.revoke_sessions(keys,invalidate_pending=body['action']=='revoke_others')
+        response=web.json_response({'revoked_count':count,'revoked_current':revoked_current})
+        if revoked_current:response.del_cookie(self.cookie_name(r))
+        return response
     def same_origin(self,r):
         origin=r.headers.get('Origin')
         if r.get('tor_web'):
@@ -88,7 +153,7 @@ class Bridge:
         now=time.monotonic();key=r.remote
         self.attempts={k:[v for v in vals if now-v<300] for k,vals in self.attempts.items() if any(now-v<300 for v in vals)}
         vals=self.attempts.setdefault(key,[])
-        if len(vals)>=5 or len(self.attempts)>1024:raise web.HTTPTooManyRequests(text='시도가 너무 많습니다. 5분 후 다시 시도하세요.',headers={'Retry-After':str(max(1,int(300-(now-vals[0])))) if vals else '300'})
+        if len(vals)>=5 or len(self.attempts)>1024:raise web.HTTPTooManyRequests(text='시도가 너무 많습니다. 5분 후 다시 시도하세요.',headers={'Retry-After':str(max(1,math.ceil(300-(now-vals[0])))) if vals else '300'})
         vals.append(now)
     async def pairing_proof(self,r):
         token=self.state/'setup-token'
@@ -132,6 +197,7 @@ class Bridge:
         return await self.login(r)
     async def login(self,r):
         self.same_origin(r);self.limited(r)
+        revision=self.session_revision
         try:body=await r.json();password=body.get('password','')
         except (ValueError,AttributeError):raise web.HTTPBadRequest()
         if not isinstance(password,str) or not 12<=len(password)<=256:raise web.HTTPUnauthorized()
@@ -149,16 +215,18 @@ class Bridge:
             p=json.loads(record.read_text())
             if not hmac.compare_digest(password_hash(password,p['salt']),p['hash']):raise web.HTTPUnauthorized(text='관리자 암호가 맞지 않습니다.')
         self.attempts[r.remote].pop()  # Successful authentication is not a failed attempt.
+        if revision!=self.session_revision:raise web.HTTPConflict(text='로그인 상태가 변경되었습니다. 다시 시도하세요.')
+        if r.get('tor_web') and not self.remote_web.enabled:raise web.HTTPForbidden()
         self.sessions={k:v for k,v in self.sessions.items() if v['expires']>time.time()}
-        if len(self.sessions)>=16:raise web.HTTPTooManyRequests()
         token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32)
-        self.sessions[self.session_key(token)]={'expires':time.time()+SESSION_SECONDS,'renewed':time.time(),'csrf':csrf,'audience':self.cookie_name(r),'tor_web':bool(r.get('tor_web'))};self.save_sessions()
+        now=time.time()
+        self.sessions[self.session_key(token)]={'expires':now+SESSION_SECONDS,'renewed':now,'csrf':csrf,'audience':self.cookie_name(r),'tor_web':bool(r.get('tor_web')),**metadata(now,r.headers.get('User-Agent',''))};self.save_sessions()
         response=web.json_response({'csrf':csrf});self.set_session_cookie(response,r,token)
         return response
     async def logout(self,r):
         self.same_origin(r);s=self.session(r)
         if not hmac.compare_digest(r.headers.get('X-CSRF-Token',''),s['csrf']):raise web.HTTPForbidden()
-        self.sessions.pop(self.session_key(r.cookies.get(self.cookie_name(r),'')),None);self.save_sessions()
+        await self.revoke_sessions([r['session_key']])
         response=web.json_response({'ok':True});response.del_cookie(self.cookie_name(r));return response
     async def remote_rpc(self,r):
         self.same_origin(r);session=self.session(r)
@@ -256,8 +324,10 @@ class Bridge:
         self.read_session(r)
         mode=r.query.get('network','lan')
         if mode not in ('lan','tor'):raise web.HTTPBadRequest()
+        transport=r.query.get('transport','tcp')
+        if transport not in ('tcp','tls') or (mode=='tor' and transport!='tcp'):raise web.HTTPBadRequest()
         from electrum_qr import lan_endpoint, endpoint
-        try:result=await (asyncio.to_thread(lan_endpoint,False) if mode=='lan' else asyncio.to_thread(endpoint))
+        try:result=await (asyncio.to_thread(lan_endpoint,False,transport=='tls') if mode=='lan' else asyncio.to_thread(endpoint))
         except Exception:raise web.HTTPServiceUnavailable(text='선택한 Electrum 연결이 아직 준비되지 않았습니다. Core·electrs 초기 설정과 서비스 상태를 확인하세요.')
         try:
             snapshot=await self.snapshot()
@@ -271,6 +341,7 @@ class Bridge:
         if len(self.active)>=4:raise web.HTTPTooManyRequests()
         ws=web.WebSocketResponse(max_msg_size=8192,heartbeat=20);self.active.add(ws)
         await ws.prepare(r)
+        self.session_streams[ws]=r['session_key']
         if r.get('tor_web'):self.tor_streams.add(ws)
         master,slave=pty.openpty();os.set_blocking(master,False)
         fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',40,120,0,0))
@@ -307,7 +378,7 @@ class Bridge:
                 process.terminate()
                 try:await asyncio.wait_for(process.wait(),3)
                 except asyncio.TimeoutError:process.kill();await process.wait()
-            os.close(master);self.active.discard(ws);self.tor_streams.discard(ws)
+            os.close(master);self.active.discard(ws);self.tor_streams.discard(ws);self.session_streams.pop(ws,None)
         return ws
 
 @web.middleware
@@ -337,6 +408,8 @@ async def private_lan(request,handler):
 
 def app_for(bridge,tor_rpc=False,lan_http=False,remote_web=False):
     app=web.Application(client_max_size=4096,middlewares=[headers,*([private_lan] if lan_http else [])])
+    app.cleanup_ctx.append(bridge.session_lifecycle)
+    app.router.add_get('/sessions',bridge.browser_sessions);app.router.add_post('/sessions',bridge.browser_sessions)
     if not tor_rpc and not lan_http:
         async def persistent_web(app):
             try:
@@ -391,7 +464,7 @@ def app_for(bridge,tor_rpc=False,lan_http=False,remote_web=False):
     if not lan_http:
         app.router.add_post('/rpc',bridge.gateway.rpc);app.router.add_post('/',bridge.gateway.rpc);app.router.add_post('/wallet/{wallet}',bridge.gateway.rpc)
     # Explicit static allowlist; state files cannot be routed.
-    for name in ['xterm.js','xterm.css','app.js','app.css','copy.js','electrs_status.js','dashboard.js','settings.js','device.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
+    for name in ['xterm.js','xterm.css','app.js','app.css','copy.js','electrs_status.js','dashboard.js','settings.js','device.js','genesis-rain.js','i18n.js','favicon.svg','favicon.ico','apple-touch-icon.png']:
         async def serve(r,name=name):return web.FileResponse(ROOT/'web/static'/name)
         app.router.add_get('/'+name,serve)
     return app

@@ -1,87 +1,39 @@
-<p align="center"><img src="../../web/static/favicon.svg" alt="JustVerify BTC" width="96"></p>
-<h1 align="center">JustVerify</h1>
-<p align="center">YOUR BITCOIN NODE.<br>No Knots, no Blake2B—nothing but Bitcoin.<br>We are all Satoshi.</p>
-<p align="center"><a href="../../README.md">English</a> · <a href="../ko/README.md">한국어</a> · 日本語</p>
+# JustVerify
 
-自分で検証するBitcoin Coreノードです。NVMeにイメージを書き込み、Raspberry Pi 5を起動して **http://justverify.local** を開きます。端末風ダッシュボード、Tor、electrs、ローカルmempoolエクスプローラーを同梱しています。
+YOUR BITCOIN NODE. No Knots, no Blake2B—nothing but Bitcoin. We are all Satoshi.
 
-**0.1.0-beta8はテスト版です。** インストール前に[検証済み・未検証の項目](../TESTING.md)をご確認ください。ビルドやregtestの成功は、mainnetの全インデックス、実機スマートフォンのウォレット接続、長期安定性の検証完了を意味しません。
+Bitcoin Core、electrs、Tor、ローカルMempoolをまとめたRaspberry Pi用ノードです。`justverify.local`またはテキスト画面から管理できます。
 
-beta8はElectrs同期中のMempool表示、DB復旧、ログ・キャッシュ容量、LANウォレット接続を改善します。Coreのバージョン変更は、現在のデータ領域で削除範囲を確認してチェーンを初期化し、全体を再同期します。[変更点](../RELEASE_NOTES.md)。
+[English](../../README.md) · [한국어](../ko/README.md) · [ソースからビルド](BUILD.md)
 
+## 正式版0.1.0
 
-**I2Pピア:** beta3はi2pdを内蔵します。Bitcoin Core → Mempool・ネットワーク設定でI2Pの受信・送信を選択できます。初期値は両方オフです。Core 22の受信には送信も必要です。Core 23以降は受信だけを有効にできます。[ネットワーク設定](../SETTINGS.md)をご覧ください。
+[PiイメージIMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS) · [署名](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS.asc) · [公開鍵](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-signing-key.asc) · [ソース](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-source.tar.gz) · [リリース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0)
 
-言語の初期設定は **自動（ブラウザーの言語）** です。韓国語・英語・日本語に対応し、該当しない場合は英語を表示します。手動で選択した言語は保持されます。
+## インストール
 
-## 主な機能
+基準構成はRaspberry Pi5、RAM8GB、2TB SSD/NVMe、有線LAN、適切な電源と冷却です。Pi4やx86用イメージではありません。
 
-- 公式署名を検証したBitcoin Core。バージョン変更は事前検証と明示的な削除確認後、現在のチェーン領域で全再同期します。ウォレットを含む変更は削除前に拒否します。
-- 非rootで動作する実際のTUIと、画面幅に合わせて配置が変わるWebダッシュボード。ブロック、ピア、手数料、システム情報を表示します。
-- Torとelectrs。LAN/Tor別の接続先、ポート、TLS情報とQRコード。
-- **mempool 3.3.1を同梱。** Electrsの隣の **メンプール** から、LANでは **http://justverify.local:3006**、Torでは現在のonionアドレスのポート3006を開けます。
-- 韓国語、英語、日本語とTeal、Amber、Green、Iceの文字色テーマ。
-- 変更内容を確認して設定を適用し、暗号化した設定のバックアップと復元ができます。
+1. [インストール手順](../INSTALL.md)に従ってチェックサムと署名を検証します。
+2. XZを展開し、balenaEtcherで`.img`と対象ドライブを選びます。**対象ドライブのデータは消去されます。**書き込み後の検証を有効にしてください。
+3. ドライブをPiに接続して起動し、同じLANから`http://justverify.local/`を開き、ウェブ管理者パスワードを設定します。
+4. CoreのIBD、Electrsのインデックス作成・DB整理・最新ブロック確認を待ちます。CoreベースのMempoolブロック画面はElectrs同期中も利用できます。
 
-OP_RETURN・ネットワーク設定とログイン保持については[ノード設定ガイド](../SETTINGS.md)をご覧ください。
+ウォレットは信頼できるLANで**`justverify.local:50001`、SSL/TLSオフ**を使用します。任意のTLSは50002、TorアドレスとQRはElectrs画面にあります。[接続案内](../MOBILE_CONNECTIONS.md)。
 
-## 画面と操作動画
+初期SSHユーザー名とパスワードは`justverify`です。初回接続後に`passwd`で変更してください。ウェブのパスワードとは別で、sudoにはSSHパスワードを使用します。[SSH管理](../SSH.md)。
 
-実際のメニュー操作とスクロールを収録した **30秒の動画**です。10画面をそれぞれ3秒ずつ表示します。
+## 機能
 
-https://github.com/user-attachments/assets/17d80624-cdec-40c1-af07-acc7816be195
+- 実際のブロック、ピア、手数料、サービス状態とElectrsの同期・DB整理進捗。
+- 公式署名を検証したCore22.x–31.1とバージョン別設定。バージョン切替は事前検証と明示的な削除確認後に同じデータパスのチェーン・インデックスを初期化し、完全に再同期します。選択・ダウンロードだけでは変更しません。
+- Clearnet、Tor、I2Pの接続選択と任意のTorウェブアクセス。
+- 利用中に延長される7日間のログイン、接続ブラウザーの管理、個別ログアウト、暗号化設定バックアップ。
+- 日本語・英語・韓国語、ブラウザー言語の自動選択、4色のテーマ。
+- 設定のDigital Rain背景：初期状態はオフ。明るさ40%（最大100%）、速度1.60×（最大4.00×）、密度140%（最大300%）。プレビュー後に保存・取消ができ、既存設定は保持されます。非表示タブでは描画を停止し、動きを減らす設定では静止画になります。
 
-[30秒の動画をダウンロード（MP4）](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta1/justverify-0.1.0-beta1-tour.mp4)
+Core31.1、electrs0.11.1、Mempool3.3.1、i2pd2.61.0を固定しています。標準ノードはウォレット秘密鍵を保持しません。イメージの再書き込みはデータを保持する更新ではありません。
 
-**デスクトップの概要画面**
+[設定](../SETTINGS.md) · [復旧](../RECOVERY.md) · [検証範囲](../TESTING.md) · [変更点](../RELEASE_NOTES.md) · [第三者ライセンス](../../licenses/THIRD_PARTY_NOTICES.md)
 
-![JustVerify デスクトップ画面](../media/justverify-desktop.png)
-
-**モバイルの概要画面とElectrs**
-
-<p><img src="../media/justverify-mobile.png" alt="JustVerify モバイル画面" width="280"> <img src="../media/justverify-mobile-electrs.png" alt="JustVerify モバイルのElectrs接続とQR" width="280"></p>
-
-実際のbeta1アプリとBitcoin Core・electrs・mempoolを、隔離したARM VMの **regtest** で実行して撮影しました。モバイル画像は幅390 pxのブラウザーで確認したレスポンシブ表示です。実機スマートフォンや公開ネットワークの検証完了を示すものではありません。表示された接続先とQRは使い捨てのテスト環境用です。接続時はご自身のノードに表示される情報を使用してください。
-
-## 必要な機器
-
-現在のイメージは **Raspberry Pi 5、64ビット、有線LAN、NVMe** 向けです。実機検証対象は **RAM 8 GB、NVMe 2 TB** と、対応するNVMe HAT・ブートローダーです。適切な電源と冷却装置を使用してください。Pi 4やx86 PCには対応するイメージではありません。
-
-1台のNVMeをOSとデータ用パーティションに分け、初回起動時にデータ領域を拡張します。A/B OSは不要です。ブロックチェーン、txindex、electrs、エクスプローラーのデータを保存するため、圧縮ファイルのサイズと必要なストレージ容量は異なります。
-
-## ダウンロードとインストール
-
-1. [イメージ (658 MB)](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8.img.xz)と[SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0-beta8/justverify-0.1.0-beta8-SHA256SUMS)をダウンロードします。[beta8リリース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0-beta8)に署名、ソースコード、検証レポートもあります。
-2. macOSでは `shasum -a 256 justverify-0.1.0-beta8.img.xz` を実行し、`justverify-0.1.0-beta8-SHA256SUMS`と比較します。実験用署名鍵と信頼上の制限は[インストールガイド](../INSTALL.md)を参照してください。
-3. XZ対応の展開ツールで`.img.xz`を解凍し、**balenaEtcher**で展開した`.img`と対象NVMeを選択して書き込みます。macOS/Etcher 2.1.6の実測ではXZの直接書き込みは検証に失敗し、展開したIMGは成功しました。対象ドライブの内容は消去されます。検証を省略せず、成功表示を待ってください。
-4. NVMeを安全に取り出してPi 5に装着し、LANと電源を接続します。
-5. 同じネットワークから **http://justverify.local** を開きます。名前で接続できない場合は、ルーターで確認したPiのIPアドレスを使用します。
-6. Web管理者パスワードと確認用パスワードを入力します。機器固有の識別情報とデータ領域を準備し、既定のCoreプロファイルを自動で起動します。
-7. 電源とネットワークを維持して同期を待ちます。Coreの後にelectrsとmempoolの準備状態も確認してください。サービスの起動表示だけでは同期完了とは判断できません。
-
-新しいプロファイルでは取引照会用に`txindex=1`を設定します。既存の設定は保持します。Electrsの同期中でもCoreに基づくブロック画面を開けます。アドレス履歴と過去の取引照会は必要なインデックスの準備後に利用できます。外部エクスプローラーのデータでは代用しません。
-
-## 日常の操作
-
-| 接続先・メニュー | 用途 |
-|---|---|
-| `http://justverify.local` | 概要、Coreバージョン・ポリシー設定、Electrs、機器設定 |
-| `http://justverify.local:3006` | 自分のノードのmempoolエクスプローラー |
-| Electrs → ローカルネットワーク / Tor | 実際のアドレス、ポート、プロトコル、TLS指紋、QR |
-| 設定 | アカウント、文字色、言語、Remote Tor access、再起動・終了 |
-| 設定 → バックアップと復元 | 暗号化した設定の保管・復元 |
-| 設定 → トラブルシューティング | サービス状態とストレージの詳細管理 |
-
-Web管理者パスワードとSSHパスワードは別です。指定された初期SSHアカウントは **`justverify` / `justverify`** です。初回SSH接続後に`passwd`で変更してください。beta2ではSSHパスワードを入力すると`sudo`でOSを管理できます。[SSH管理ガイド](../SSH.md)をご覧ください。公開イメージには開発者のroot SSH鍵や事前生成された機器秘密鍵を含めません。
-
-管理HTTPとエクスプローラーは信頼できるLANで使用し、インターネットからポート転送しないでください。Core RPCはローカルに限定し、ウォレット用リモートRPCには別の認証・保護された経路を使用します。Remote Tor accessを有効にすると、管理画面とMempoolは同じweb onionアドレスのポート80・3006を使用します。ElectrsとウォレットRPCは別のアドレスです。[ウォレット接続ガイド](../MOBILE_CONNECTIONS.md)もご確認ください。
-
-## バックアップと復旧
-
-再インストール前に暗号化した設定バックアップとパスワードを **Piの外部に** 保存してください。設定と機器識別情報を含みますが、ブロックチェーン全体やウォレット秘密鍵は含みません。電源やNVMeを取り外す前に設定画面から終了します。イメージの再書き込みはディスクを置き換える新規インストールであり、既存環境への更新ではありません。[インストール](../INSTALL.md)と[復旧](../RECOVERY.md)の手順に従ってください。
-
-## ビルド・検証・ライセンス
-
-イメージの組み立てには隔離した **ARM64 Linux** 環境を使用します。[GitHub ソース・ライブラリ取得からイメージ作成まで](BUILD.md)、[検証結果と未完了項目](../TESTING.md)、[リリース情報](../RELEASE_NOTES.md)を公開しています。
-
-JustVerifyと同梱コンポーネントにはそれぞれのライセンスが適用されます。[第三者の権利表示](../../licenses/THIRD_PARTY_NOTICES.md)をご覧ください。mempoolはupstreamのAGPL条件で別途同梱し、エクスプローラーの **ソース · AGPL** から原典、ビルド変更、ロックファイルを取得できます。Umbrelはガイド構成とアプリ統合の参考として調査し、コードやUI素材はコピーしていません。各upstreamプロジェクトによる公式製品や推奨を意味しません。
+検証報告書には実行済み試験と、未検証の実機ウォレット・機器の組み合わせを区別して記載しています。

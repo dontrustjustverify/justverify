@@ -15,8 +15,8 @@ async def main():
   async with c.get(origin+'/dashboard',headers={**headers,'Origin':'http://evil.invalid'}) as r:assert r.status==403
   async with c.get(origin+'/dashboard',headers=headers) as r:
    assert r.status==200;s=await r.json();assert s['rpc']['getblockchaininfo']['updated']>0
-  for mode in ('lan','tor'):
-   async with c.get(origin+'/electrum?network='+mode,headers=headers) as r:assert r.status==200,await r.text();d=await r.json()
+  for mode,transport in (('lan','tcp'),('lan','tls'),('tor','tcp')):
+   async with c.get(origin+'/electrum?network='+mode+'&transport='+transport,headers=headers) as r:assert r.status==200,await r.text();d=await r.json()
    matrix=d['matrix'];n=len(matrix);assert all(len(row)==n for row in matrix)
    img=Image.new('RGB',(n*8,n*8),'white');pix=img.load()
    for y,row in enumerate(matrix):
@@ -24,11 +24,13 @@ async def main():
      if on:
       for yy in range(y*8,(y+1)*8):
        for xx in range(x*8,(x+1)*8):pix[xx,yy]=(0,0,0)
-   img.save(OUT/f'vm-{mode}-qr.png');decoded=zxingcpp.read_barcode(img);assert decoded and decoded.text==d['payload']
-   if mode=='lan':assert d['payload']=='justverify.local:50002' and d['tls'] and len(d['certificate_sha256'])==64
+   img.save(OUT/f'vm-{mode}-{transport}-qr.png');decoded=zxingcpp.read_barcode(img);assert decoded and decoded.text==d['payload']
+   if mode=='lan' and transport=='tls':assert d['payload']=='justverify.local:50002' and d['tls'] and len(d['certificate_sha256'])==64
+   elif mode=='lan':assert d['payload']=='justverify.local:50001' and not d['tls'] and not d['certificate_sha256']
    else:assert d['payload'].endswith('.onion:50001') and not d['tls']
-   evidence.append({'network':mode,'payload_sha256':hashlib.sha256(d['payload'].encode()).hexdigest(),'qr_exact':True,'service_active':d['service_active']})
-  async with c.get(origin+'/electrum?network=wrong',headers=headers) as r:assert r.status==400
+   evidence.append({'network':mode,'transport':transport,'payload_sha256':hashlib.sha256(d['payload'].encode()).hexdigest(),'qr_exact':True,'service_active':d['service_active']})
+  for query in ('network=wrong','network=lan&transport=wrong','network=tor&transport=tls'):
+   async with c.get(origin+'/electrum?'+query,headers=headers) as r:assert r.status==400
   async with c.post(origin+'/logout',headers={**headers,'Origin':origin}) as r:assert r.status==200
   async with c.get(origin+'/dashboard',headers=headers) as r:assert r.status==401
  (OUT/'api-evidence.json').write_text(json.dumps({'scope':os.environ.get('JV_UI_TEST_TARGET','Actual Linux VM collector')+' and configured endpoints; QR digital decode, not camera/wallet connection','checks':evidence},indent=2))

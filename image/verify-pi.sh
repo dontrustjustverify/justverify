@@ -11,6 +11,13 @@ trap cleanup EXIT
 mkdir "$work/root"
 xz -dc "$artifact" | dd of="$work/image.img" bs=4M conv=sparse status=none
 loop=$(losetup --find --show --partscan --read-only "$work/image.img")
+# Partition scanning may finish before udev exposes the partition device nodes.
+udevadm settle --timeout=10
+for attempt in $(seq 1 50); do
+    [[ -b "${loop}p1" && -b "${loop}p2" ]] && break
+    sleep 0.1
+done
+[[ -b "${loop}p1" && -b "${loop}p2" ]] || { echo 'Partition device nodes did not appear'; exit 1; }
 e2fsck -fn "${loop}p2"
 mount -o ro,noload "${loop}p2" "$work/root"
 mount -o ro "${loop}p1" "$work/root/boot/firmware"
@@ -64,7 +71,7 @@ for name in ('server.py','node_admin.py','device_settings.py','remote_web.py','r
     packaged=root/'opt/justverify/web'/name
     assert packaged.read_bytes()==(source/'web'/name).read_bytes(),f'stale packaged web component: {name}'
     assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0
-for name in ('volume_setup.py','storage_service.py','device_service.py','storage_probe.py','disk_inventory.py','backup_bundle.py','backup_service.py','backup_guard.py','chain_reset.py','node_ready.py','publish_onions.py','mempool_service.py','mempool_data.py'):
+for name in ('volume_setup.py','storage_service.py','device_service.py','storage_probe.py','disk_inventory.py','backup_bundle.py','backup_service.py','backup_guard.py','chain_reset.py','node_ready.py','publish_onions.py','mempool_service.py','electrs_service.py','electrs_compaction.py','mempool_data.py'):
     packaged=root/'opt/justverify/scripts'/name
     assert packaged.read_bytes()==(source/'scripts'/name).read_bytes(),f'stale packaged storage/profile component: {name}'
     assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0
@@ -88,6 +95,12 @@ for item in (source/'web/static').iterdir():
         packaged=root/'opt/justverify/web/static'/item.name
         assert packaged.read_bytes()==item.read_bytes(),f'stale static file: {item.name}'
         assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0
+import ast
+for item in (source/'web').glob('*.py'):
+    packaged=root/'opt/justverify/web'/item.name
+    assert packaged.read_bytes()==item.read_bytes(),f'stale web module: {item.name}'
+    assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0
+    ast.parse(packaged.read_text(),filename=item.name)
 assert (root/'opt/justverify/licenses/mining-pools/LICENSE').read_bytes()==(source/'licenses/mining-pools/LICENSE').read_bytes()
 assert not (root/'opt/justverify/core/bin/bitcoin-qt').exists()
 assert not (root/'opt/justverify/core/libexec').exists()
@@ -95,6 +108,8 @@ import tomllib
 assert json.loads((root/'etc/justverify/os-release.json').read_text())['version']==tomllib.loads((source/'Cargo.toml').read_text())['package']['version']
 for name in ('policy','electrs','tor','versions','storage','device','backup','console','mempool','mempool-web'):
     assert (root/f'etc/systemd/system/multi-user.target.wants/justverify-{name}.service').is_symlink()
+unit=(root/'etc/systemd/system/justverify-electrs.service').read_text()
+assert 'LimitNOFILE=65536' in unit and '/scripts/electrs_service.py' in unit
 assert (root/'etc/systemd/system/justverify-electrs.service.wants/justverify-electrum-tls.service').is_symlink()
 assert (root/'etc/systemd/system/justverify-electrum-tls.service').read_bytes()==(source/'image/systemd/justverify-electrum-tls.service').read_bytes()
 assert (root/'etc/systemd/system/justverify-tor.service').read_bytes()==(source/'image/systemd/justverify-tor.service').read_bytes()

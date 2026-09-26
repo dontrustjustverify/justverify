@@ -58,7 +58,7 @@ enum Command {
         cookie: PathBuf,
         #[arg(long, default_value_t = 18443)]
         rpc_port: u16,
-        #[arg(long, default_value_t = 50001)]
+        #[arg(long, default_value_t = 50003)]
         electrs_port: u16,
         #[arg(long, default_value_t = 4224)]
         electrs_metrics_port: u16,

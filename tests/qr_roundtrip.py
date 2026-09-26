@@ -3,7 +3,7 @@
 import json,pathlib,hashlib,qrcode,zxingcpp
 from PIL import Image
 R=pathlib.Path(__file__).resolve().parents[1];out=R/'.state/qr';out.mkdir(parents=True,exist_ok=True)
-payloads=['192.168.1.123:50002']
+payloads=['justverify.local:50001','justverify.local:50002','192.168.1.123:50001','192.168.1.123:50002']
 host=R/'.state/tor-test/electrum/hostname'
 if host.exists():payloads.append(host.read_text().strip()+':50001')
 results=[]

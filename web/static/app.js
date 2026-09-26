@@ -28,12 +28,12 @@ function showPage(n){
  if(n===1)NodeView.start();else if(n===7)NodeView.connection('lan');else if(n===6)DeviceView.open();else if(n===11)DeviceView.troubleshoot();else if(n===2||n===3)SettingsView.open(n===2?'versions':'policy');else ensureTerminal(functionKeys[n]);
 }
 $('#login').onsubmit=async e=>{
- e.preventDefault();status.textContent='';const password=$('#password').value;
+ e.preventDefault();if($('#submit').disabled)return;status.textContent='';const password=$('#password').value;
  if(setupRequired&&password!==$('#confirm').value){status.textContent='두 암호가 일치하지 않습니다. 다시 확인해 주세요.';$('#confirm').focus();return;}
  $('#submit').disabled=true;
  try {const body={password};if(setupRequired){body.password_confirm=$('#confirm').value;if(requiresCode)body.setup_token=$('#setup').value;}
  const r=await fetch(setupRequired?'/setup':'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
- if(!r.ok){if(r.status===429)throw Error(`시도가 많아 잠시 제한됐습니다. ${r.headers.get('Retry-After')||300}초 후 다시 시도하세요.`);const message=await r.text();throw Error(message||'로그인하지 못했습니다. 입력을 확인해 주세요.');}
+ if(!r.ok){if(r.status===429){const retry=Number(r.headers.get('Retry-After'));throw Error(Number.isInteger(retry)&&retry>0?`시도가 많아 잠시 제한됐습니다. ${retry}초 후 다시 시도하세요.`:'로그인이 제한되었습니다. 잠시 후 다시 시도하세요.');}const message=await r.text();throw Error(message||'로그인하지 못했습니다. 입력을 확인해 주세요.');}
  csrf=(await r.json()).csrf;$('#password').value='';$('#confirm').value='';$('#setup').value='';terminal();
  }catch(e){status.textContent=e.message;}finally{$('#submit').disabled=false;}
 };
@@ -43,7 +43,9 @@ document.querySelectorAll('[data-fkey]').forEach(b=>b.onclick=()=>{
  showPage(Number(b.dataset.fkey));
 });
 document.querySelectorAll('[data-network]').forEach(b=>b.onclick=()=>NodeView.connection(b.dataset.network));
-$('#logout').onclick=async()=>{await fetch('/logout',{method:'POST',headers:{'X-CSRF-Token':csrf}});NodeView.stop();SettingsView.stop();ws?.close();csrf=null;showAuth();};addEventListener('resize',size);resume();
+document.querySelectorAll('[data-electrum-transport]').forEach(b=>b.onclick=()=>NodeView.connection('lan',b.dataset.electrumTransport));
+async function finishLogout(){csrf=null;NodeView.stop();SettingsView.stop();DeviceView.stop();ws?.close();await showAuth();}
+$('#logout').onclick=async()=>{const response=await fetch('/logout',{method:'POST',headers:{'X-CSRF-Token':csrf}});if(response.ok||response.status===401)await finishLogout();};addEventListener('resize',size);resume();
 
 // Keep the node's hostname for LAN, IP and authenticated Tor access.
 {const url=new URL(location.href);url.protocol='http:';url.port='3006';url.pathname='/';url.search='';url.hash='';$('#mempool-link').href=url.href;}

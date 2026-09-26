@@ -7,19 +7,25 @@ pub struct ElectrumQr {
 }
 impl ElectrumQr {
     pub fn load(&mut self) {
-        self.load_mode(false);
+        self.load_lan();
     }
     pub fn load_lan(&mut self) {
-        self.load_mode(true);
+        self.load_mode(true, false);
     }
-    fn load_mode(&mut self, lan: bool) {
+    pub fn load_tor(&mut self) {
+        self.load_mode(false, false);
+    }
+    pub fn load_tls(&mut self) {
+        self.load_mode(true, true);
+    }
+    fn load_mode(&mut self, lan: bool, tls: bool) {
         self.lan = lan;
         self.value = Value::Null;
         self.error = "Selected Electrum endpoint unavailable".into();
         let mut command = std::process::Command::new("/opt/justverify/venv/bin/python");
         command.arg("/opt/justverify/web/electrum_qr.py");
         if lan {
-            command.arg("--lan");
+            command.arg(if tls { "--lan-tls" } else { "--lan" });
         }
         if let Ok(output) = command.output() {
             if let Ok(reply) = serde_json::from_slice::<Value>(&output.stdout) {
@@ -32,7 +38,7 @@ impl ElectrumQr {
     }
     pub fn lines(&self, width: u16, height: u16) -> Vec<String> {
         let mut lines = vec![format!(
-            "{} ELECTRUM — L LAN/TLS | T Tor | Esc back",
+            "{} ELECTRUM — L LAN/TCP | S TLS | T Tor | Esc back",
             if self.lan { "LAN" } else { "TOR" }
         )];
         if self.value.is_null() {
@@ -40,7 +46,7 @@ impl ElectrumQr {
             return lines;
         }
         lines.push(self.value["payload"].as_str().unwrap_or("").into());
-        if self.lan {
+        if self.lan && self.value["tls"] == true {
             lines.push("Electrum TLS port 50002. Select SSL/TLS in the wallet.".into());
             lines.push("Trust the device certificate; do not disable verification.".into());
             let fingerprint = self.value["certificate_sha256"].as_str().unwrap_or("");
@@ -52,6 +58,9 @@ impl ElectrumQr {
                 "                    {}",
                 fingerprint.get(32..).unwrap_or("")
             ));
+        } else if self.lan {
+            lines.push("Electrum TCP port 50001. Turn SSL/TLS OFF in the wallet.".into());
+            lines.push("Trusted private LAN only; connection is not encrypted.".into());
         } else {
             lines.push("Electrum TCP over Tor; TLS: no. No RPC credentials.".into());
             lines.push("Use a Tor SOCKS proxy on the wallet device.".into());

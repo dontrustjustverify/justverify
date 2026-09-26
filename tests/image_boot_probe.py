@@ -226,7 +226,7 @@ async def probe():
      while ('A add' not in text or 'REMOTE RPC' in text) and time.monotonic()<deadline:
       text=visible(await asyncio.wait_for(ws.receive(),5))
      assert 'A add' in text and 'REMOTE RPC' not in text
-     for key,expected in (('\x1b','Esc 현황'),('q','TOR ELECTRUM'),('l','LAN ELECTRUM')):
+     for key,expected in (('\x1b','Esc 현황'),('q','LAN ELECTRUM'),('t','TOR ELECTRUM'),('l','LAN ELECTRUM'),('s','Certificate SHA256:')):
       await ws.send_json({'input':key});text='';deadline=time.monotonic()+20
       while expected not in text and time.monotonic()<deadline:
        text=visible(await asyncio.wait_for(ws.receive(),5))

@@ -4,11 +4,16 @@ Open **Electrs** in JustVerify and choose **Local network** or **Tor**. Use the 
 
 | Connection | Address and protocol | Wallet setup |
 |---|---|---|
-| Electrum on LAN | `justverify.local:50002`, TLS | Select SSL/TLS and verify the device certificate fingerprint |
+| Electrum on LAN (default) | `justverify.local:50001`, TCP | Turn SSL/TLS off; no certificate required |
+| Electrum on LAN (optional TLS) | `justverify.local:50002`, TLS | Turn SSL/TLS on and verify the device certificate fingerprint |
 | Electrum over Tor | Device-specific `.onion:50001`, TCP inside Tor | Configure the wallet's Tor/SOCKS connection; this endpoint is not TLS |
 | Wallet RPC | Separately authenticated gateway, enabled explicitly | Create an individual client and use its assigned permissions |
 
-Electrum QR codes contain ordinary `host:port` text. They do not imply that every wallet supports automatic QR import. The LAN Electrum listener currently supports private/link-local IPv4 and loopback, not IPv6. Core must be ready and electrs must agree with its height and tip before relying on wallet results.
+Electrum QR codes contain ordinary `host:port` text. They do not imply that every wallet supports automatic QR import. LAN listeners allow private/link-local IPv4, IPv6 ULA/link-local and loopback sources; global IPv6 is refused. Use the device’s private IPv4 address if hostname resolution selects an unavailable route. TCP is unencrypted: use a trusted LAN and do not forward these ports to the internet. Core must be ready and electrs must agree with its height and tip before relying on wallet results.
+
+The TUI opens LAN TCP by default: L selects TCP, S selects TLS and T selects Tor. TLS certificates do not renew automatically. Missing or malformed optional TLS certificates do not stop the default TCP listener. The UI changes connection instructions and QR contents; both LAN listeners remain available.
+
+The public `server.features` response advertises TCP port50001 on LAN and Tor; the optional TLS endpoint still uses50002. The internal electrs listener stays on loopback50003. Tor forwards its wallet endpoint to the same loopback50001 relay. Other feature fields and wallet transactions are unchanged. The relay's existing32-connection and idle limits also apply to that Tor route.
 
 ## RPC clients
 
@@ -30,4 +35,4 @@ For PSBT fees, `fee_rate` is sat/vB and `feeRate` is BTC/kvB; do not specify bot
 
 ## Current validation limits
 
-The RPC/Electrum protocols, digital QR contents, watch-only restrictions, PSBT and actual regtest transactions have software-level validation. Physical Nunchuk/Fully Noded installations, camera scans, mobile certificate setup and each application's full call sequence are still unverified for beta3. Check [TESTING.md](TESTING.md) before relying on a specific phone workflow.
+The RPC/Electrum protocols, digital QR contents, watch-only restrictions, PSBT and actual regtest transactions have software-level validation. Physical Nunchuk/Fully Noded installations, camera scans, mobile certificate setup and each application's full call sequence are still unverified for the 0.1.0 image. Check [TESTING.md](TESTING.md) before relying on a specific phone workflow.
