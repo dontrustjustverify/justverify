@@ -6,11 +6,11 @@ JustVerify combines Bitcoin Core, electrs, Tor and a local Mempool explorer in a
 
 [한국어](docs/ko/README.md) · [日本語](docs/ja/README.md) · [Build from source](docs/BUILD.md)
 
-## Download 0.1.0
+## Download 0.1.1
 
-- [Raspberry Pi image — IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0.img.xz)
-- [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS) · [Signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS.asc) · [Signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-signing-key.asc)
-- [Source archive](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-source.tar.gz) · [Release and component sources](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0)
+- [Raspberry Pi image — IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1.img.xz)
+- [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS) · [Signature](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS.asc) · [Signing key](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-signing-key.asc)
+- [Source archive](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-source.tar.gz) · [Release and component sources](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.1)
 
 ## Install
 

@@ -24,6 +24,13 @@ def canonical_electrs_config(value,expected):
     if value not in (expected,historical):raise ValueError('backup Electrum configuration is not canonical')
     return expected
 
+def canonical_core_launcher(value,expected,binary,folder):
+    launcher=b'ExecStart=/usr/bin/python3 -I /opt/justverify/scripts/core_service.py\n'
+    historical=expected.replace(launcher,f'ExecStart={binary} -datadir={folder}/core -conf=/etc/justverify/bitcoin.conf\n'.encode())
+    if launcher not in expected or value not in (expected,historical):
+        raise ValueError('backup Core launcher is not canonical')
+    return expected
+
 class Guard:
     def __init__(self,helper,checked,context,template,validator):
         self.helper,self.checked,self.context,self.template,self.validator=helper,checked,context,template,validator
@@ -65,8 +72,10 @@ class Guard:
         ready=json.loads(values['etc/node-ready.json'])
         if any(ready.get(k)!=v for k,v in self.context.items()):raise ValueError('backup cannot change selected data UUID, version or wallet profile')
         electrs=None
+        core=None
         for key,expected in self.helper.render_profile(self.checked).items():
             if key=='etc/electrs.toml':electrs=canonical_electrs_config(values.get(key),expected)
+            elif key=='systemd/core-profile.conf':core=canonical_core_launcher(values.get(key),expected,self.checked[2],self.checked[3])
             elif values.get(key)!=expected:raise ValueError('backup privileged configuration is not canonical')
         p2p=self.helper.NETWORKS[self.checked[1]][3]
         tor=canonical_tor_config(values['etc/torrc'],self.template,p2p)
@@ -84,5 +93,6 @@ class Guard:
         # template. Rollback snapshots bypass normalization and preserve bytes.
         values['etc/torrc']=tor
         values['etc/electrs.toml']=electrs
+        values['systemd/core-profile.conf']=core
         ready['configs']['electrs.toml']=hashlib.sha256(electrs).hexdigest()
         values['etc/node-ready.json']=(json.dumps(ready)+'\n').encode()

@@ -45,15 +45,15 @@ async def main():
             async with c.post('http://127.0.0.1'+path,headers={'Origin':'http://127.0.0.1','X-CSRF-Token':csrf},json=body) as r:
                 assert r.status==200,(path,r.status)
                 return await r.json()
-        if expected_version in ('0.1.0-beta10-test5','0.1.0'):
-            saved_rain={'enabled':True,'brightness':100,'speed':400,'density':300} if expected_version=='0.1.0' else {'enabled':True,'brightness':26,'speed':110,'density':95}
+        if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1'):
+            saved_rain={'enabled':True,'brightness':100,'speed':400,'density':300} if expected_version in ('0.1.0','0.1.1') else {'enabled':True,'brightness':26,'speed':110,'density':95}
             preferences=(await post('/device-settings',{'action':'state'}))['preferences']
             assert preferences['schema']==2
             if previous:
                 assert preferences['background']==saved_rain
                 REPORT['checks'].append('Digital Rain values survive actual VM reboot')
             else:
-                assert preferences['background']==({'enabled':False,'brightness':40,'speed':160,'density':140} if expected_version=='0.1.0' else {'enabled':False,'brightness':18,'speed':70,'density':75})
+                assert preferences['background']==({'enabled':False,'brightness':40,'speed':160,'density':140} if expected_version in ('0.1.0','0.1.1') else {'enabled':False,'brightness':18,'speed':70,'density':75})
                 saved=await post('/device-settings',{'action':'background','background':saved_rain})
                 assert saved['preferences']['background']==saved_rain
                 assert saved['preferences']['language']==preferences['language']
@@ -71,6 +71,14 @@ async def main():
             async with c.post('http://127.0.0.1:'+str(config['rpc_port']),headers={'Authorization':'Basic '+base64.b64encode(cookie).decode()},json={'id':1,'method':method,'params':params or []}) as r:
                 value=await r.json();assert not value.get('error'),method
                 return value['result']
+        if expected_version=='0.1.1':
+            announced=Path('/run/justverify-tor/p2p.hostname').read_text().strip()
+            info=await rpc('getnetworkinfo')
+            assert any(a['address']==announced and a['port']==8333 for a in info['localaddresses'])
+            pid=int(subprocess.check_output(['systemctl','show','justverify-core','--property=MainPID','--value'],text=True))
+            assert Path(f'/proc/{pid}/exe').resolve()==Path(config['binary']).resolve()
+            assert b'-externalip='+announced.encode()+b':8333' in Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\0')
+            REPORT['checks'].append('registered launcher execs selected Core and registers persistent P2P onion on both boots')
         if not previous:await rpc('generatetodescriptor',[2,'raw(51)'])
         tip=await rpc('getbestblockhash');height=await rpc('getblockcount')
         if previous:assert previous['boot_id']!=boot_id and previous['tip']==tip
@@ -91,8 +99,29 @@ async def main():
             value=await dashboard();index=value.get('host',{}).get('electrs',{})
             return index if index.get('wallet_ready') and index.get('height')==height and index.get('target_height')==height and index.get('tip')==tip else None
         current=await wait(status_ready)
+        if expected_version=='0.1.1' and previous:
+            original=(await post('/policy',{'method':'state'}))['requested']
+            try:
+                for incoming in ('none','clearnet','clearnet,tor'):
+                    review=await post('/policy',{'method':'preview','values':{**original,'listen':incoming}})
+                    assert (await post('/policy',{'method':'apply','token':review['token']}))['phase']=='committed'
+                    addresses=(await rpc('getnetworkinfo'))['localaddresses']
+                    assert any(a['address'].endswith('.onion') for a in addresses)==('tor' in incoming.split(','))
+                    import socket
+                    for address,family in [('127.0.0.1',socket.AF_INET),('::1',socket.AF_INET6)]:
+                        with socket.socket(family) as peer:
+                            peer.settimeout(2)
+                            connected=peer.connect_ex((address,18444))==0
+                            assert connected==(family==socket.AF_INET or 'clearnet' in incoming.split(','))
+                    await wait(status_ready,60)
+                    assert await rpc('getbestblockhash')==tip
+            finally:
+                review=await post('/policy',{'method':'preview','values':original})
+                assert (await post('/policy',{'method':'apply','token':review['token']}))['phase']=='committed'
+            await wait(status_ready,60)
+            REPORT['checks'].append('authenticated peer selection apply: incoming off/dual-stack clearnet/Tor; onion advertisement removed/restored; electrs and chain preserved')
         assert not current['height_stale'] and not current['target_stale']
-        if expected_version in ('0.1.0-beta10-test2','0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5'):
+        if expected_version in ('0.1.0-beta10-test2','0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1'):
             async def db_completed():
                 value=await dashboard()
                 return value.get('host',{}).get('electrs',{}).get('compaction_complete') is True
@@ -109,11 +138,17 @@ async def main():
             assert 'RestartSec=30' in Path('/etc/systemd/system/justverify-'+unit+'.service').read_text()
         context=ssl.create_default_context(cafile='/var/lib/justverify/web/certificate.pem')
         for ip in ('127.0.0.1','::1'):
-            reader,writer=await asyncio.open_connection(ip,50002,ssl=context,server_hostname='justverify.local')
-            writer.write(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n');await writer.drain()
-            response=json.loads(await asyncio.wait_for(reader.readline(),5))['result']
-            assert response['height']==height and hashlib.sha256(hashlib.sha256(bytes.fromhex(response['hex'])).digest()).digest()[::-1].hex()==tip
-            writer.close();await writer.wait_closed()
+            async def tls_ready():
+                reader,writer=await asyncio.open_connection(ip,50002,ssl=context,server_hostname='justverify.local')
+                try:
+                    writer.write(b'{"id":1,"method":"blockchain.headers.subscribe","params":[]}\n');await writer.drain()
+                    response=json.loads(await asyncio.wait_for(reader.readline(),5))['result']
+                    assert response['height']==height and hashlib.sha256(hashlib.sha256(bytes.fromhex(response['hex'])).digest()).digest()[::-1].hex()==tip
+                    return True
+                finally:writer.close();await writer.wait_closed()
+            # Type=simple and cached dashboard readiness can precede the actual
+            # wallet listener after settings restart. Require its real response.
+            await wait(tls_ready,30)
         REPORT['checks'].append('packaged stable explorer identity, retry cadence and actual IPv4/IPv6 Electrum TLS headers')
         for ip in ('127.0.0.1','::1'):
             reader,writer=await asyncio.open_connection(ip,50001)
@@ -201,7 +236,7 @@ async def main():
                             found=True;break
             assert found
         REPORT['checks']+=['packaged version and Tor mapping','actual Core/electrs/LAN explorer tip','Tor login shared by authenticated packaged explorer and real WebSocket']
-        if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5'):
+        if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1'):
             for _ in range(18):await tor_login()
             assert await explorer('/api/blocks/tip/hash')==tip
             async with c.get('http://127.0.0.1/sessions',headers={'X-CSRF-Token':csrf}) as r:
@@ -228,7 +263,7 @@ async def main():
             subprocess.run(['systemctl','restart','justverify-web'],check=True)
             async def restored():return await explorer('/api/blocks/tip/hash')==tip
             await wait(restored,30)
-            if expected_version in ('0.1.0-beta10-test5','0.1.0'):
+            if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1'):
                 assert (await post('/device-settings',{'action':'state'}))['preferences']['background']==saved_rain
                 REPORT['checks'].append('Digital Rain preferences survive real web service restart')
             REPORT['checks'].append('web systemd restart preserves Tor explorer login')
@@ -284,6 +319,12 @@ async def main():
             values['etc/electrs.toml']=electrs_config.replace(b'127.0.0.1:50003',b'127.0.0.1:50001')
             ready=json.loads(values['etc/node-ready.json']);ready['configs']['electrs.toml']=hashlib.sha256(values['etc/electrs.toml']).hexdigest();values['etc/node-ready.json']=json.dumps(ready).encode()
             values['etc/torrc']=canonical.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n').replace(b'HiddenServicePort 50001 127.0.0.1:50001',b'HiddenServicePort 50001 127.0.0.1:50003')
+            if expected_version=='0.1.1':
+                current_launcher=values['systemd/core-profile.conf']
+                # The selected Core storage path is registered, independent of its version.
+                folder=Path(json.loads(values['etc/node-ready.json'])['instance']['core_data']).parent
+                values['systemd/core-profile.conf']=current_launcher.replace(b'ExecStart=/usr/bin/python3 -I /opt/justverify/scripts/core_service.py\n',f"ExecStart={config['binary']} -datadir={folder}/core -conf=/etc/justverify/bitcoin.conf\n".encode())
+                assert values['systemd/core-profile.conf']!=current_launcher
             assert values['etc/torrc']!=canonical
             plain=STATE/'legacy.tar';cipher=STATE/'legacy.gpg';passphrase=secrets.token_urlsafe(32)
             bundle._write_tar(plain,values)
@@ -295,6 +336,9 @@ async def main():
             def recovered():resume();health()
             try:assert bundle.restore(passphrase,reviewed['sha256'],health_check=recovered)['phase']=='committed'
             finally:resume()
+            if expected_version=='0.1.1':
+                assert Path('/etc/systemd/system/justverify-core.service.d/20-profile.conf').read_bytes()==current_launcher
+                REPORT['checks'].append('actual encrypted legacy Core launcher upgraded to fixed registered launcher on restore')
             assert Path('/etc/justverify/torrc').read_bytes()==canonical
             assert Path('/etc/justverify/electrs.toml').read_bytes()==electrs_config
             # The restore restarts the web process. A pooled connection can
@@ -312,7 +356,7 @@ async def main():
             await wait(status_ready,120)
             assert await explorer('/api/blocks/tip/hash')==tip
             REPORT['checks'].append('actual GPG legacy backup passes installed data-volume guard; restore upgrades fixed Tor and Electrum routes and preserves identity/tip; explorer recovers')
-            if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4'):
+            if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.1'):
                 result=await post('/sessions',{'action':'revoke_others'})
                 assert result['revoked_count']>0 and not result['revoked_current']
                 await explorer('/api/blocks/tip/hash',401)
@@ -324,6 +368,12 @@ try:asyncio.run(main())
 except Exception as error:
     import traceback
     REPORT['error']=type(error).__name__
+    try:
+        observed=subprocess.check_output(['systemctl','show','justverify-electrum-tls','--property=ActiveState,SubState,Result,NRestarts'],text=True)
+        REPORT['wallet_service']={k:v for k,v in (line.split('=',1) for line in observed.splitlines())}
+        log=subprocess.check_output(['journalctl','-b','-u','justverify-electrum-tls','-o','cat','--no-pager'],text=True)
+        REPORT['optional_tls_unavailable_events']=log.count('Optional Electrum TLS unavailable')
+    except Exception:pass
     REPORT['frames']=[{'file':Path(frame.filename).name,'line':frame.lineno} for frame in traceback.extract_tb(error.__traceback__)]
 finally:
     STATE.mkdir(mode=0o700,exist_ok=True)

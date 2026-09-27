@@ -4,7 +4,7 @@
 
 JustVerify・electrs・mempool と固定したライブラリを取得してコンパイルし、Raspberry Pi 5 ARM64 用イメージを作ります。Bitcoin Core は**公式署名とチェックサムを検証したバイナリ**、Pi OS と Debian パッケージも upstream の配布物を使用します。OS 全体や Bitcoin Core までソースからコンパイルする手順ではありません。
 
-0.1.0ではリリースのソースアーカイブを使用してください。最新の変更をビルドする場合は `main` の commit を記録してください。自作イメージには独自のチェックサムがあり、プロジェクトの署名は引き継ぎません。OS 全体のバイト単位の再現性は未確認です。
+0.1.1ではリリースのソースアーカイブを使用してください。最新の変更をビルドする場合は `main` の commit を記録してください。自作イメージには独自のチェックサムがあり、プロジェクトの署名は引き継ぎません。OS 全体のバイト単位の再現性は未確認です。
 
 ## 1. 隔離した Linux 環境を準備する
 
@@ -38,19 +38,19 @@ sudo losetup --find
 
 ## 2. ソースとコンパイラを取得する
 
-0.1.0のソースアーカイブと検証済みチェックサムがあるディレクトリで以下を実行してください。先に[署名の検証](../INSTALL.md)を確認してください。このアーカイブは0.1.0リリースの正確なソースで、GitHub mainとは異なる場合があります。ローカルGit基準点で以後の変更を記録します。
+0.1.1のソースアーカイブと検証済みチェックサムがあるディレクトリで以下を実行してください。先に[署名の検証](../INSTALL.md)を確認してください。このアーカイブは0.1.1リリースの正確なソースで、GitHub mainとは異なる場合があります。ローカルGit基準点で以後の変更を記録します。
 
 ```bash
-export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-source.tar.gz"
+export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.1-source.tar.gz"
 test -f "$JV_SOURCE_ARCHIVE"
-sha256sum --ignore-missing -c justverify-0.1.0-SHA256SUMS
+sha256sum --ignore-missing -c justverify-0.1.1-SHA256SUMS
 export JV_WORK="$(mktemp -d /var/tmp/justverify-source.XXXXXX)"
 chmod 755 "$JV_WORK"
 mkdir "$JV_WORK/repo"
 tar -xzf "$JV_SOURCE_ARCHIVE" --strip-components=1 -C "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0
+export JV_TAG=0.1.1
 git init -b local-build
 git add .
 git -c user.name='Local builder' -c user.email='builder@localhost' commit -qm 'Imported verified source archive'
@@ -220,10 +220,10 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | 成果物 | 用途 |
 |---|---|
-| `dist/justverify-0.1.0.img` | balenaEtcher で選択する展開済みイメージ |
-| `dist/justverify-0.1.0.img.xz` | 保管・ダウンロード用 |
-| `dist/justverify-0.1.0-SHA256SUMS` | 両ファイルのハッシュ、`dist/` から検証 |
-| `dist/justverify-0.1.0.layout.json` / `.size-audit.json` | パーティション・容量の記録 |
+| `dist/justverify-0.1.1.img` | balenaEtcher で選択する展開済みイメージ |
+| `dist/justverify-0.1.1.img.xz` | 保管・ダウンロード用 |
+| `dist/justverify-0.1.1-SHA256SUMS` | 両ファイルのハッシュ、`dist/` から検証 |
+| `dist/justverify-0.1.1.layout.json` / `.size-audit.json` | パーティション・容量の記録 |
 | `dist/os-packages.tsv` | イメージに実際に導入された OS パッケージ |
 | `.state/build-guide/` | ソース commit・差分・ログ・ローカル検証の証拠 |
 

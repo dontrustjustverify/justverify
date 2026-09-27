@@ -194,7 +194,7 @@ def render_profile(checked):
     profile['data_id']=folder.name
     files['etc/profile.json']=json.dumps(profile,indent=2)+'\n'
     overrides={
-      'core':f'ExecStart=\nExecStart={binary} -datadir={folder}/core -conf=/etc/justverify/bitcoin.conf\nReadWritePaths=\nReadWritePaths={folder}/core\n',
+      'core':f'ExecStart=\nExecStart=/usr/bin/python3 -I /opt/justverify/scripts/core_service.py\nReadWritePaths=\nReadWritePaths={folder}/core\n',
       'electrs':f'ReadWritePaths=\nReadWritePaths={folder}/electrs-0.11.1\n',
       'manager':f'ExecStart=\nExecStart=/opt/justverify/bin/justverify daemon --cookie {cookie} --rpc-port {rpc} --socket /run/justverify/manager.sock\n',
       'policy':f'ReadWritePaths=\nReadWritePaths=/var/lib/justverify/config /var/lib/justverify/preflight {folder}\n',

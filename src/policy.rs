@@ -130,7 +130,7 @@ impl Policy {
                 } else {
                     "clearnet,tor"
                 },
-                "Incoming peers: none or a selection of clearnet,tor,i2p. Internal loopback P2P remains available for electrs. I2P uses the local SAM router; RPC exposure is unchanged.",
+                "Incoming peers: none or a selection of clearnet,tor,i2p. Internal loopback P2P remains available for electrs. Clearnet may require router port forwarding/firewall access. Tor uses a persistent P2P onion; announcement requires Tor outgoing as well. I2P uses the local SAM router. Enabling a listener does not establish peers; RPC exposure is unchanged.",
             ),
             (
                 "onlynet",

@@ -26,7 +26,7 @@ const SettingsView=(()=>{
   function rows(){fields.replaceChildren();const standardReview=host.querySelector('[data-policy-review]');if(standardReview)standardReview.hidden=tab==='config';nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
    const order=['listen','onlynet','proxy','datacarrier','datacarriersize','dbcache','txindex','txospenderindex','maxmempool','blockmintxfee','minrelaytxfee','incrementalrelayfee','mempoolexpiry','persistmempool','maxorphantx','legacy_maxorphantx'];const priority=key=>order.includes(key)?order.indexOf(key):99;const sorted=state.entries.filter(e=>!(e.key==='maxorphantx'&&Number(state.version.split('.')[0])>=30)).sort((a,b)=>priority(a.key)-priority(b.key));for(const e of sorted){const group=net.has(e.key)?'network':optimization.has(e.key)?'optimization':resource.has(e.key)?'resources':'advanced';if(group!==tab)continue;
     const row=node('section',undefined,'setting-row'),info=node('div'),controls=node('div',undefined,'setting-control');row.append(info,controls);fields.append(row);
-    info.append(node('h4',labels[e.key]||e.key),node('code',e.display_key||e.key));const help={listen:'다른 노드가 이 노드로 연결할 수 있는 경로입니다. RPC 접근 설정과는 별개입니다.',onlynet:'자동으로 연결할 목적지 네트워크를 선택합니다. 들어오는 연결과 수동으로 추가한 피어에는 적용되지 않습니다.',proxy:'켜면 일반 인터넷의 노드에도 Tor를 경유해 연결합니다. onion 연결은 이 토글과 관계없이 Tor를 사용합니다.'};Object.assign(help,{
+    info.append(node('h4',labels[e.key]||e.key),node('code',e.display_key||e.key));const help={listen:'다른 노드의 연결을 허용합니다. Clearnet은 공유기 포트 전달·방화벽 설정이 필요할 수 있고, Tor·I2P는 해당 네트워크 준비가 필요합니다. 켜짐은 현재 피어 연결을 의미하지 않으며 RPC 접근과는 별개입니다.',onlynet:'자동으로 연결할 목적지 네트워크를 선택합니다. 들어오는 연결과 수동으로 추가한 피어에는 적용되지 않습니다.',proxy:'켜면 일반 인터넷의 노드에도 Tor를 경유해 연결합니다. onion 연결은 이 토글과 관계없이 Tor를 사용합니다.'};Object.assign(help,{
      datacarrier:'OP_RETURN 데이터 출력을 포함한 미확인 거래의 로컬 수용·전파를 허용합니다. 끄더라도 유효한 블록은 검증하며, 모든 종류의 임의 데이터를 차단하는 기능은 아닙니다.',
      datacarriersize:Number(state.version.split('.')[0])>=30?'한 거래에 있는 OP_RETURN 출력 스크립트의 합계 한도입니다. 여러 출력을 허용하며 Core 30부터 Core 기본값은 100,000 bytes입니다. JustVerify 기본값은 83 bytes이며, 전파가 꺼져 있으면 적용되지 않습니다.':'OP_RETURN 출력 스크립트의 크기 한도입니다. 기본값은 83 bytes이며, 전파가 꺼져 있으면 적용되지 않습니다.',
      dbcache:'UTXO 데이터베이스 캐시의 RAM 상한입니다. 초기 동기화에 도움이 될 수 있으며, 미사용 mempool 메모리가 추가로 공유될 수 있습니다.',
@@ -44,7 +44,7 @@ const SettingsView=(()=>{
     const supported=e.editable!==false&&!e.ignored_or_wallet_only&&e.source_registration_present===true&&!(e.key==='blockversion'&&state.network!=='regtest');
     const current=values[e.key],fallback=defaultValue(e);let display=current??fallback;
     const unit=['boolean','incoming_set','network_set','tor_proxy'].includes(e.type)?'':e.type==='decimal'?'sat/vB':({dbcache:'MiB',datacarriersize:'bytes',maxmempool:'MB',mempoolexpiry:'hours',maxorphantx:'txs',legacy_maxorphantx:'txs'})[e.key]||e.unit||'';
-    const defaultPrefix=e.preference_only?'참고용 기본값: ':'Core 기본값: ';const note=node('p',`${defaultPrefix}${fallback||'N/A'} ${unit} · ${current===undefined?'기본값 사용':'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
+    const defaultPrefix=e.preference_only?'참고용 기본값: ':['listen','onlynet','proxy'].includes(e.key)?'JustVerify 기본값: ':'Core 기본값: ';const note=node('p',`${defaultPrefix}${fallback||'N/A'} ${unit} · ${current===undefined?'기본값 사용':'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
     if(e.range&&e.range.min!==undefined)info.append(node('p',`입력 범위: ${e.range.min} ~ ${e.range.max}`,'hint'));
     if(e.preference_only)controls.append(node('span','현재 Core에 적용되지 않음','setting-warning'));
     if(e.installation_default!==undefined)info.append(node('p','JustVerify 기본값: '+e.installation_default+' '+unit,'hint'));
@@ -71,7 +71,7 @@ const SettingsView=(()=>{
     }else{
      const input=node('input');input.type='text';input.inputMode=e.type==='decimal'?'decimal':e.type==='debug_categories'?'text':'numeric';input.value=current??'';input.placeholder=fallback;input.setAttribute('aria-label',labels[e.key]||e.key);input.autocomplete='off';input.oninput=()=>{if(input.value.trim())values[e.key]=input.value.trim();else delete values[e.key];changed();note.textContent=`${defaultPrefix}${fallback} ${unit} · ${input.value?'지정값: '+input.value:'기본값 사용'}`;};controls.append(input,node('small',unit));
     }
-    controls.append(button(e.installation_default!==undefined?'JustVerify 기본값으로':e.preference_only?'참고값 초기화':'Core 기본값으로',()=>{if(e.installation_default!==undefined)values[e.key]=e.installation_default;else delete values[e.key];changed();rows();},'subtle'));
+    controls.append(button(e.installation_default!==undefined||['listen','onlynet','proxy'].includes(e.key)?'JustVerify 기본값으로':e.preference_only?'참고값 초기화':'Core 기본값으로',()=>{if(e.installation_default!==undefined)values[e.key]=e.installation_default;else delete values[e.key];changed();rows();},'subtle'));
    }
    if(tab==='config'){
     const danger=node('section',undefined,'danger-zone');danger.append(node('h3','Danger Zone'),node('p','설정을 잘못 변경하면 노드와 연결된 앱이 작동하지 않을 수 있습니다. 저장 전 검사 후 Core를 재시작하며, 시작에 실패하면 이전 설정으로 복구합니다.','setting-warning'));

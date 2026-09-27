@@ -5,8 +5,8 @@ StartLimitIntervalSec=60
 StartLimitBurst=3
 Description=JustVerify Bitcoin Core
 After=network-online.target justverify-firstboot.service
-Wants=network-online.target justverify-i2p.service
-After=justverify-i2p.service
+Wants=network-online.target justverify-i2p.service justverify-tor.service
+After=justverify-i2p.service justverify-tor.service
 RequiresMountsFor=/srv/justverify/data
 ConditionPathIsMountPoint=/srv/justverify/data
 
@@ -16,7 +16,7 @@ ConditionPathExists=/etc/justverify/node-ready.json
 User=justverify
 Group=justverify
 ExecStartPre=/usr/bin/python3 /opt/justverify/scripts/node_ready.py
-ExecStart=/opt/justverify/core/bin/bitcoind -datadir=/srv/justverify/data/core -conf=/etc/justverify/bitcoin.conf
+ExecStart=/usr/bin/python3 -I /opt/justverify/scripts/core_service.py
 Restart=on-failure
 RestartSec=30
 TimeoutStopSec=900

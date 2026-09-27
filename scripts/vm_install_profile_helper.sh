@@ -3,7 +3,7 @@ set -euo pipefail
 [[ $EUID = 0 && $(hostname) = justverify-dev ]] || exit 1
 cd /home/builder/justverify
 install -m 0755 scripts/profile_helper.py /usr/libexec/justverify-profile
-install -m 0755 scripts/chain_reset.py scripts/node_ready.py /opt/justverify/scripts/
+install -m 0755 scripts/chain_reset.py scripts/node_ready.py scripts/core_service.py /opt/justverify/scripts/
 printf 'justverify ALL=(root) NOPASSWD: /usr/libexec/justverify-profile ""\n' > /etc/sudoers.d/justverify-profile
 chmod 0440 /etc/sudoers.d/justverify-profile
 visudo -cf /etc/sudoers.d/justverify-profile

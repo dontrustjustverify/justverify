@@ -813,9 +813,9 @@ const messages={
   "en": "Recover interrupted change",
   "ja": "中断された変更を復旧"
  },
- "다른 노드가 이 노드로 연결할 수 있는 경로입니다. RPC 접근 설정과는 별개입니다.": {
-  "en": "Routes other nodes can use to connect here. RPC access is configured separately.",
-  "ja": "他のノードから接続できる経路です。RPC接続設定とは別です。"
+ "다른 노드의 연결을 허용합니다. Clearnet은 공유기 포트 전달·방화벽 설정이 필요할 수 있고, Tor·I2P는 해당 네트워크 준비가 필요합니다. 켜짐은 현재 피어 연결을 의미하지 않으며 RPC 접근과는 별개입니다.": {
+  "en": "Allow other nodes to connect. Clearnet may require router port forwarding and firewall configuration; Tor and I2P require their networks to be ready. Enabling a route does not mean a peer is connected. RPC access is separate.",
+  "ja": "他のノードの接続を許可します。Clearnetはルーターのポート転送・ファイアウォール設定、Tor・I2Pは各ネットワークの準備が必要です。有効でもピアの接続を保証しません。RPC接続とは別です。"
  },
  "자동으로 연결할 목적지 네트워크를 선택합니다. 들어오는 연결과 수동으로 추가한 피어에는 적용되지 않습니다.": {
   "en": "Choose networks for automatic outbound connections. Does not apply to inbound or manually added peers.",

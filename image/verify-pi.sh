@@ -71,7 +71,7 @@ for name in ('server.py','node_admin.py','device_settings.py','remote_web.py','r
     packaged=root/'opt/justverify/web'/name
     assert packaged.read_bytes()==(source/'web'/name).read_bytes(),f'stale packaged web component: {name}'
     assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0
-for name in ('volume_setup.py','storage_service.py','device_service.py','storage_probe.py','disk_inventory.py','backup_bundle.py','backup_service.py','backup_guard.py','chain_reset.py','node_ready.py','publish_onions.py','mempool_service.py','electrs_service.py','electrs_compaction.py','mempool_data.py'):
+for name in ('volume_setup.py','storage_service.py','device_service.py','storage_probe.py','disk_inventory.py','backup_bundle.py','backup_service.py','backup_guard.py','chain_reset.py','node_ready.py','core_service.py','publish_onions.py','mempool_service.py','electrs_service.py','electrs_compaction.py','mempool_data.py'):
     packaged=root/'opt/justverify/scripts'/name
     assert packaged.read_bytes()==(source/'scripts'/name).read_bytes(),f'stale packaged storage/profile component: {name}'
     assert packaged.stat().st_uid==0 and packaged.stat().st_mode&0o022==0

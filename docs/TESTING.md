@@ -1,24 +1,34 @@
-# Validation — 0.1.0
+# Validation — 0.1.1
 
-The attached release test report contains exact image hashes and executed checks.
+The release test report records the exact image hashes, executed checks and limitations. No real-user wallet funds or chain data were used for destructive or transaction tests.
 
 ## Executed for this release
 
-- Digital Rain: authenticated HTTP, schema and range validation, defaults of40% /1.60× /140%, maxima of100% /4.00× /300%, explicit save/cancel and reloading. Chromium exercises three languages, four themes, mobile390px and desktop1440px, reduced motion and page hiding/freezing. No extra node requests are introduced by the animation.
-- Encrypted preferences: actual Linux GPG restores legacy and current settings, including the new maxima, and rejects out-of-range values. The full backup regression covers wrong passwords, tampering, certificate/key consistency, path protections and interrupted restoration.
-- ARM64 release compilation, filesystem and ownership checks, fresh-device identity absence, complete compressed/uncompressed hashes and matching source inputs.
-- Packaged generic ARM VM boot and reboot: real Core31.1/electrs0.11.1 regtest, matching tips, Mempool, IPv4/IPv6 TCP and optional TLS, public50001 versus private50003 metadata, local Tor forwarding configuration, session persistence/revocation and Digital Rain persistence across service restart and reboot. The companion report records the result; the VM uses an external Debian kernel.
-- An existing synchronized Pi received only the appearance-related update. Core/electrs process identities stayed unchanged and LAN50001 answered with the same latest block hash as Core. This is separate from installing the complete0.1.0 image.
+- Officially verified ARM64 Core binaries: 32 versions from 22.0 through 31.1, with five real startup/RPC announcement cases per version. Incoming and outgoing preflight tests separately exercise 256 and 192 real Core starts. They check network restrictions, loopback preservation and settings round trips.
+- A real Tor circuit between two fresh Core 31.1 regtest nodes: Bitcoin handshake, 101-block catch-up, remote address learning from Core's announcement, and a subsequent block at height 102. No clearnet fallback or manual insertion of the advertised address into the remote address database.
+- Two real I2P routers and fresh Core 31.1 regtest nodes: persistent destination creation, incoming/outgoing I2P peers, 101-block catch-up, a signed test transaction with two confirmations, restart with identity preservation, and outgoing-only operation through height 104.
+- Launcher input boundaries, onion v3 checksum validation and 280 network-selection combinations. Actual Linux GPG backup tests cover Tor configuration variants, rejection cases and preservation of I2P identity bytes.
+- Policy integration tests exercise a successful change and recovery from a real failed Core start. Configuration validation and JavaScript syntax checks also pass.
+- ARM64 release compilation, filesystem/ownership and fresh-device identity checks, complete compressed/uncompressed hashes, and comparison of installed changes with the preceding image.
+- Packaged generic ARM VM boot and reboot: real Core 31.1/electrs 0.11.1 regtest, matching tips, Mempool, IPv4/IPv6 TCP and optional TLS, session persistence/revocation, saved appearance settings, registered Core launch and Tor address announcement. Incoming selections are applied through the authenticated web API, with actual listener/announcement removal and restoration. Legacy encrypted Core launcher configuration is normalized on restore.
 
-## Earlier checks of unchanged components
+The boot harness waits for a successful TLS header response after service restarts; a systemd start acknowledgement alone is not treated as socket readiness. The initial immediate TLS probe failed before the listener was ready. The unchanged image is retested with the full response and header-hash assertions retained.
 
-Actual isolated Core/electrs tests exercised four signed regtest transactions, lookup and new-block subscriptions over TCP/TLS. Session tests covered412 logins, expiration/renewal, device-specific logout and restarts. Earlier mainnet observation verified initial Electrs DB cleanup followed by catch-up and subsequent new-block updates without a restart. These results are retained as prior evidence, not new full-suite executions for0.1.0.
+## Existing Pi and remaining checks
 
-## Not yet executed for this complete image
+A synchronized Pi 5 received the targeted network-code update. Core and electrs retained the existing chain and index; Tor identities, preferences and the Tor process were preserved. An external Tor client completed a real mainnet Bitcoin handshake and ping, and Core classified it as an incoming onion peer. After the patch, Core and LAN Electrum 50001 both advanced from height 968758 to 968759 with the same block hash. The Pi retained its prior base OS/application version; this is not a complete 0.1.1 image installation.
 
-- Physical Raspberry Pi5/NVMe installation, firmware boot and reboot of the exact0.1.0 image.
-- Physical iPhone/Safari/Onion Browser rendering, battery use and external Tor transport.
-- Actual BlueWallet/Nunchuk/hardware-wallet end-to-end interaction on the new image.
-- Long-duration mainnet soak testing and whole-image byte-for-byte rebuild reproducibility.
+The first update verification retained an old in-memory configuration validator and triggered a code rollback. After fixing that verification path, the update and protected-byte checks passed. This involved three intentional Core/electrs restart cycles including rollback and retry, without chain reset or reindexing. Earlier electrs restart history predates the patch and is not evidence of a regression or a long-duration reliability guarantee.
 
-Generic ARM tests do not establish Pi firmware or adapter compatibility. Browser viewport tests do not establish physical phone performance. No real-user wallet funds or chain data were used for destructive or transaction tests. Consult [installation](INSTALL.md), [wallet connections](MOBILE_CONNECTIONS.md) and [recovery](RECOVERY.md) before deployment.
+- NOT RUN: installation and firmware boot/reboot of the exact 0.1.1 image on physical Raspberry Pi 5/NVMe.
+- NOT RUN: actual BlueWallet/Nunchuk/hardware-wallet interaction on this image.
+- NOT RUN: independent WAN reachability of the owner's Clearnet router/firewall, unsolicited mainnet inbound peers, and a long-duration mainnet soak.
+- NOT RUN: whole-image byte-for-byte rebuild reproducibility and an optional private-transaction broadcast configured to use only I2P.
+
+The generic ARM VM uses an external Debian kernel and does not establish Pi firmware or adapter compatibility. Real Tor/I2P transport checks do not prove reachability of a particular home network. Enabling incoming connections permits them; it does not guarantee peers will connect.
+
+## Earlier evidence of unchanged features
+
+The preceding release exercised Digital Rain ranges and rendering, encrypted preferences, session expiration/renewal and device logout. Earlier actual Core/electrs tests covered four signed regtest transactions, transaction lookup and new-block subscriptions over TCP/TLS. Mainnet observation separately confirmed initial Electrs cleanup, catch-up and subsequent new blocks. These are retained prior results, not repeated full-suite executions for 0.1.1.
+
+See [network behavior](NETWORKING.md), [installation](INSTALL.md), [wallet connections](MOBILE_CONNECTIONS.md) and [recovery](RECOVERY.md).

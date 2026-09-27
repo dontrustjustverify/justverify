@@ -32,6 +32,8 @@ Choose **Review changes → Save and apply**. The service validates the version,
 
 ## Peer networks
 
+See [peer defaults, Tor address announcements and reachability](NETWORKING.md) for the 0.1.1 behavior and the pinned Umbrel comparison.
+
 Incoming and outgoing controls are separate. A single **Clearnet** outgoing toggle controls IPv4 and IPv6 together. Incoming Clearnet also covers both IP families, subject to the device network and firewall. Tor outgoing uses Core's onion network. **Route clearnet through Tor** controls the proxy for ordinary internet destinations; onion connections always use Tor.
 
 **I2P incoming and outgoing** are available. The image bundles i2pd 2.61.0 and starts it when either I2P selector is enabled. Both are off by default. Saving both off stops the router; ordinary policy changes preserve a running router and its tunnels.

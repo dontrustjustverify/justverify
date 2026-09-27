@@ -4,7 +4,7 @@
 
 This guide compiles JustVerify, electrs and mempool, downloads their locked libraries, and assembles a Raspberry Pi 5 ARM64 image. Bitcoin Core comes from its official **signature-verified binary archive**; Pi OS and Debian packages are prebuilt upstream inputs. This is not a source build of every OS package or Bitcoin Core.
 
-Use the corresponding source archive delivered with the 0.1.0 release. For published releases, use their matching tag; record the commit when building `main`. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
+Use the corresponding source archive delivered with the 0.1.1 release. For published releases, use their matching tag; record the commit when building `main`. Local builds have their own checksums and do not inherit the project signature. Whole-image byte-for-byte reproducibility is not established.
 
 ## 1. Prepare an isolated builder
 
@@ -38,19 +38,19 @@ If apt cannot find the pinned Node/MariaDB versions, stop. Use a repository snap
 
 ## 2. Clone source and install toolchains
 
-Start this block in the directory containing the 0.1.0 source archive and verified checksum file supplied with the package. See [signature verification](INSTALL.md) first. This archive is the exact 0.1.0 release source; GitHub main may differ. A local Git baseline records subsequent build changes.
+Start this block in the directory containing the 0.1.1 source archive and verified checksum file supplied with the package. See [signature verification](INSTALL.md) first. This archive is the exact 0.1.1 release source; GitHub main may differ. A local Git baseline records subsequent build changes.
 
 ```bash
-export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.0-source.tar.gz"
+export JV_SOURCE_ARCHIVE="$PWD/justverify-0.1.1-source.tar.gz"
 test -f "$JV_SOURCE_ARCHIVE"
-sha256sum --ignore-missing -c justverify-0.1.0-SHA256SUMS
+sha256sum --ignore-missing -c justverify-0.1.1-SHA256SUMS
 export JV_WORK="$(mktemp -d /var/tmp/justverify-source.XXXXXX)"
 chmod 755 "$JV_WORK"
 mkdir "$JV_WORK/repo"
 tar -xzf "$JV_SOURCE_ARCHIVE" --strip-components=1 -C "$JV_WORK/repo"
 cd "$JV_WORK/repo"
 export JV_REPO="$PWD"
-export JV_TAG=0.1.0
+export JV_TAG=0.1.1
 git init -b local-build
 git add .
 git -c user.name='Local builder' -c user.email='builder@localhost' commit -qm 'Imported verified source archive'
@@ -232,10 +232,10 @@ git diff --binary > .state/build-guide/local-source.patch
 
 | Output | Purpose |
 |---|---|
-| `dist/justverify-0.1.0.img` | Extracted image to select in balenaEtcher |
-| `dist/justverify-0.1.0.img.xz` | Compressed image for download/storage |
-| `dist/justverify-0.1.0-SHA256SUMS` | Both file hashes; check from `dist/` |
-| `dist/justverify-0.1.0.layout.json` / `.size-audit.json` | Partition layout and size audit |
+| `dist/justverify-0.1.1.img` | Extracted image to select in balenaEtcher |
+| `dist/justverify-0.1.1.img.xz` | Compressed image for download/storage |
+| `dist/justverify-0.1.1-SHA256SUMS` | Both file hashes; check from `dist/` |
+| `dist/justverify-0.1.1.layout.json` / `.size-audit.json` | Partition layout and size audit |
 | `dist/os-packages.tsv` | Actual image package inventory |
 | `.state/build-guide/` | Source commit/patch, logs, local component/test evidence |
 

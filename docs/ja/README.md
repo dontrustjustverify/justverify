@@ -6,9 +6,9 @@ Bitcoin Core、electrs、Tor、ローカルMempoolをまとめたRaspberry Pi用
 
 [English](../../README.md) · [한국어](../ko/README.md) · [ソースからビルド](BUILD.md)
 
-## 正式版0.1.0
+## 正式版0.1.1
 
-[PiイメージIMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS) · [署名](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-SHA256SUMS.asc) · [公開鍵](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-signing-key.asc) · [ソース](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.0/justverify-0.1.0-source.tar.gz) · [リリース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.0)
+[PiイメージIMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS) · [署名](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS.asc) · [公開鍵](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-signing-key.asc) · [ソース](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-source.tar.gz) · [リリース](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.1)
 
 ## インストール
 
