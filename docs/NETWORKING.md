@@ -1,6 +1,6 @@
 # Peer networks
 
-JustVerify 0.1.1 keeps incoming and outgoing selections separate. Existing selections, chain data, wallet data and Tor/I2P identities are preserved. A permitted connection is not the same as an established peer.
+JustVerify 0.1.2 keeps incoming and outgoing selections separate. Existing selections, chain data, wallet data and Tor/I2P identities are preserved. A permitted connection is not the same as an established peer.
 
 ## Defaults and Umbrel comparison
 
@@ -8,8 +8,8 @@ The reference is Umbrel Bitcoin v1.4.0, commit `2fe07948f99e101dbee95ce34e5947a6
 
 | Setting | Umbrel reference | JustVerify mainnet |
 |---|---|---|
-| Incoming Clearnet / Tor / I2P | All off in settings | Clearnet and Tor on; I2P off |
-| Outgoing Clearnet / Tor / I2P | All on | Clearnet and Tor on; I2P off |
+| Incoming Clearnet / Tor / I2P | All off in settings | All off |
+| Outgoing Clearnet / Tor / I2P | All on | All on |
 | Clearnet over Tor | Off | Off |
 | Clearnet outgoing selector | IPv4 and IPv6 together | IPv4 and IPv6 together |
 | Tor inbound address | Core creates/announces an onion through Tor Control | Tor owns a persistent P2P identity; the registered Core launcher announces its public hostname |
@@ -19,6 +19,10 @@ The reference is Umbrel Bitcoin v1.4.0, commit `2fe07948f99e101dbee95ce34e5947a6
 Umbrel's default-off Clearnet setting does not mean its Bitcoin process has no Clearnet listening socket: its generator always emits `listen=1` and an IPv4 bind. Actual external access also depends on Docker networking, the router and firewall. JustVerify enforces its Clearnet selector on IPv4 and IPv6 binds. It does not automatically create router port mappings.
 
 Sources: [Umbrel settings](https://github.com/getumbrel/umbrel-bitcoin/blob/2fe07948f99e101dbee95ce34e5947a69c441ee4/libs/settings/settings.meta.ts), [configuration generator](https://github.com/getumbrel/umbrel-bitcoin/blob/2fe07948f99e101dbee95ce34e5947a69c441ee4/apps/backend/src/modules/config/config.ts). The implementation is independently written; upstream application code is not incorporated.
+
+## What changed in 0.1.2
+
+New profiles explicitly save incoming `none` and outgoing `i2p,ipv4,ipv6,onion`. Web and TUI reset actions stage these same defaults for review. Existing explicit selections and older profiles with implicit network settings retain their prior behavior; they are not changed by installing this code. I2P now starts on new installations for outgoing peers, with incoming acceptance disabled. Fresh-router reseeding runs independently of Core startup; unavailable reseed servers do not repeatedly restart the router or prevent Core/electrs from starting. The manager checks actual SAM and peer readiness separately. During first bootstrap, upstream reseeding can defer shutdown for several minutes; the service allows up to 300 seconds for normal termination, and backup/profile changes still require that normal stop. Clearnet/Tor external listeners remain closed; the internal electrs connection is retained.
 
 ## What changed in 0.1.1
 

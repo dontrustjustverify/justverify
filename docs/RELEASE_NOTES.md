@@ -1,12 +1,11 @@
-# JustVerify 0.1.1
+# JustVerify 0.1.2
 
-Fixes discovery of incoming Tor Bitcoin peers. Earlier releases created the P2P onion listener without announcing its address to Bitcoin Core.
+New installations now start with incoming Clearnet, Tor and I2P disabled, and outgoing Clearnet, Tor and I2P enabled. This matches the reviewed Umbrel Bitcoin network defaults. Clearnet includes IPv4 and IPv6.
 
-- The registered launcher validates Tor's public P2P hostname and announces it to Core. Direct Clearnet discovery is preserved; Tor proxy privacy and disabled incoming routes remain respected.
-- Core startup waits for local Tor hostname publication. Persistent Tor keys, chain data, selected versions, RPC restrictions and connection defaults are preserved.
-- Exact older encrypted backups restore through the current launcher; noncanonical service commands remain rejected.
-- Peer settings explain that allowing a route does not establish a peer, and identify JustVerify's defaults separately from Core's.
+The initial profile saves these selections explicitly. Web and TUI default-reset actions use the same settings and require the existing review/apply flow. Existing saved choices and older implicit network settings are preserved. The internal electrs connection remains available when external incoming connections are disabled.
 
-[Network behavior and Umbrel comparison](NETWORKING.md) · [Validation](TESTING.md) · [Image, checksums and component sources](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.1)
+Fresh I2P router bootstrap no longer blocks Core startup or causes repeated router restarts while reseed servers are unavailable. SAM and peer readiness remain independently checked. Graceful shutdown allows for initial reseed delays so backup/profile changes can retain their normal-stop checks.
 
-Pinned components remain Bitcoin Core31.1, electrs0.11.1, Mempool3.3.1 and i2pd2.61.0. Clearnet incoming can require router forwarding or firewall changes. No router configuration is changed automatically. Reflashing erases the selected disk; existing installations do not update automatically.
+The release retains the Tor address announcement correction from 0.1.1. Enabling incoming connections does not guarantee a peer will connect; Clearnet may require router/firewall configuration and privacy networks need working tunnels.
+
+[Network behavior](NETWORKING.md) · [Validation](TESTING.md) · [Installation and recovery](INSTALL.md)

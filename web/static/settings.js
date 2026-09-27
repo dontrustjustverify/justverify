@@ -42,9 +42,9 @@ const SettingsView=(()=>{
      legacy_maxorphantx:'Core 30에서는 효력이 없고 Core 31에서 제거되었습니다. 입력값은 참고용으로 저장되며 현재 Core에는 적용되지 않습니다.'
     });if(help[e.key])info.append(node('p',help[e.key],'hint'));const details=node('details');details.append(node('summary','Core 옵션 설명'),node('p',e.description,'hint'));info.append(details);
     const supported=e.editable!==false&&!e.ignored_or_wallet_only&&e.source_registration_present===true&&!(e.key==='blockversion'&&state.network!=='regtest');
-    const current=values[e.key],fallback=defaultValue(e);let display=current??fallback;
+    const current=values[e.key],fallback=defaultValue(e);let display=current??e.implicit_default??fallback;
     const unit=['boolean','incoming_set','network_set','tor_proxy'].includes(e.type)?'':e.type==='decimal'?'sat/vB':({dbcache:'MiB',datacarriersize:'bytes',maxmempool:'MB',mempoolexpiry:'hours',maxorphantx:'txs',legacy_maxorphantx:'txs'})[e.key]||e.unit||'';
-    const defaultPrefix=e.preference_only?'참고용 기본값: ':['listen','onlynet','proxy'].includes(e.key)?'JustVerify 기본값: ':'Core 기본값: ';const note=node('p',`${defaultPrefix}${fallback||'N/A'} ${unit} · ${current===undefined?'기본값 사용':'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
+    const defaultPrefix=e.preference_only?'참고용 기본값: ':['listen','onlynet','proxy'].includes(e.key)?'JustVerify 기본값: ':'Core 기본값: ';const note=node('p',`${defaultPrefix}${fallback||'N/A'} ${unit} · ${current===undefined?(e.implicit_default!==undefined?'기존 기본값: '+e.implicit_default:'기본값 사용'):'지정값: '+current+(e.type==='decimal'?' sat/vB':'')}`,'hint');info.append(node('p',`저장된 요청값: ${state.requested[e.key]??'기본값 사용'}`,'hint'),note);
     if(e.range&&e.range.min!==undefined)info.append(node('p',`입력 범위: ${e.range.min} ~ ${e.range.max}`,'hint'));
     if(e.preference_only)controls.append(node('span','현재 Core에 적용되지 않음','setting-warning'));
     if(e.installation_default!==undefined)info.append(node('p','JustVerify 기본값: '+e.installation_default+' '+unit,'hint'));
@@ -53,13 +53,12 @@ const SettingsView=(()=>{
     if(['boolean','tor_proxy'].includes(e.type)){controls.append(toggle(labels[e.key]||e.key,String(display).startsWith('1'),on=>save(on?'1':'0')));}
     else if(['incoming_set','network_set'].includes(e.type)){
      const incoming=e.type==='incoming_set';const options=[['clearnet','Clearnet'],[incoming?'tor':'onion','Tor']];if(e.supports_i2p)options.push(['i2p','I2P']);
-     if(current===undefined)display=incoming?(state.network==='regtest'?'tor':'clearnet,tor'):'ipv4,ipv6,onion';
      const selected=new Set(display.split(','));
      for(const [key,label] of options){
       const members=!incoming&&key==='clearnet'?['ipv4','ipv6']:[key];
       const all=members.every(n=>selected.has(n)),some=members.some(n=>selected.has(n));
       const control=toggle(label,all,on=>{
-       if(key==='i2p'&&e.i2p_incoming_requires_outgoing){const inI2p=(values.listen||'').split(',').includes('i2p');const outI2p=(values.onlynet||'ipv4,ipv6,onion').split(',').includes('i2p');if((incoming&&on&&!outI2p)||(!incoming&&!on&&inI2p)){message('Core 22에서는 I2P 수신만 켤 수 없습니다. I2P 송신도 켜거나 Core 23 이상을 선택하세요.');return;}}
+       if(key==='i2p'&&e.i2p_incoming_requires_outgoing){const inI2p=(values.listen||'').split(',').includes('i2p');const outEntry=state.entries.find(x=>x.key==='onlynet');const outI2p=(values.onlynet??outEntry?.implicit_default??'ipv4,ipv6,onion').split(',').includes('i2p');if((incoming&&on&&!outI2p)||(!incoming&&!on&&inI2p)){message('Core 22에서는 I2P 수신만 켤 수 없습니다. I2P 송신도 켜거나 Core 23 이상을 선택하세요.');return;}}
        const next=new Set([...selected].filter(n=>n!=='none'));for(const member of members){if(on)next.add(member);else next.delete(member);}
        if(!incoming&&!next.size){message('나가는 연결은 하나 이상 선택하세요.');return;}
        save([...next].sort().join(',')||'none');

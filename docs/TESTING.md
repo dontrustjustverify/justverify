@@ -1,34 +1,37 @@
-# Validation — 0.1.1
+# Validation — 0.1.2
 
-The release test report records the exact image hashes, executed checks and limitations. No real-user wallet funds or chain data were used for destructive or transaction tests.
+## Network defaults and compatibility
 
-## Executed for this release
+- PASS: 32 official ARM Bitcoin Core versions, from 22.0 through 31.1, started with the new incoming-none/outgoing-all settings in isolated regtest preflight. Actual RPC, listener checks and saved-policy round trips completed.
+- PASS: native configuration editor and initial policy semantics across the same 32 actual Core binaries.
+- PASS: 142 supported version/network combinations for fresh profile serialization and preservation of legacy implicit or explicit outgoing selections; existing files remained unchanged by read/preview.
+- PASS: local policy validation, configuration editor checks and Tor announcement input/selection boundaries.
 
-- Officially verified ARM64 Core binaries: 32 versions from 22.0 through 31.1, with five real startup/RPC announcement cases per version. Incoming and outgoing preflight tests separately exercise 256 and 192 real Core starts. They check network restrictions, loopback preservation and settings round trips.
-- A real Tor circuit between two fresh Core 31.1 regtest nodes: Bitcoin handshake, 101-block catch-up, remote address learning from Core's announcement, and a subsequent block at height 102. No clearnet fallback or manual insertion of the advertised address into the remote address database.
-- Two real I2P routers and fresh Core 31.1 regtest nodes: persistent destination creation, incoming/outgoing I2P peers, 101-block catch-up, a signed test transaction with two confirmations, restart with identity preservation, and outgoing-only operation through height 104.
-- Launcher input boundaries, onion v3 checksum validation and 280 network-selection combinations. Actual Linux GPG backup tests cover Tor configuration variants, rejection cases and preservation of I2P identity bytes.
-- Policy integration tests exercise a successful change and recovery from a real failed Core start. Configuration validation and JavaScript syntax checks also pass.
-- ARM64 release compilation, filesystem/ownership and fresh-device identity checks, complete compressed/uncompressed hashes, and comparison of installed changes with the preceding image.
-- Packaged generic ARM VM boot and reboot: real Core 31.1/electrs 0.11.1 regtest, matching tips, Mempool, IPv4/IPv6 TCP and optional TLS, session persistence/revocation, saved appearance settings, registered Core launch and Tor address announcement. Incoming selections are applied through the authenticated web API, with actual listener/announcement removal and restoration. Legacy encrypted Core launcher configuration is normalized on restore.
+Implementation: `src/policy.rs`, `src/versions.rs`, `src/tui.rs`, `web/static/settings.js`, `scripts/core_service.py`, `image/systemd/justverify-i2p.service`. Tests: `tests/peer_defaults.rs`, `tests/config_editor.rs`, `tests/policy_validation.rs`, `tests/core_announcement.py`.
 
-The boot harness waits for a successful TLS header response after service restarts; a systemd start acknowledgement alone is not treated as socket readiness. The initial immediate TLS probe failed before the listener was ready. The unchanged image is retested with the full response and header-hash assertions retained.
+- PASS: a fresh real i2pd router under the production service sandbox started as a nonroot user in 0.12 seconds, answered SAM3.1 after 2.49 seconds and retained the same process with zero restarts and a successful normal stop. Test: `tests/i2p_startup_live.py`.
 
-## Existing Pi and remaining checks
+- PASS: a fresh real router with external networking blocked by systemd retained its process during bootstrap and stopped normally after 201.81 seconds; no forced termination or relaxed backup stop check.
 
-A synchronized Pi 5 received the targeted network-code update. Core and electrs retained the existing chain and index; Tor identities, preferences and the Tor process were preserved. An external Tor client completed a real mainnet Bitcoin handshake and ping, and Core classified it as an incoming onion peer. After the patch, Core and LAN Electrum 50001 both advanced from height 968758 to 968759 with the same block hash. The Pi retained its prior base OS/application version; this is not a complete 0.1.1 image installation.
+## Packaged image
 
-The first update verification retained an old in-memory configuration validator and triggered a code rollback. After fixing that verification path, the update and protected-byte checks passed. This involved three intentional Core/electrs restart cycles including rollback and retry, without chain reset or reindexing. Earlier electrs restart history predates the patch and is not evidence of a regression or a long-duration reliability guarantee.
+PASS: two boots of a disposable copy of the packaged image, including an actual VM reboot, under an external generic ARM kernel. `tests/image_mempool_tor_probe.py` verifies:
 
-- NOT RUN: installation and firmware boot/reboot of the exact 0.1.1 image on physical Raspberry Pi 5/NVMe.
-- NOT RUN: actual BlueWallet/Nunchuk/hardware-wallet interaction on this image.
-- NOT RUN: independent WAN reachability of the owner's Clearnet router/firewall, unsolicited mainnet inbound peers, and a long-duration mainnet soak.
-- NOT RUN: whole-image byte-for-byte rebuild reproducibility and an optional private-transaction broadcast configured to use only I2P.
+- Incoming-none/outgoing-all defaults, disabled external incoming binds and onion announcement, with the configured I2P router running on both boots.
+- Unavailable external I2P reseed does not block Core/electrs startup or cause router restart loops. Disabling the still-bootstrapping router and encrypted backup restore require a successful normal stop.
+- Authenticated web API incoming selections, actual IPv4/IPv6 listeners, Tor announcement removal/restoration and unchanged chain/index tip.
+- Actual unprivileged TUI default reset for incoming and outgoing: staged review, cancellation without saved or effective changes, explicit apply, observed Core settings and restoration.
+- Core/electrs/explorer tip agreement; Electrum TCP50001 and optional TLS50002 on IPv4/IPv6; advertised port metadata.
+- Session persistence and revocation, authenticated Tor explorer routing/WebSocket, saved display settings and actual encrypted legacy-backup restore.
 
-The generic ARM VM uses an external Debian kernel and does not establish Pi firmware or adapter compatibility. Real Tor/I2P transport checks do not prove reachability of a particular home network. Enabling incoming connections permits them; it does not guarantee peers will connect.
+Offline checks passed for filesystem integrity, identity absence, ARM binaries, packaged Python imports, service units and exact runtime-file hashes.
 
-## Earlier evidence of unchanged features
+## Mainnet runtime
 
-The preceding release exercised Digital Rain ranges and rendering, encrypted preferences, session expiration/renewal and device logout. Earlier actual Core/electrs tests covered four signed regtest transactions, transaction lookup and new-block subscriptions over TCP/TLS. Mainnet observation separately confirmed initial Electrs cleanup, catch-up and subsequent new blocks. These are retained prior results, not repeated full-suite executions for 0.1.1.
+PASS: Raspberry Pi 5 application update to 0.1.2, peer-policy application, matching Core/electrs tips after a subsequent mainnet block, and Electrum header/ping through the LAN wallet port. Chain/index directories, wallet/authentication settings and Tor/I2P identities were preserved. The settings screen reports 0.1.2.
 
-See [network behavior](NETWORKING.md), [installation](INSTALL.md), [wallet connections](MOBILE_CONNECTIONS.md) and [recovery](RECOVERY.md).
+## Release checks
+
+Release artifacts include signed SHA256 checksums, source archives, component sources and package inventories. The test report records the executed compatibility and image checks.
+
+The optional I2P-only private transaction broadcast mode is not supported. See [network behavior](NETWORKING.md) and [installation and recovery](INSTALL.md).

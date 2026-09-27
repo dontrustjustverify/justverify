@@ -50,6 +50,7 @@ def selection(policy, network):
     if len(proxy) > 1 or proxy and proxy[0] not in ('0', '127.0.0.1:9050'):
         raise ValueError('invalid proxy selection')
     if incoming is None:
+        # Legacy profiles omitted network selections. New profiles persist them explicitly.
         incoming = ['tor'] if network == 'regtest' else ['clearnet', 'tor']
     return set(incoming), set(outgoing or ['ipv4', 'ipv6', 'onion']), bool(proxy and proxy[0] != '0')
 

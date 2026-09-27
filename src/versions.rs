@@ -432,7 +432,7 @@ impl Versions {
             if !preview.target.policy_file.exists() {
                 crate::policy::atomic(
                     &preview.target.policy_file,
-                    b"datacarrier=0\ndatacarriersize=83\ntxindex=1\n",
+                    policy.installation_config()?.as_bytes(),
                 )?;
             }
         }

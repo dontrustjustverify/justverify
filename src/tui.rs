@@ -14,7 +14,11 @@ use std::{
 };
 pub(crate) fn request(socket: &Path, value: &Value) -> Result<Value> {
     let mutating = matches!(value["method"].as_str(), Some("apply" | "recover"));
-    request_with_timeout(socket, value, Duration::from_secs(if mutating { 2400 } else { 50 }))
+    request_with_timeout(
+        socket,
+        value,
+        Duration::from_secs(if mutating { 2400 } else { 50 }),
+    )
 }
 pub(crate) fn request_with_timeout(
     socket: &Path,
@@ -98,7 +102,7 @@ impl Editor {
                 self.values
                     .get(key)
                     .map(String::as_str)
-                    .unwrap_or("[default]"),
+                    .unwrap_or_else(|| entry["implicit_default"].as_str().unwrap_or("[default]")),
                 entry["default"].as_str().unwrap_or("N/A"),
                 if entry["ignored_or_wallet_only"] == true {
                     " [read-only]"
@@ -572,8 +576,19 @@ pub fn run(socket: &Path, policy_socket: &Path, no_color: bool) -> Result<()> {
                     }
                     KeyCode::Char('d' | 'D') => {
                         if let Some(k) = editor.key() {
-                            editor.values.remove(&k);
-                            editor.message = "Core default staged; press A to review.".into();
+                            let default = editor
+                                .entries()
+                                .get(editor.selected)
+                                .and_then(|e| e["installation_default"].as_str())
+                                .map(str::to_owned);
+                            if let Some(value) = default {
+                                editor.values.insert(k, value);
+                                editor.message =
+                                    "JustVerify default staged; press A to review.".into();
+                            } else {
+                                editor.values.remove(&k);
+                                editor.message = "Core default staged; press A to review.".into();
+                            }
                         }
                     }
                     KeyCode::Char('r' | 'R') => {

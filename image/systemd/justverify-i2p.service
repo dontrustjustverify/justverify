@@ -9,6 +9,7 @@ StartLimitIntervalSec=120
 StartLimitBurst=6
 
 [Service]
+Type=exec
 DynamicUser=yes
 User=justverify-i2p
 StateDirectory=justverify-i2p
@@ -16,10 +17,14 @@ StateDirectoryMode=0700
 # Only this fixed read-only condition needs access to the private node policy.
 ExecCondition=+/usr/bin/python3 /opt/justverify/scripts/i2p_service.py --enabled
 ExecStart=/opt/justverify/i2pd/i2pd --conf=/etc/justverify/i2pd.conf --datadir=/var/lib/justverify-i2p
-ExecStartPost=/usr/bin/python3 /opt/justverify/scripts/i2p_service.py --ready
+# A fresh router reseeds before opening SAM. Network bootstrap must not hold
+# Core startup or repeatedly kill the router; actual SAM/peer readiness is
+# checked separately by the manager. Core retries its configured SAM endpoint.
 Restart=on-failure
 RestartSec=15
-TimeoutStopSec=45
+# Upstream initial reseed can wait 180 seconds before observing SIGTERM.
+# Preserve orderly shutdown for profile changes and encrypted backups.
+TimeoutStopSec=300
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict

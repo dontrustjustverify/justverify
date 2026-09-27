@@ -14,6 +14,8 @@ use std::{
 pub type Values = BTreeMap<String, String>;
 pub fn installation_defaults() -> Values {
     Values::from([
+        ("listen".into(), "none".into()),
+        ("onlynet".into(), "i2p,ipv4,ipv6,onion".into()),
         ("txindex".into(), "1".into()),
         ("datacarrier".into(), "0".into()),
         ("datacarriersize".into(), "83".into()),
@@ -125,18 +127,14 @@ impl Policy {
             (
                 "listen",
                 "incoming_set",
-                if network == "regtest" {
-                    "tor (loopback backend)"
-                } else {
-                    "clearnet,tor"
-                },
+                "none",
                 "Incoming peers: none or a selection of clearnet,tor,i2p. Internal loopback P2P remains available for electrs. Clearnet may require router port forwarding/firewall access. Tor uses a persistent P2P onion; announcement requires Tor outgoing as well. I2P uses the local SAM router. Enabling a listener does not establish peers; RPC exposure is unchanged.",
             ),
             (
                 "onlynet",
                 "network_set",
-                "ipv4,ipv6,onion",
-                "Automatic outgoing destinations: comma-separated ipv4,ipv6,onion,i2p. Does not restrict incoming or manually added peers. I2P requires the bundled local SAM router; it is initially off.",
+                "i2p,ipv4,ipv6,onion",
+                "Automatic outgoing destinations: comma-separated ipv4,ipv6,onion,i2p. Does not restrict incoming or manually added peers. All are enabled on new installations. I2P uses the bundled local SAM router.",
             ),
             (
                 "proxy",
@@ -153,6 +151,18 @@ impl Policy {
                 entries.get_mut(key).unwrap()["supports_i2p"] = serde_json::json!(supports_i2p);
                 entries.get_mut(key).unwrap()["i2p_incoming_requires_outgoing"] =
                     serde_json::json!(version.starts_with("22."));
+                if matches!(key, "listen" | "onlynet") {
+                    let entry = entries.get_mut(key).unwrap();
+                    entry["installation_default"] = serde_json::json!(default);
+                    // Files predating explicit network defaults retain their original behavior.
+                    entry["implicit_default"] = serde_json::json!(if key == "onlynet" {
+                        "ipv4,ipv6,onion"
+                    } else if network == "regtest" {
+                        "tor"
+                    } else {
+                        "clearnet,tor"
+                    });
+                }
             }
         }
         for (key, value) in [("datacarrier", "0"), ("datacarriersize", "83")] {
@@ -1130,6 +1140,14 @@ impl Policy {
 impl Policy {
     pub fn entries(&self) -> Vec<Value> {
         self.entries.values().cloned().collect()
+    }
+    /// Only for a newly created profile. Existing policies are never rewritten here.
+    pub fn installation_config(&self) -> Result<String> {
+        render(
+            &self.validate(&installation_defaults())?,
+            &self.network,
+            None,
+        )
     }
     pub fn current(&self, path: &Path) -> Result<Values> {
         let native = parse_config(&read_config(path)?, &self.network)?;

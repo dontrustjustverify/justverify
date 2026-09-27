@@ -45,15 +45,15 @@ async def main():
             async with c.post('http://127.0.0.1'+path,headers={'Origin':'http://127.0.0.1','X-CSRF-Token':csrf},json=body) as r:
                 assert r.status==200,(path,r.status)
                 return await r.json()
-        if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1'):
-            saved_rain={'enabled':True,'brightness':100,'speed':400,'density':300} if expected_version in ('0.1.0','0.1.1') else {'enabled':True,'brightness':26,'speed':110,'density':95}
+        if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1','0.1.2'):
+            saved_rain={'enabled':True,'brightness':100,'speed':400,'density':300} if expected_version in ('0.1.0','0.1.1','0.1.2') else {'enabled':True,'brightness':26,'speed':110,'density':95}
             preferences=(await post('/device-settings',{'action':'state'}))['preferences']
             assert preferences['schema']==2
             if previous:
                 assert preferences['background']==saved_rain
                 REPORT['checks'].append('Digital Rain values survive actual VM reboot')
             else:
-                assert preferences['background']==({'enabled':False,'brightness':40,'speed':160,'density':140} if expected_version in ('0.1.0','0.1.1') else {'enabled':False,'brightness':18,'speed':70,'density':75})
+                assert preferences['background']==({'enabled':False,'brightness':40,'speed':160,'density':140} if expected_version in ('0.1.0','0.1.1','0.1.2') else {'enabled':False,'brightness':18,'speed':70,'density':75})
                 saved=await post('/device-settings',{'action':'background','background':saved_rain})
                 assert saved['preferences']['background']==saved_rain
                 assert saved['preferences']['language']==preferences['language']
@@ -71,6 +71,25 @@ async def main():
             async with c.post('http://127.0.0.1:'+str(config['rpc_port']),headers={'Authorization':'Basic '+base64.b64encode(cookie).decode()},json={'id':1,'method':method,'params':params or []}) as r:
                 value=await r.json();assert not value.get('error'),method
                 return value['result']
+        if expected_version=='0.1.2':
+            factory=await post('/policy',{'method':'state'})
+            assert factory['requested']['listen']=='none'
+            assert factory['requested']['onlynet']=='i2p,ipv4,ipv6,onion'
+            for key in ('listen','onlynet'):
+                entry=next(e for e in factory['entries'] if e['key']==key)
+                assert entry['installation_default']==factory['requested'][key]
+            info=await rpc('getnetworkinfo')
+            assert not any(a['address'].endswith('.onion') for a in info['localaddresses'])
+            assert next(n for n in info['networks'] if n['name']=='i2p')['reachable']
+            assert subprocess.check_output(['systemctl','is-active','justverify-i2p'],text=True).strip()=='active'
+            router_pid=subprocess.check_output(['systemctl','show','justverify-i2p','-p','MainPID','--value'],text=True).strip()
+            assert int(router_pid)>0
+            assert subprocess.check_output(['systemctl','show','justverify-i2p','-p','NRestarts','--value'],text=True).strip()=='0'
+            policy_text=Path(config['managed_config']).read_text()
+            assert 'i2pacceptincoming=0' in policy_text
+            assert 'bind=0.0.0.0:' not in policy_text and 'bind=[::]:' not in policy_text
+            assert not any(line.startswith('bind=') and line.endswith('=onion') for line in policy_text.splitlines())
+            REPORT['checks'].append('new incoming-none/outgoing-all policy, no onion announcement, I2P router active with incoming disabled; retained across reboot')
         if expected_version=='0.1.1':
             announced=Path('/run/justverify-tor/p2p.hostname').read_text().strip()
             info=await rpc('getnetworkinfo')
@@ -99,7 +118,16 @@ async def main():
             value=await dashboard();index=value.get('host',{}).get('electrs',{})
             return index if index.get('wallet_ready') and index.get('height')==height and index.get('target_height')==height and index.get('tip')==tip else None
         current=await wait(status_ready)
-        if expected_version=='0.1.1' and previous:
+        if expected_version=='0.1.2':
+            # External reseed is deliberately blocked in this boot environment.
+            # Exceed the former ten-second SAM startup deadline and establish
+            # that real Core/electrs stay usable without restarting the router.
+            await asyncio.sleep(12)
+            assert subprocess.check_output(['systemctl','show','justverify-i2p','-p','MainPID','--value'],text=True).strip()==router_pid
+            assert subprocess.check_output(['systemctl','show','justverify-i2p','-p','NRestarts','--value'],text=True).strip()=='0'
+            assert await indexed()
+            REPORT['checks'].append('fresh router bootstrap cannot block Core/electrs startup or trigger SAM timeout restart loops')
+        if expected_version in ('0.1.1','0.1.2') and previous:
             original=(await post('/policy',{'method':'state'}))['requested']
             try:
                 for incoming in ('none','clearnet','clearnet,tor'):
@@ -120,8 +148,13 @@ async def main():
                 assert (await post('/policy',{'method':'apply','token':review['token']}))['phase']=='committed'
             await wait(status_ready,60)
             REPORT['checks'].append('authenticated peer selection apply: incoming off/dual-stack clearnet/Tor; onion advertisement removed/restored; electrs and chain preserved')
+        if expected_version=='0.1.2' and previous:
+            for key in ('listen','onlynet'):
+                subprocess.run(['runuser','-u','justverify','--','env','PYTHONPATH=/opt/jv-test-modules','JV_POLICY_TEST_DEFAULT=1','JV_POLICY_TEST_KEY='+key,'/usr/bin/python3','-B','/opt/jv-peer-defaults-tui.py'],check=True,timeout=600)
+            await wait(status_ready,60)
+            REPORT['checks'].append('actual unprivileged PTY default-reset for incoming/outgoing: staged review, cancel, apply, observed Core state and original selection restored')
         assert not current['height_stale'] and not current['target_stale']
-        if expected_version in ('0.1.0-beta10-test2','0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1'):
+        if expected_version in ('0.1.0-beta10-test2','0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1','0.1.2'):
             async def db_completed():
                 value=await dashboard()
                 return value.get('host',{}).get('electrs',{}).get('compaction_complete') is True
@@ -236,7 +269,7 @@ async def main():
                             found=True;break
             assert found
         REPORT['checks']+=['packaged version and Tor mapping','actual Core/electrs/LAN explorer tip','Tor login shared by authenticated packaged explorer and real WebSocket']
-        if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1'):
+        if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.0-beta10-test5','0.1.1','0.1.2'):
             for _ in range(18):await tor_login()
             assert await explorer('/api/blocks/tip/hash')==tip
             async with c.get('http://127.0.0.1/sessions',headers={'X-CSRF-Token':csrf}) as r:
@@ -263,7 +296,7 @@ async def main():
             subprocess.run(['systemctl','restart','justverify-web'],check=True)
             async def restored():return await explorer('/api/blocks/tip/hash')==tip
             await wait(restored,30)
-            if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1'):
+            if expected_version in ('0.1.0-beta10-test5','0.1.0','0.1.1','0.1.2'):
                 assert (await post('/device-settings',{'action':'state'}))['preferences']['background']==saved_rain
                 REPORT['checks'].append('Digital Rain preferences survive real web service restart')
             REPORT['checks'].append('web systemd restart preserves Tor explorer login')
@@ -319,7 +352,7 @@ async def main():
             values['etc/electrs.toml']=electrs_config.replace(b'127.0.0.1:50003',b'127.0.0.1:50001')
             ready=json.loads(values['etc/node-ready.json']);ready['configs']['electrs.toml']=hashlib.sha256(values['etc/electrs.toml']).hexdigest();values['etc/node-ready.json']=json.dumps(ready).encode()
             values['etc/torrc']=canonical.removesuffix(b'HiddenServicePort 3006 127.0.0.1:28445\n').replace(b'HiddenServicePort 50001 127.0.0.1:50001',b'HiddenServicePort 50001 127.0.0.1:50003')
-            if expected_version=='0.1.1':
+            if expected_version in ('0.1.1','0.1.2'):
                 current_launcher=values['systemd/core-profile.conf']
                 # The selected Core storage path is registered, independent of its version.
                 folder=Path(json.loads(values['etc/node-ready.json'])['instance']['core_data']).parent
@@ -336,7 +369,7 @@ async def main():
             def recovered():resume();health()
             try:assert bundle.restore(passphrase,reviewed['sha256'],health_check=recovered)['phase']=='committed'
             finally:resume()
-            if expected_version=='0.1.1':
+            if expected_version in ('0.1.1','0.1.2'):
                 assert Path('/etc/systemd/system/justverify-core.service.d/20-profile.conf').read_bytes()==current_launcher
                 REPORT['checks'].append('actual encrypted legacy Core launcher upgraded to fixed registered launcher on restore')
             assert Path('/etc/justverify/torrc').read_bytes()==canonical
@@ -356,12 +389,16 @@ async def main():
             await wait(status_ready,120)
             assert await explorer('/api/blocks/tip/hash')==tip
             REPORT['checks'].append('actual GPG legacy backup passes installed data-volume guard; restore upgrades fixed Tor and Electrum routes and preserves identity/tip; explorer recovers')
-            if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.1'):
+            if expected_version in ('0.1.0-beta10-test3','0.1.0-beta10-test4','0.1.1','0.1.2'):
                 result=await post('/sessions',{'action':'revoke_others'})
                 assert result['revoked_count']>0 and not result['revoked_current']
                 await explorer('/api/blocks/tip/hash',401)
                 async with c.get('http://127.0.0.1/session') as r:assert r.status==200
                 REPORT['checks'].append('other-device logout revokes Tor explorer access while current LAN login remains usable')
+        if expected_version=='0.1.2':
+            router_log=subprocess.check_output(['journalctl','-b','-u','justverify-i2p','-o','cat','--no-pager'],text=True)
+            assert not any(marker in router_log for marker in ("State 'stop-sigterm' timed out", "State 'stop-sigkill' timed out", "Failed with result 'timeout'", 'signal SIGKILL', 'status=9/KILL'))
+            REPORT['checks'].append('router lifecycle journal contains no stop timeout or forced termination; intentional disabled condition is distinguished')
         REPORT.update(status='PASS',height=height,tip=tip)
 
 try:asyncio.run(main())

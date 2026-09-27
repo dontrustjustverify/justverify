@@ -6,9 +6,9 @@ Bitcoin Core·electrs·Tor·로컬 Mempool 탐색기를 함께 제공하는 Rasp
 
 [English](../../README.md) · [日本語](../ja/README.md) · [소스로 이미지 만들기](BUILD.md)
 
-## 정식 버전 0.1.1 다운로드
+## 정식 버전 0.1.2 다운로드
 
-[Pi 이미지 IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS) · [서명](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-SHA256SUMS.asc) · [공개 서명키](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-signing-key.asc) · [소스](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.1/justverify-0.1.1-source.tar.gz) · [릴리스](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.1)
+[Pi 이미지 IMG.XZ](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.2/justverify-0.1.2.img.xz) · [SHA256SUMS](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.2/justverify-0.1.2-SHA256SUMS) · [서명](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.2/justverify-0.1.2-SHA256SUMS.asc) · [공개 서명키](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.2/justverify-signing-key.asc) · [소스](https://github.com/dontrustjustverify/justverify/releases/download/v0.1.2/justverify-0.1.2-source.tar.gz) · [릴리스](https://github.com/dontrustjustverify/justverify/releases/tag/v0.1.2)
 
 ## 설치
 
